@@ -1,0 +1,11 @@
+# Data is streamed online; never commit raw signal or computed features
+data/
+cache/
+*.edf
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
