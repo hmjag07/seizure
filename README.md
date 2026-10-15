@@ -13,3 +13,26 @@ Existing TDA-based seizure detection studies generally assume every channel stay
 ## Datasets
 - [SeizeIT2](https://openneuro.org/datasets/ds005873) (primary): behind-the-ear EEG, ECG, EMG, motion.
 - [CHB-MIT](https://physionet.org/content/chbmit/1.0.0/) (second): multi-channel scalp EEG.
+
+## Layout
+```
+configs/            shared settings (default.yaml) + per-experiment overrides
+src/seizure/
+  data/             Step 1: streaming, labels, cleaning, windowing
+  faults/           Steps 2-3: fault injection, health check
+  features/         Step 4: TDA-A, TDA-B, classic features
+  models/           Steps 5-6: XGBoost, CNN baseline, alarm rule
+  realtime/         Step 7: simulated live replay
+  evaluation/       Step 8: metrics, robustness curves
+notebooks/          exploration only; move reusable code into src/
+tests/              pytest
+results/            figures/ and tables/ for the paper (runs/ is ignored)
+paper/              manuscript
+```
+
+## Setup
+```
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+pip install -e ".[dev]"          # add ,cnn for the CNN baseline
+```
