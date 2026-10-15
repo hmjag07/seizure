@@ -30,53 +30,228 @@ Persistent homology (TDA) is the main method. A classic-feature model and a smal
 
 ## Step 1: Extract the data
 
-Data is streamed from the online sources and never stored in the repo. See [data-access.md](data-access.md) for URLs, the streaming test and caching.
+Data is streamed from the online sources and never stored in the repo. [data-access.md](data-access.md) explains the file formats, how streaming works byte by byte, how stored numbers become physical units, and every check that was run.
+
+**Progress (2026-10-15):**
+
+| Part | Status | Where |
+|---|---|---|
+| 1.1 Understand both datasets | ✓ Done | This section, [data-access.md](data-access.md) |
+| 1.2 Pick pilot patients | ✓ Done: 30 patients, 189 seizures | [`pilot.py`](../src/seizure/data/pilot.py), [`pilot_patients.csv`](../results/tables/pilot_patients.csv) |
+| 1.3 Streaming and unit conversion | ✓ Done and verified | [`streaming.py`](../src/seizure/data/streaming.py) |
+| 1.3 Plan which time ranges to fetch | Next | |
+| 1.4 Clean the signals | To do | `preprocess.py` |
+| 1.5 Windows | To do | `windows.py` |
+| 1.6 Balance | To do | |
 
 ### 1.1 Datasets
 
-**SeizeIT2** (primary). OpenNeuro `ds005873`, BIDS format.
-- 125 patients, 886 focal seizures, more than 11,000 hours.
-- Per patient: `sub-XXX/ses-01/{eeg,ecg,emg,mov}/`, one EDF per run, e.g. `sub-001_ses-01_task-szMonitoring_run-01_eeg.edf`. Runs can be about 18 h long.
-- Signals:
-  - EEG: `BTEleft SD`, `CROSStop SD` (2 behind-the-ear channels), 256 Hz
-  - ECG: `ECG SD`, 256 Hz
-  - EMG: `EMG SD`, 256 Hz
-  - Motion: 3 accelerometer and 3 gyroscope axes, 25 Hz
-- Labels are in `eeg/..._events.tsv`: `onset`, `duration`, `eventType`, lateralization, localization, vigilance, confidence, channels. The top-level `events.json` explains the event-type codes.
-- Official split: sub-001 to sub-096 for training, sub-097 to sub-125 for validation.
-- About 3% of recordings are already missing ECG/EMG/motion because of real technical failures, which supports the motivation for this project.
+#### SeizeIT2 (primary)
 
-**CHB-MIT** (second). PhysioNet `chbmit/1.0.0`.
-- 22 patients (23 cases), 256 Hz, about 23 scalp EEG channels, 1-hour EDF files.
-- Seizure times are in `chbXX-summary.txt`.
-- Use the 18 channels shared across nearly all recordings.
+OpenNeuro `ds005873`, organised in the BIDS standard. Recorded 2020–2022 in five European epilepsy monitoring units (Leuven, Freiburg, Aachen, Karolinska, Coimbra) using the Sensor Dot wearable, alongside the hospital's standard video-EEG. All patients have focal epilepsy.
+
+| Property | Whole dataset | Training range (sub-001 to sub-096), as scanned |
+|---|---|---|
+| Patients | 125 | 96 |
+| Recording hours | about 11,640 | 8,715 |
+| Runs (continuous recordings) | | 2,072 (median 1.0 h, longest 24.2 h) |
+| Seizures | 886 | 702 |
+
+**Signals per run** (16 when everything is present):
+
+| Modality | Signals | Sampling rate | Notes |
+|---|---|---|---|
+| EEG | `BTEleft SD`, `CROSStop SD` | 256 Hz | Behind-the-ear electrodes: one same-side channel and one cross-head channel, placed on the side where seizures were expected to start. |
+| ECG | `ECG SD` | 256 Hz | Chest |
+| EMG | `EMG SD` | 256 Hz | Left deltoid (upper arm) |
+| Motion, neck device | `EEG SD ACC X/Y/Z`, `EEG SD GYR A/B/C` | 25 Hz | 3 accelerometer + 3 gyroscope axes |
+| Motion, chest device | `ECGEMG SD ACC X/Y/Z`, `ECGEMG SD GYR A/B/C` | 25 Hz | 3 accelerometer + 3 gyroscope axes |
+
+**Which modalities each run has** (training range):
+
+| Modalities present | Runs | Share |
+|---|---|---|
+| EEG + ECG + EMG + motion | 1,867 | 90.1% |
+| EEG + ECG + EMG (no motion) | 181 | 8.7% |
+| EEG + motion (no ECG, no EMG) | 22 | 1.1% |
+| EEG only | 2 | 0.1% |
+
+EEG is always present. The missing modalities are real technical failures and setup errors, so the dataset itself shows that sensors fail in practice: the motivation for this project.
+
+**Labels** are in each run's `eeg/..._events.tsv`: start time, duration, seizure type, hemisphere, brain lobe, and whether the patient was awake or asleep. Other event types are `bckg` (no seizure) and `impd` (staff checking electrode contact, which produces artefacts). The codes are explained in `events.json` and in [data-access.md](data-access.md#the-label-files-eventstsv).
+
+**Seizure types in the training range** (702 seizures):
+
+| Group | Meaning | Seizures | Share |
+|---|---|---|---|
+| FIA | Focal impaired awareness | 289 | 41% |
+| FA | Focal aware | 274 | 39% |
+| other | Unknown awareness, unknown onset or unclassified | 106 | 15% |
+| FBTC | Focal to bilateral tonic-clonic (convulsive) | 33 | 5% |
+
+Awake: 344 (49%), asleep: 274 (39%), unknown: 84 (12%). The most common specific codes are `sz_foc_a_m_hyperkinetic` (146), `sz_foc_ia_nm` (105) and `sz_foc_ia_m_hyperkinetic` (88).
+
+**Official split** (from the SeizeIT2 paper): sub-001 to sub-096 for training, sub-097 to sub-125 for validation. This project uses sub-097 to sub-125 as its final, untouched test set.
+
+#### CHB-MIT (second)
+
+PhysioNet `chbmit/1.0.0`. Scalp EEG recorded at Boston Children's Hospital.
+
+| Property | Value |
+|---|---|
+| Patients | 22 (23 cases; chb21 is a later recording of chb01) |
+| Channels | About 23 bipolar scalp channels. The project uses the 18 shared across nearly all recordings. `T8-P8` appears twice in many files (identical copies). |
+| Sampling rate | 256 Hz |
+| Files | One EDF per hour |
+| Labels | `chbXX-summary.txt` |
+
+CHB-MIT has many EEG channels but no ECG or motion, so it complements SeizeIT2: it tests the network-of-sensors features (TDA-B, Step 4B) where there are enough nodes to form meaningful shapes.
 
 ### 1.2 Pilot patients
-Chosen by rule, then at random, not by expected results (`python -m seizure.data.pilot`, 2026-10-15):
-1. Only sub-001 to sub-096 are scanned.
-2. A seizure counts only if its run has all four modalities (EEG, ECG, EMG, motion).
-3. Eligible: at least 3 such seizures. 50 of 96 patients qualify.
-4. 30 eligible patients are drawn at random (seed 42).
-5. Balance check: the pilot's share of asleep seizures and of each seizure type (focal aware, focal impaired awareness, focal-to-bilateral tonic-clonic, other) is within 15 points of the eligible pool's share. Passed.
-6. At most 10 seizures per patient are used, chosen at random (same seed): 189 seizures in total.
 
-Result: 30 patients, 357 usable seizures (189 after the cap), about 2,600 hours with all modalities. The patient list is in `configs/default.yaml`; per-patient details are in `results/tables/pilot_patients.csv`.
+#### Why a pilot subset
 
-- Keep sub-097 to sub-125 untouched as the final test set. This also allows direct comparison with the SeizeIT2 paper's benchmarks.
+Processing all 96 training patients would not fit the one-week model deadline, especially because persistent homology is slow. A subset of 30 patients is large enough for 5-fold cross-validation grouped by patient (6 test patients per fold) and small enough to process quickly. More patients can be added in weeks 2–3.
+
+#### How they were chosen
+
+The patients were **not** hand-picked for expected good results. That would be cherry-picking: the model would only learn easy cases, then do worse on the untouched test patients, and reviewers would rightly question it. Instead, the rules below were fixed first, written down, and then applied by code ([`pilot.py`](../src/seizure/data/pilot.py)). Anyone can re-run it and get the same 30 patients.
+
+| # | Rule | Why |
+|---|---|---|
+| 1 | Scan only sub-001 to sub-096 | sub-097 to sub-125 are the final test set. Their labels are not even read, so nothing about them can influence choices. |
+| 2 | A seizure counts only if its run has all four modalities (EEG, ECG, EMG, motion) | The project tests what happens when sensors fail. A seizure recorded without ECG or motion cannot be used to test ECG or motion failing. This is checked **per run**, not per patient, because some patients have all modalities in some runs but not others. |
+| 3 | A patient is eligible with **at least 3** such seizures | Patients with 1–2 seizures contribute very little to learn from, and with 30 slots, each one should carry real data. |
+| 4 | Draw **30** eligible patients **at random**, seed 42 | Random choice avoids selection bias. The fixed seed makes the draw reproducible. |
+| 5 | **Balance check:** the pilot's share of each seizure type and of sleep seizures must be within **15 percentage points** of the eligible pool's | Guards against an unlucky draw (e.g. almost no sleep seizures). If it had failed, the plan was to redo the draw within groups (stratified sampling). |
+| 6 | Use at most **10 seizures per patient**, chosen at random with the same seed | A few patients have dozens of seizures (sub-039 has 75). Without a cap they would dominate what the model learns. |
+
+#### What happened at each rule
+
+| Stage | Patients | Runs | Seizures |
+|---|---|---|---|
+| SeizeIT2, all | 125 | | 886 |
+| Rule 1: training range | 96 | 2,072 | 702 |
+| Rule 2: seizures in runs with all 4 modalities | 87 with at least one | 1,867 | 631 (71 dropped) |
+| Rule 3: at least 3 usable seizures | **50 eligible** | | 581 |
+| Rule 4: random draw | **30 pilot** | 752 (744 with all 4 modalities) | 357 |
+| Rule 6: cap of 10 per patient | 30 | | **189 used** |
+
+Why the 46 patients were not eligible:
+
+| Usable seizures | Patients |
+|---|---|
+| 0 | 9 (sub-048, 049, 054, 058, 081, 082, 087, 090, 091) |
+| 1 | 24 |
+| 2 | 13 |
+
+The 50 eligible patients: sub-001, 002, 004, 011, 012, 015, 021, 022, 025, 026, 028, 029, 030, 031, 034, 035, 036, 039, 040, 042, 043, 044, 046, 047, 050, 051, 052, 055, 056, 059, 060, 062, 064, 066, 067, 068, 071, 072, 073, 074, 076, 077, 079, 080, 084, 085, 086, 089, 092, 094.
+
+#### The 30 pilot patients
+
+| # | Patient | Usable seizures | Used (after cap) | Usable seizures during sleep | Seizure types (usable) | Hours with all 4 modalities |
+|---|---|---|---|---|---|---|
+| 1 | sub-002 | 15 | 10 | 5 | FA:2, FIA:13 | 99.2 |
+| 2 | sub-004 | 4 | 4 | 1 | FA:4 | 18.5 |
+| 3 | sub-015 | 9 | 9 | 5 | FBTC:1, FIA:8 | 88.6 |
+| 4 | sub-021 | 4 | 4 | 3 | FIA:4 | 111.8 |
+| 5 | sub-022 | 7 | 7 | 1 | FIA:7 | 113.5 |
+| 6 | sub-025 | 3 | 3 | 1 | FA:2, FBTC:1 | 98.0 |
+| 7 | sub-031 | 3 | 3 | 1 | FA:2, FBTC:1 | 107.3 |
+| 8 | sub-034 | 30 | 10 | 9 | FIA:30 | 95.3 |
+| 9 | sub-035 | 55 | 10 | 55 | FA:55 | 72.3 |
+| 10 | sub-039 | 75 | 10 | 56 | FA:35, other:40 | 91.9 |
+| 11 | sub-040 | 3 | 3 | 0 | FIA:3 | 53.7 |
+| 12 | sub-043 | 5 | 5 | 0 | FIA:5 | 87.7 |
+| 13 | sub-046 | 4 | 4 | 3 | FA:2, FBTC:2 | 97.6 |
+| 14 | sub-055 | 8 | 8 | 8 | other:8 | 42.2 |
+| 15 | sub-056 | 13 | 10 | 9 | FIA:13 | 62.7 |
+| 16 | sub-060 | 25 | 10 | 3 | FA:22, other:3 | 48.5 |
+| 17 | sub-064 | 3 | 3 | 0 | FA:2, FBTC:1 | 41.3 |
+| 18 | sub-066 | 4 | 4 | 0 | FIA:2, other:2 | 117.8 |
+| 19 | sub-067 | 4 | 4 | 0 | FIA:4 | 35.6 |
+| 20 | sub-071 | 6 | 6 | 0 | FIA:3, other:3 | 194.8 |
+| 21 | sub-072 | 20 | 10 | 9 | FIA:20 | 126.1 |
+| 22 | sub-076 | 3 | 3 | 0 | FIA:3 | 86.6 |
+| 23 | sub-077 | 9 | 9 | 0 | FA:7, FIA:2 | 61.6 |
+| 24 | sub-079 | 15 | 10 | 0 | FA:1, FBTC:1, FIA:13 | 95.5 |
+| 25 | sub-080 | 8 | 8 | 0 | FBTC:1, FIA:7 | 149.1 |
+| 26 | sub-084 | 4 | 4 | 0 | FIA:4 | 55.0 |
+| 27 | sub-086 | 4 | 4 | 0 | FA:1, FIA:2, other:1 | 84.3 |
+| 28 | sub-089 | 5 | 5 | 0 | FIA:5 | 102.5 |
+| 29 | sub-092 | 6 | 6 | 0 | FIA:6 | 106.3 |
+| 30 | sub-094 | 3 | 3 | 0 | FIA:3 | 43.8 |
+| | **Total** | **357** | **189** | **169** | | **2,589** |
+
+The list is also in [`configs/default.yaml`](../configs/default.yaml) (`pilot_patients`), and every seizure with its `used` flag is in [`seizeit2_seizures.csv`](../results/tables/seizeit2_seizures.csv).
+
+#### Balance check (rule 5)
+
+| | Eligible pool (581 seizures) | Pilot, before cap (357) | Within 15 points? | Pilot, after cap (189 used) |
+|---|---|---|---|---|
+| FA (focal aware) | 38% | 38% | ✓ | 24% |
+| FIA (focal impaired awareness) | 44% | 44% | ✓ | 61% |
+| FBTC (tonic-clonic) | 3% | 2% | ✓ | 4% |
+| other | 15% | 16% | ✓ | 11% |
+| During sleep | 44% | 47% | ✓ | 32% |
+
+The random draw matched the eligible pool closely, so no stratified redraw was needed.
+
+#### Things to know about this pilot set
+
+1. **The cap shifts the mix.** After capping, FIA rises from 44% to 61% and sleep seizures fall from 47% to 32%. The patients who lost the most seizures to the cap were mostly FA and asleep: sub-035 (55 seizures, all FA, all asleep) and sub-039 (75, mostly asleep). This is the intended effect of giving each patient an equal voice, and should be stated in the paper.
+2. **Few tonic-clonic seizures (7 used).** These large convulsive seizures are the easiest for motion sensors to catch. With so few, results describe mainly the harder, quieter focal seizures, which is realistic for this dataset. The paper should not make specific claims about tonic-clonic seizures.
+3. **sub-067 has a real sensor fault:** its neck accelerometer Z axis is stuck at maximum for 96% of an hour checked ([data-access.md](data-access.md#56-a-real-sensor-fault-sub-067)). It stays in the pilot, because real faults are part of what is being studied, and the health check (Step 3) should flag it.
+
+#### Output files
+
+| File | Contents |
+|---|---|
+| [`results/tables/pilot_patients.csv`](../results/tables/pilot_patients.csv) | One row per pilot patient (the table above) |
+| [`results/tables/seizeit2_seizures.csv`](../results/tables/seizeit2_seizures.csv) | All 702 training-range seizures: patient, run, onset, duration, type, group, vigilance, hemisphere, lobe, whether its run has all modalities, and whether it is `used` |
+| [`results/tables/seizeit2_runs.csv`](../results/tables/seizeit2_runs.csv) | All 2,072 training-range runs: modalities present and length. Needed to sample background data (1.6). |
+
+Re-run with `PYTHONPATH=src python -m seizure.data.pilot`.
 
 ### 1.3 Stream only what is needed
-1. Fetch the label files only (tiny) to find every seizure.
+
+1. Fetch the label files only (tiny) to find every seizure. ✓ Done in 1.2.
 2. Plan the time ranges needed: seizures, 5–10 min around them, and sampled background.
 3. Fetch those ranges with HTTP range requests, one request per chunk (e.g. 10 min), not per window.
-4. Process in memory: clean, window, inject faults, compute features.
-5. Keep only the features (see caching in [data-access.md](data-access.md)). Discard the raw signal.
+4. Convert stored numbers to physical units. ✓ `read_physical`, verified (below).
+5. Process in memory: clean, window, inject faults, compute features.
+6. Keep only the features (see caching in [data-access.md](data-access.md#8-caching)). Discard the raw signal.
+
+**Unit conversion, summary of checks** (full details in [data-access.md](data-access.md#5-checking-the-conversion-is-correct-2026-10-15)):
+
+| Check | Expected | Result | Status |
+|---|---|---|---|
+| ECG heart rate (sub-001, 3 times of day) | 50–80 beats/min | 59–66 beats/min | ✓ pass |
+| Behind-the-ear EEG amplitude | low tens of µV | 7–14 µV | ✓ pass |
+| CHB-MIT scalp EEG amplitude | tens of µV | 40–58 µV | ✓ pass |
+| All 2,976 pilot files continuous, 1 s records, lengths match labels | yes | yes | ✓ pass |
+| Accelerometer at rest (gravity) | 1 g | 0.5 or 0.167, depending on patient | ✗ dataset problem, fixed in 1.4 |
+| Gyroscope unit | degrees/s | labelled `g` | ✗ dataset problem, normalise per patient |
 
 ### 1.4 Clean the signals
-- **EEG:** band-pass about 0.5–40 Hz, 50 Hz notch filter.
-- **ECG:** band-pass about 0.5–40 Hz, R-peak detection to get heart rate.
-- **EMG:** high-pass about 20 Hz.
-- **Motion:** low-pass; compute total acceleration and rotation magnitude.
-- Normalise each signal per patient (z-score).
+
+| Signal | Cleaning | Why |
+|---|---|---|
+| EEG | Band-pass about 0.5–40 Hz, 50 Hz notch filter | Removes slow drift and high-frequency noise; 50 Hz is European mains interference (all SeizeIT2 centres are in Europe). |
+| ECG | Band-pass about 0.5–40 Hz, R-peak detection to get heart rate | Heart rate and its variability change during many seizures. |
+| EMG | High-pass about 20 Hz | Muscle activity is high-frequency; this removes movement and drift. |
+| Accelerometer | **Gravity calibration first** (below), then low-pass; compute total acceleration | |
+| Gyroscope | Low-pass; compute rotation magnitude | Unit is unreliable (labelled `g`), so only relative values are used after normalisation. |
+| All | Normalise each signal per patient (z-score) | Puts patients on a comparable scale. |
+
+All filters must be **causal** (use only past samples), because Step 7 simulates a live monitor that cannot see the future.
+
+**Accelerometer gravity calibration.** The accelerometer values in SeizeIT2 are on two inconsistent scales: gravity reads about 0.5 for some patients and 0.167 for others, instead of 1 g ([data-access.md](data-access.md#54-accelerometer-gravity)). A still accelerometer always measures exactly 1 g of gravity, whichever way it is tilted. So for each device in each recording:
+1. Find rest periods: 10-second blocks where the total acceleration `√(x² + y² + z²)` barely varies.
+2. Measure the average total acceleration during rest.
+3. Divide all three axes by that value, so gravity reads 1 g.
+
+This is the standard method for calibrating wearable accelerometers using gravity (van Hees et al., *J. Appl. Physiol.* 2014). Without it, "total acceleration" would mean different things for different patients, and a model could learn to tell device configurations apart instead of detecting seizures.
 
 ### 1.5 Windows
 Produce one output every **1 s**, from a window looking back over the recent signal:
@@ -151,7 +326,7 @@ Applied to each EEG channel, ECG, EMG, and the accelerometer and gyroscope magni
 Captures how sensors move together. During a seizure, regions synchronise and sensors across modalities change together.
 
 1. **Nodes:**
-   - SeizeIT2: 2 EEG + ECG + EMG + 3 accelerometer axes + 3 gyroscope axes, about 10 nodes.
+   - SeizeIT2: 2 EEG + ECG + EMG + 2 motion devices × (3 accelerometer + 3 gyroscope axes) = 16 nodes. The 12 motion axes are strongly correlated within each device, so using per-device acceleration and rotation magnitudes instead (2 EEG + ECG + EMG + 4 magnitudes = 8 nodes) is an option to compare.
    - CHB-MIT: 18 EEG channels.
 2. **Distance** between each pair of healthy nodes = 1 − similarity (correlation or a frequency-based similarity).
 3. **Persistent homology** on the distance matrix.
@@ -162,7 +337,7 @@ Why it helps with robustness: persistent homology is stable, so small changes to
 
 > Topological features of the sensor network degrade gracefully when redundant sensors fail, more gracefully than features tied to specific channels.
 
-Limitation: about 10 nodes in SeizeIT2 gives limited shape, so TDA-B is expected to be stronger on CHB-MIT and TDA-A to carry more weight on SeizeIT2.
+Limitation: 8–16 nodes in SeizeIT2, many of them motion axes that move together, gives limited shape, so TDA-B is expected to be stronger on CHB-MIT and TDA-A to carry more weight on SeizeIT2.
 
 ### 4C. Baseline features
 - **Classic features:** EEG band powers, line length, heart rate, heart-rate variability, motion energy.
