@@ -9,3 +9,7 @@ __pycache__/
 .venv/
 venv/
 .ipynb_checkpoints/
+
+# Experiment outputs (figures/tables for the paper are committed explicitly)
+results/runs/
+*.egg-info/

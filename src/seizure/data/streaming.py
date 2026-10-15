@@ -1,12 +1,7 @@
-"""Stdlib-only test: read an EDF header and a slice of seconds over HTTP range requests.
+"""HTTP range-request EDF reader for SeizeIT2 and CHB-MIT (see docs/data-access.md).
 
-Usage:
-    python scripts/edf_stream_test.py <edf_url> [<edf_url> ...]
-
-Example:
-    python scripts/edf_stream_test.py \
-        https://s3.amazonaws.com/openneuro.org/ds005873/sub-001/ses-01/eeg/sub-001_ses-01_task-szMonitoring_run-01_eeg.edf \
-        https://physionet-open.s3.amazonaws.com/chbmit/1.0.0/chb01/chb01_03.edf
+Smoke test:
+    python -m seizure.data.streaming <edf_url> [<edf_url> ...]
 """
 import struct
 import sys

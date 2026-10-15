@@ -18,7 +18,7 @@ EDF files store data in fixed-length records (1 s in both datasets).
 2. Seconds `[t0, t1)` then sit at a byte range that can be computed directly. Request only that range.
 3. Records are little-endian 16-bit integers, signal after signal. Convert to physical units with each signal's physical and digital min/max from the header.
 
-[`scripts/edf_stream_test.py`](../scripts/edf_stream_test.py) does this with the standard library only.
+[`src/seizure/data/streaming.py`](../src/seizure/data/streaming.py) does this with the standard library only. Run `python -m seizure.data.streaming <edf_url>` to test it.
 
 ## Test results (2026-10-14)
 
