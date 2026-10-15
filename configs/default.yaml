@@ -3,7 +3,14 @@ seed: 42
 
 data:
   dataset: seizeit2          # seizeit2 | chbmit
-  pilot_patients: []         # filled in after label scan (Step 1.2)
+  # 30 patients picked by seizure.data.pilot (seed 42); see docs/pipeline.md Step 1.2
+  pilot_patients: [
+    sub-002, sub-004, sub-015, sub-021, sub-022, sub-025,
+    sub-031, sub-034, sub-035, sub-039, sub-040, sub-043,
+    sub-046, sub-055, sub-056, sub-060, sub-064, sub-066,
+    sub-067, sub-071, sub-072, sub-076, sub-077, sub-079,
+    sub-080, sub-084, sub-086, sub-089, sub-092, sub-094
+  ]
   cache_dir: cache
 
 windows:

@@ -1,0 +1,31 @@
+subject,usable_seizures,used_seizures,asleep,types,hours_all_modalities
+sub-002,15,10,5,FA:2 FIA:13,99.2
+sub-004,4,4,1,FA:4,18.5
+sub-015,9,9,5,FBTC:1 FIA:8,88.6
+sub-021,4,4,3,FIA:4,111.8
+sub-022,7,7,1,FIA:7,113.5
+sub-025,3,3,1,FA:2 FBTC:1,98.0
+sub-031,3,3,1,FA:2 FBTC:1,107.3
+sub-034,30,10,9,FIA:30,95.3
+sub-035,55,10,55,FA:55,72.3
+sub-039,75,10,56,FA:35 other:40,91.9
+sub-040,3,3,0,FIA:3,53.7
+sub-043,5,5,0,FIA:5,87.7
+sub-046,4,4,3,FA:2 FBTC:2,97.6
+sub-055,8,8,8,other:8,42.2
+sub-056,13,10,9,FIA:13,62.7
+sub-060,25,10,3,FA:22 other:3,48.5
+sub-064,3,3,0,FA:2 FBTC:1,41.3
+sub-066,4,4,0,FIA:2 other:2,117.8
+sub-067,4,4,0,FIA:4,35.6
+sub-071,6,6,0,FIA:3 other:3,194.8
+sub-072,20,10,9,FIA:20,126.1
+sub-076,3,3,0,FIA:3,86.6
+sub-077,9,9,0,FA:7 FIA:2,61.6
+sub-079,15,10,0,FA:1 FBTC:1 FIA:13,95.5
+sub-080,8,8,0,FBTC:1 FIA:7,149.1
+sub-084,4,4,0,FIA:4,55.0
+sub-086,4,4,0,FA:1 FIA:2 other:1,84.3
+sub-089,5,5,0,FIA:5,102.5
+sub-092,6,6,0,FIA:6,106.3
+sub-094,3,3,0,FIA:3,43.8
