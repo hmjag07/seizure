@@ -52,7 +52,16 @@ Data is streamed from the online sources and never stored in the repo. See [data
 - Use the 18 channels shared across nearly all recordings.
 
 ### 1.2 Pilot patients
-- Pick 20–50 patients from sub-001 to sub-096 with the most seizures and all modalities present.
+Chosen by rule, then at random, not by expected results (`python -m seizure.data.pilot`, 2026-10-15):
+1. Only sub-001 to sub-096 are scanned.
+2. A seizure counts only if its run has all four modalities (EEG, ECG, EMG, motion).
+3. Eligible: at least 3 such seizures. 50 of 96 patients qualify.
+4. 30 eligible patients are drawn at random (seed 42).
+5. Balance check: the pilot's share of asleep seizures and of each seizure type (focal aware, focal impaired awareness, focal-to-bilateral tonic-clonic, other) is within 15 points of the eligible pool's share. Passed.
+6. At most 10 seizures per patient are used, chosen at random (same seed): 189 seizures in total.
+
+Result: 30 patients, 357 usable seizures (189 after the cap), about 2,600 hours with all modalities. The patient list is in `configs/default.yaml`; per-patient details are in `results/tables/pilot_patients.csv`.
+
 - Keep sub-097 to sub-125 untouched as the final test set. This also allows direct comparison with the SeizeIT2 paper's benchmarks.
 
 ### 1.3 Stream only what is needed
