@@ -246,7 +246,14 @@ For each model (TDA, classic, CNN), each fault type (3), each severity (0–100%
 5. **Clean-data comparison** with the SeizeIT2 benchmarks (SVM: 71.1% sensitivity at 11.0 false alarms/hour; ChronoNet: 84.2% at 100.5 false alarms/hour).
 6. **CHB-MIT results.**
 
-"Accurately" still needs concrete success targets. These are to be defined.
+### Success target (set 2026-10-15, before any results)
+**When 60% of channels fail, sensitivity drops by at most 15 percentage points compared with clean data** (e.g. 70% → at least 55%).
+
+- The alarm threshold is tuned once on clean validation data, then kept fixed under faults.
+- False alarms per hour are always reported alongside sensitivity.
+- Measured on held-out patients (SeizeIT2 sub-097 to sub-125), never on the pilot patients used for tuning.
+- The TDA model's drop is also compared with the classic and CNN baselines.
+- On SeizeIT2, the target applies only to failure combinations where at least one EEG channel survives. With about 6 sensors, 60% failing can remove both EEG channels; those cases are still run and reported, but have no target.
 
 ---
 
