@@ -22,9 +22,10 @@ faults:
   severities: [0, 0.25, 0.5, 0.75, 1.0]
 
 tda:
-  embedding_dim: null        # chosen by false nearest neighbours on training data
-  delay: null                # chosen by mutual information on training data
-  n_points: 300
+  # Delay and dimension are chosen per signal on training data (false nearest neighbours,
+  # mutual information) and stored in results/tables/tda_params.csv.
+  params_file: results/tables/tda_params.csv
+  n_points: 150              # 300 was too slow (docs/pipeline.md Step 4A)
   homology_dims: [0, 1]
 
 alarm:

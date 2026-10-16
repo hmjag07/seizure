@@ -1,0 +1,9 @@
+signal,tau,m,tau_iqr,m_iqr,n_windows,patients
+EEG1,6,5,5-10,4-6,200,sub-072 sub-021 sub-002 sub-079 sub-035 sub-034 sub-080 sub-022 sub-092 sub-066
+EEG2,7,5,5-11,4-6,200,sub-072 sub-021 sub-002 sub-079 sub-035 sub-034 sub-080 sub-022 sub-092 sub-066
+ECG,13,5,8-19,5-6,200,sub-072 sub-021 sub-002 sub-079 sub-035 sub-034 sub-080 sub-022 sub-092 sub-066
+EMG,2,6,2-4,3-6,200,sub-072 sub-021 sub-002 sub-079 sub-035 sub-034 sub-080 sub-022 sub-092 sub-066
+ACC_neck,3,6,2-3,6-6,180,sub-072 sub-021 sub-002 sub-079 sub-035 sub-034 sub-080 sub-022 sub-092 sub-066
+ACC_chest,3,6,2-3,6-6,180,sub-072 sub-021 sub-002 sub-079 sub-035 sub-034 sub-080 sub-022 sub-092 sub-066
+GYR_neck,3,6,2-3,4-6,180,sub-072 sub-021 sub-002 sub-079 sub-035 sub-034 sub-080 sub-022 sub-092 sub-066
+GYR_chest,3,6,2-3,4-6,180,sub-072 sub-021 sub-002 sub-079 sub-035 sub-034 sub-080 sub-022 sub-092 sub-066

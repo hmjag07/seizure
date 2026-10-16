@@ -1,0 +1,10 @@
+signal,points,tda_ms_per_window
+EEG1,150.0,9.5
+EEG2,150.0,9.5
+ECG,150.0,8.8
+EMG,150.0,10.1
+ACC_neck,85.0,5.2
+GYR_neck,85.0,5.7
+ACC_chest,85.0,4.1
+GYR_chest,85.0,2.8
+all classic,,0.22

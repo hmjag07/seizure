@@ -41,6 +41,19 @@ def seizure_group(event_type):
     return "other"
 
 
+def events_url(sub, run):
+    return f"{SEIZEIT2_BUCKET}/{SEIZEIT2_PREFIX}/{sub}/ses-01/eeg/{sub}_ses-01_task-szMonitoring_run-{run}_events.tsv"
+
+
+def edf_url(sub, run, modality):
+    return f"{SEIZEIT2_BUCKET}/{SEIZEIT2_PREFIX}/{sub}/ses-01/{modality}/{sub}_ses-01_task-szMonitoring_run-{run}_{modality}.edf"
+
+
+def read_events(sub, run):
+    """All rows of one run's events.tsv as dicts."""
+    return list(csv.DictReader(io.StringIO(get_text(events_url(sub, run))), delimiter="\t"))
+
+
 def scan_subject(sub):
     """Runs and seizures for one SeizeIT2 subject, e.g. 'sub-001'."""
     keys = list_keys(f"{SEIZEIT2_PREFIX}/{sub}/")
