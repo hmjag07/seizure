@@ -32,17 +32,18 @@ Persistent homology (TDA) is the main method. A classic-feature model and a smal
 
 Data is streamed from the online sources and never stored in the repo. [data-access.md](data-access.md) explains the file formats, how streaming works byte by byte, how stored numbers become physical units, and every check that was run.
 
-**Progress (2026-10-15):**
+**Progress (2026-10-17):**
 
 | Part | Status | Where |
 |---|---|---|
 | 1.1 Understand both datasets | ✓ Done | This section, [data-access.md](data-access.md) |
 | 1.2 Pick pilot patients | ✓ Done: 30 patients, 189 seizures | [`pilot.py`](../src/seizure/data/pilot.py), [`pilot_patients.csv`](../results/tables/pilot_patients.csv) |
 | 1.3 Streaming and unit conversion | ✓ Done and verified | [`streaming.py`](../src/seizure/data/streaming.py) |
-| 1.3 Plan which time ranges to fetch | Next | |
-| 1.4 Clean the signals | To do | `preprocess.py` |
-| 1.5 Windows | To do | `windows.py` |
-| 1.6 Balance | To do | |
+| 1.3 Fetch plan | ✓ Done: 304 chunks, 85.4 h | [`fetch_plan.py`](../src/seizure/data/fetch_plan.py), [`fetch_plan.csv`](../results/tables/fetch_plan.csv) |
+| 1.4 Clean the signals | ✓ Done, incl. gravity calibration and broken-sensor detection | [`preprocess.py`](../src/seizure/data/preprocess.py) |
+| 1.5 Windows and labels | ✓ Done: 298,625 windows, 13,356 seizure | [`windows.py`](../src/seizure/data/windows.py) |
+| 1.6 Balance | ✓ Set by the fetch plan | |
+| 1.7 Feature build (with Steps 4A, 4C) | ✓ Done for all 30 patients | [`build.py`](../src/seizure/features/build.py), [`report.py`](../src/seizure/features/report.py) |
 
 ### 1.1 Datasets
 
@@ -215,12 +216,45 @@ Re-run with `PYTHONPATH=src python -m seizure.data.pilot`.
 
 ### 1.3 Stream only what is needed
 
+The pipeline never streams whole recordings. It first decides exactly which stretches of signal are needed (the **fetch plan**), then streams only those, processes them in memory, and keeps only the computed features.
+
 1. Fetch the label files only (tiny) to find every seizure. ✓ Done in 1.2.
-2. Plan the time ranges needed: seizures, 5–10 min around them, and sampled background.
-3. Fetch those ranges with HTTP range requests, one request per chunk (e.g. 10 min), not per window.
+2. Plan the time ranges needed (the fetch plan, below). ✓ Done.
+3. Fetch those ranges with HTTP range requests, one request per chunk, not per window. ✓ [`build.py`](../src/seizure/features/build.py)
 4. Convert stored numbers to physical units. ✓ `read_physical`, verified (below).
-5. Process in memory: clean, window, inject faults, compute features.
-6. Keep only the features (see caching in [data-access.md](data-access.md#8-caching)). Discard the raw signal.
+5. Process in memory: clean, window, compute features. ✓ (fault injection comes in Step 2)
+6. Keep only the features (see caching in [data-access.md](data-access.md#8-caching)). Discard the raw signal. ✓ `cache/features/<subject>.parquet`
+
+#### The fetch plan ([`fetch_plan.py`](../src/seizure/data/fetch_plan.py), 2026-10-16)
+
+The plan is a list of **chunks**: continuous stretches of one run, each with a start and end time and a purpose. Two kinds:
+
+**Seizure chunks.** Each of the 189 used seizures, plus **10 minutes before and 10 minutes after**. When two seizures in the same run are close enough that their chunks overlap, the chunks are merged, so no second is fetched twice.
+
+Why 10 minutes either side:
+- It gives the model normal-looking data right next to each seizure, which is the hardest background to tell apart from seizure onset.
+- Faults in Step 2 must start "partway through" a recording, and the gradual-decline fault develops over minutes. 10 minutes leaves room for both.
+
+**Background chunks.** 10-minute stretches with no seizure, which teach the model what normal looks like (sleep, walking, eating, talking). For each patient:
+
+| Rule | Value | Why |
+|---|---|---|
+| Amount | 5 × the patient's used seizure time, rounded up to whole 10-minute chunks | Matches the 1:5 ratio of the SeizeIT2 benchmark, so results are comparable |
+| Distance from **any** seizure in the run | at least 30 minutes | Brain activity can stay abnormal for a while before and after a seizure. This includes seizures that were *not* used because of the 10-per-patient cap, so a real seizure can never be labelled as background. |
+| Distance from impedance checks (`impd`) | at least 1 minute | Staff testing electrodes produces artefacts that look like sensor faults and would confuse the health check |
+| Where | Any run of the patient with all four modalities, on a 10-minute grid, chosen at random (seed 42) | Random placement covers day and night in proportion |
+
+**Warm-up.** Every chunk is fetched starting **30 seconds early**. Causal filters need a few seconds to settle, and the 15-second ECG window must be full before the first output. No output is produced during the warm-up.
+
+**Result:**
+
+| | Chunks | Hours of signal |
+|---|---|---|
+| Seizure chunks (with 10 min context) | 180 (189 seizures; some merged) | 63.7 |
+| Background chunks | 124 | 21.7 |
+| **Total** | **304** | **85.4** (about 0.9 GB streamed, nothing stored) |
+
+Every patient received its full background quota. Four patients (sub-035, 039, 043, 067) have only one background chunk because their used seizures are very short (52–119 s in total), so 5× that fits in 10 minutes. The plan is saved in [`results/tables/fetch_plan.csv`](../results/tables/fetch_plan.csv) (columns: subject, run, kind, t0, t1, fetch_t0, hours).
 
 **Unit conversion, summary of checks** (full details in [data-access.md](data-access.md#5-checking-the-conversion-is-correct-2026-10-15)):
 
@@ -233,36 +267,154 @@ Re-run with `PYTHONPATH=src python -m seizure.data.pilot`.
 | Accelerometer at rest (gravity) | 1 g | 0.5 or 0.167, depending on patient | ✗ dataset problem, fixed in 1.4 |
 | Gyroscope unit | degrees/s | labelled `g` | ✗ dataset problem, normalise per patient |
 
-### 1.4 Clean the signals
+#### Signal names differ between patients
+
+A survey of all 182 runs in the fetch plan found:
+
+| Modality | Variants | Runs |
+|---|---|---|
+| EEG | `BTEleft SD` + `CROSStop SD` | 81 |
+| | `BTEleft SD` + `BTEright SD` | 57 |
+| | `BTEright SD` + `CROSStop SD` | 44 |
+| ECG, EMG | always `ECG SD`, `EMG SD` | 182 |
+| Motion | both devices, all 12 axes | 174 |
+| | neck gyroscope missing | 5 |
+| | whole neck device missing | 3 |
+
+The three EEG layouts come from electrode placement chosen per patient (the side where seizures were expected to start; both ears for patients suspected of generalised seizures). So that every patient has the same inputs, the two EEG channels are renamed by position: **`EEG1`** is the first channel in the file (always a lateral behind-the-ear channel, `BTEleft` or `BTEright`) and **`EEG2`** the second. Missing motion signals simply produce empty (NaN) features for those runs, which the classifier in Step 5 handles natively.
+
+### 1.4 Clean the signals ([`preprocess.py`](../src/seizure/data/preprocess.py))
+
+All filters are **causal**: the output at time *t* uses only samples up to *t* (`scipy.signal.sosfilt`/`lfilter`, never the zero-phase `filtfilt`, which looks into the future). This is required because Step 7 simulates a live monitor.
 
 | Signal | Cleaning | Why |
 |---|---|---|
-| EEG | Band-pass about 0.5–40 Hz, 50 Hz notch filter | Removes slow drift and high-frequency noise; 50 Hz is European mains interference (all SeizeIT2 centres are in Europe). |
-| ECG | Band-pass about 0.5–40 Hz, R-peak detection to get heart rate | Heart rate and its variability change during many seizures. |
-| EMG | High-pass about 20 Hz | Muscle activity is high-frequency; this removes movement and drift. |
-| Accelerometer | **Gravity calibration first** (below), then low-pass; compute total acceleration | |
-| Gyroscope | Low-pass; compute rotation magnitude | Unit is unreliable (labelled `g`), so only relative values are used after normalisation. |
-| All | Normalise each signal per patient (z-score) | Puts patients on a comparable scale. |
+| EEG (`EEG1`, `EEG2`) | 4th-order Butterworth band-pass 0.5–40 Hz, then 50 Hz notch (Q = 30) | Removes slow drift and high-frequency noise; 50 Hz is European mains interference (all SeizeIT2 centres are in Europe). |
+| ECG | Band-pass 0.5–40 Hz; heartbeats detected later for heart rate (4C) | Heart rate and its variability change during many seizures. |
+| EMG | 4th-order high-pass 20 Hz | Muscle activity is high-frequency; this removes movement and drift. |
+| Accelerometer (`ACC_neck`, `ACC_chest`) | Gravity calibration (below), total acceleration `√(x²+y²+z²)`, minus 1 g, low-pass 10 Hz | Leaves only the acceleration caused by movement, comparable across patients. |
+| Gyroscope (`GYR_neck`, `GYR_chest`) | Rotation magnitude `√(a²+b²+c²)`, low-pass 10 Hz | Unit is unreliable (labelled `g`), so only relative values are used after normalisation. |
 
-All filters must be **causal** (use only past samples), because Step 7 simulates a live monitor that cannot see the future.
+This gives **8 cleaned signals** per run: `EEG1`, `EEG2`, `ECG`, `EMG`, `ACC_neck`, `ACC_chest`, `GYR_neck`, `GYR_chest`.
 
-**Accelerometer gravity calibration.** The accelerometer values in SeizeIT2 are on two inconsistent scales: gravity reads about 0.5 for some patients and 0.167 for others, instead of 1 g ([data-access.md](data-access.md#54-accelerometer-gravity)). A still accelerometer always measures exactly 1 g of gravity, whichever way it is tilted. So for each device in each recording:
-1. Find rest periods: 10-second blocks where the total acceleration `√(x² + y² + z²)` barely varies.
-2. Measure the average total acceleration during rest.
-3. Divide all three axes by that value, so gravity reads 1 g.
+**Accelerometer gravity calibration.** The accelerometer values in SeizeIT2 are on two inconsistent scales: gravity reads about 0.5 for some patients and 0.167 for others, instead of 1 g ([data-access.md](data-access.md#54-accelerometer-gravity)). A still accelerometer always measures exactly 1 g of gravity, whichever way it is tilted. So for each device in each run:
+1. Stream the motion data of all of the run's chunks (motion is small: 25 Hz).
+2. Split it into 10-second blocks. A block counts as **rest** if its total acceleration varies by less than 2% of its mean. (A relative threshold is needed because the raw scale itself differs by patient.)
+3. Take the median total acceleration over the rest blocks: that reading corresponds to 1 g.
+4. Divide all three axes by it.
+5. If a run has no rest block, use the patient's median over their other runs.
 
-This is the standard method for calibrating wearable accelerometers using gravity (van Hees et al., *J. Appl. Physiol.* 2014). Without it, "total acceleration" would mean different things for different patients, and a model could learn to tell device configurations apart instead of detecting seizures.
+This is the standard method for calibrating wearable accelerometers using gravity (van Hees et al., *J. Appl. Physiol.* 2014). Without it, "total acceleration" would mean different things for different patients, and a model could learn to tell device configurations apart instead of detecting seizures. The scale is a fixed property of the device setup, so estimating it from the recording is equivalent to a calibration done at device setup.
 
-### 1.5 Windows
-Produce one output every **1 s**, from a window looking back over the recent signal:
-- EEG, EMG, motion: last **4 s**
-- ECG: last **10–20 s**, to include enough heartbeats
+**Broken motion sensors in the real data.** The first full build (2026-10-16) produced gravity scales of about 32.77 for every run of sub-066 and sub-086 and some runs of sub-067 and sub-084, and about 0 for two runs. Inspecting the raw stored values showed three kinds of genuine sensor failure in the published dataset:
 
-**Label:** a window is *seizure* if it overlaps a seizure in the labels, otherwise *background*.
+| Failure | Example | What the stored values look like |
+|---|---|---|
+| Dead axis | sub-021 run 05, neck X and Y | Exactly 0 for the whole chunk (1 distinct value) |
+| Saturated / frozen axis | sub-066 run 04, chest Z: 100% at the minimum; neck Z: 74% at the maximum | Pinned at the edge of the range |
+| Axis stored on a different scale | sub-086, Z axes | Header range ±32.768 instead of about ±1 g, so values are about 30× too large |
+
+Calibrating such data produces nonsense, so broken sensors are now detected and **left out** (their features become empty, NaN), never "repaired":
+- An axis is **stuck** in a chunk if it is constant for the whole chunk, or sits exactly at its own minimum or maximum for more than half of it. If any axis of a device is stuck, that device's accelerometer (or gyroscope) gives no features for that chunk. A healthy axis at rest also repeats one value (a still gyroscope reads 0), but that value lies inside its range rather than at an edge, so it is not flagged. A first, simpler rule ("one value in more than half the samples") wrongly flagged healthy resting gyroscopes and was replaced.
+- A gravity scale outside **0.1–1.5** marks that run's accelerometer as unusable. It does not borrow another run's scale.
+
+Applied to the motion data of all 304 planned chunks:
+
+| Signal | OK | Stuck | Missing |
+|---|---|---|---|
+| ACC_neck | 275 | 24 | 5 |
+| ACC_chest | 279 | 25 | 0 |
+| GYR_neck | 283 | 5 | 16 |
+| GYR_chest | 300 | 4 | 0 |
+
+33 chunks (11%) have at least one stuck motion sensor, across 10 patients (sub-066 and sub-086: 8 chunks each; sub-067: 5; sub-084: 4; sub-021, sub-077: 2; sub-031, sub-043, sub-055, sub-092: 1). These are real, unplanned sensor failures in clinical data, which is direct evidence for this project's motivation. They also mean the "clean" data already contains some faults, so the health check (Step 3) must be evaluated with that in mind.
+
+**Per-patient normalisation.** Each cleaned signal is normalised per patient: subtract the median and divide by a **robust standard deviation** (1.4826 × the median absolute deviation, MAD). The statistics come from the patient's **background chunks only**, so seizure data never influences the normalisation. Median and MAD are used instead of mean and standard deviation because artefacts produce extreme values that would drag the mean and inflate the standard deviation.
+
+### 1.5 Windows and labels ([`windows.py`](../src/seizure/data/windows.py))
+
+The model produces **one output every second**. At each whole second *t*, every signal contributes the window that **ends** at *t* (it looks back only, as a live monitor would):
+
+| Signals | Window | Samples per window | Why |
+|---|---|---|---|
+| EEG, EMG | last 4 s | 1,024 (256 Hz) | Long enough to capture seizure rhythms (a few Hz) several times over |
+| Motion | last 4 s | 100 (25 Hz) | Same timing as EEG |
+| ECG | last 15 s | 3,840 (256 Hz) | Contains about 15–20 heartbeats, enough for a stable heart rate and heart-rate variability |
+
+Windows are cut with `numpy.lib.stride_tricks.sliding_window_view`, which creates views into the signal without copying it, so a 20-minute chunk does not multiply memory use by the window overlap. Outputs are produced only where every available signal has a full window.
+
+**Label rule.** A window ending at *t* is labelled **seizure (1)** if its newest second, (*t* − 1, *t*], overlaps a seizure in the run's label file; otherwise **background (0)**.
+
+This is stricter than the original wording ("the window overlaps a seizure"). With 4 s windows (15 s for ECG), "any overlap" would keep labelling windows as seizure for up to 15 seconds after the seizure ended, and every signal would get a different label for the same second. Labelling by the newest second gives one label per second, the same for all signals, and answers the question a live monitor asks: "is the patient having a seizure *now*?". It is also consistent with the 1-second segments used by the SeizeIT2 benchmark's alarm rule (Step 6).
+
+All seizures in the run are used for labels, including those not selected by the 10-per-patient cap, so a seizure that happens to fall inside another seizure's context is still labelled correctly.
+
+Each window also gets an **`impd`** flag (1 if its newest second overlaps an impedance check), so those seconds can be excluded or analysed separately.
 
 ### 1.6 Balance
-- Keep all seizure windows, plus the 5–10 min around each seizure.
-- Sample background windows (the SeizeIT2 benchmark used 5× as many background windows as seizure windows). Include walking, eating and sleep.
+
+Balance is set by the fetch plan (1.3): every second of every seizure, 20 minutes of context around each seizure, and 5× the seizure time as distant background. Class weights in training (Step 5.4) handle the remaining imbalance.
+
+### 1.7 Running it: the feature build ([`build.py`](../src/seizure/features/build.py))
+
+Steps 1.3–1.6 and the features of Step 4 (TDA-A and classic) run together, patient by patient:
+
+```
+PYTHONPATH=src python -m seizure.features.build params     # choose TDA τ and m (Step 4A), once
+PYTHONPATH=src python -m seizure.features.build features   # all 30 pilot patients
+PYTHONPATH=src python -m seizure.features.report           # summary tables below
+```
+
+For each patient:
+1. **Gravity scales.** Stream the motion file for every chunk; estimate the accelerometer scale per device per run, ignoring chunks with a stuck axis (1.4).
+2. **Normalisation statistics.** Stream and clean the background chunks; compute each signal's median and robust standard deviation.
+3. **Every chunk.** Stream all four modalities in parallel; clean; normalise; cut 1-second windows; label; compute classic and TDA-A features.
+4. **Save** one row per window to `cache/features/<subject>.parquet` (git-ignored). The raw signal is discarded.
+
+**Memory.** Only about 3 GB of RAM was free, so chunks are processed one at a time and **4 patients run in parallel** (one process each, 170–300 MB per process). TDA-A dominates the running time.
+
+**Output table**, one row per second:
+
+| Columns | Content |
+|---|---|
+| `subject`, `run`, `kind`, `t` | Which patient, run, chunk type (seizure/background) and second |
+| `label` | 1 = seizure, 0 = background (1.5) |
+| `impd` | 1 if an impedance check overlaps this second |
+| 37 classic features (including `ECG_hr`, `ECG_rmssd`) | Step 4C |
+| 56 TDA-A features | Step 4A |
+
+#### Build results (2026-10-16/17)
+
+All 30 pilot patients were processed without errors. About 5 hours of total processing time across the 4 parallel workers.
+
+| | Windows (seconds) | Seizure windows | Impedance-check windows |
+|---|---|---|---|
+| Seizure chunks (with 10 min context) | 224,101 | 13,356 | 325 |
+| Background chunks | 74,524 | 0 | 0 |
+| **Total** | **298,625** | **13,356 (4.5%)** | **325** |
+
+The 13,356 seizure windows match the 189 used seizures, whose durations add up to 13,259 s. The extra 97 come from seizures not selected by the cap that fall inside another seizure's context; they are labelled correctly (1.5).
+
+**Missing features** (highest share of empty values among each signal's features):
+
+| Signal | Missing | Cause |
+|---|---|---|
+| EEG1, EEG2, EMG | 0% | |
+| ECG (heart rate, RMSSD) | 0.7% | Fewer than 3 clean beats in the 15 s window (artefact) |
+| GYR_chest | 1.0% | Stuck axes |
+| GYR_neck | 6.7% | Neck gyroscope missing in some runs, or stuck |
+| ACC_chest | 8.9% | Stuck or wrongly scaled axes |
+| ACC_neck | 12.7% | Neck device missing (sub-015), stuck or wrongly scaled axes |
+
+**Gravity calibration** across the 179 runs processed:
+
+| Outcome | Device-runs | Scale |
+|---|---|---|
+| Working, configuration A | 287 | 0.107–0.218 (most 0.16–0.17) |
+| Working, configuration B | 32 | 0.39–0.61 (sub-002, sub-004, sub-039, sub-040) |
+| Accelerometer unusable for the whole run | 39 (22 neck, 17 chest) | sub-015 neck (device missing in all 6 runs); sub-066, sub-067, sub-086 (most or all runs); sub-084 run 49 chest |
+
+The two working configurations match the 3:1 ratio found in [data-access.md](data-access.md#54-accelerometer-gravity), and after calibration both read 1 g at rest.
 
 ---
 
@@ -309,18 +461,160 @@ The checker's own accuracy (faults caught, and how quickly) is reported as part 
 
 ## Step 4: Feature extraction
 
-### 4A. TDA-A: delay embedding (per signal)
+### 4A. TDA-A: delay embedding (per signal) ([`tda_embedding.py`](../src/seizure/features/tda_embedding.py))
+
 Captures rhythm and pattern within each signal.
 
-1. Take one window of one signal, e.g. 4 s of EEG = 1,024 samples.
-2. Delay embedding: each point is `(x[t], x[t+τ], x[t+2τ], …)`. Choose τ by mutual information and the dimension m (usually 3–5) by false nearest neighbours, once on training data, then keep them fixed.
-3. Downsample to about 300 points.
-4. Persistent homology (ripser): H0 (clusters) and H1 (loops).
-5. Vectorise the diagram:
-   - Statistics: number of features, total persistence, longest loop, persistent entropy.
-   - Optionally: a persistence image or Betti curve.
+#### The idea
 
-Applied to each EEG channel, ECG, EMG, and the accelerometer and gyroscope magnitudes. Plain heart rate and heart-rate variability are added for ECG.
+A single signal is a list of numbers over time. **Delay embedding** turns it into a cloud of points: each point is the signal value now and a few values slightly later,
+
+```
+point(t) = ( x[t], x[t+τ], x[t+2τ], …, x[t+(m−1)τ] )
+```
+
+where **τ** (tau) is the delay in samples and **m** the number of coordinates (the embedding dimension). A regular rhythm, such as the repetitive discharges of a seizure or a heartbeat, makes these points trace a **loop**, because the signal keeps returning to the same sequence of values. Irregular background activity produces a shapeless **blob**.
+
+**Persistent homology** measures that shape. Imagine growing a ball around every point. As the balls grow, nearby points join into clusters, and rings of points close into loops; later, clusters merge and loops fill in. Each cluster (H0) and each loop (H1) has a **birth** (the size at which it appears) and a **death** (the size at which it disappears). Its **persistence** (death − birth) says how real the feature is: long-lived loops are genuine rhythms, short-lived ones are noise. The library `ripser` computes this.
+
+#### Steps per window
+
+1. Take one normalised window of one signal (e.g. 4 s of EEG = 1,024 samples).
+2. Build the delay embedding with that signal's fixed τ and m (table below).
+3. Keep **150 points**, evenly spaced in time. (EEG gives about 1,000 points, ECG about 3,800, motion about 85, which stays as is.)
+4. Compute persistent homology up to H1 (clusters and loops).
+5. Summarise each diagram with a few numbers:
+
+| Feature | Meaning |
+|---|---|
+| `H0_total` | Sum of all cluster lifetimes: how spread out the point cloud is |
+| `H0_max` | Longest cluster lifetime: the largest gap in the cloud |
+| `H0_entropy` | Persistent entropy of clusters: how evenly the lifetimes are spread |
+| `H1_count` | Number of loops |
+| `H1_total` | Sum of loop lifetimes |
+| `H1_max` | Longest-lived loop: the strength of the dominant rhythm |
+| `H1_entropy` | Persistent entropy of loops: one dominant loop (low) or many similar ones (high) |
+
+Persistent entropy is `−Σ pᵢ log pᵢ`, where `pᵢ` is each feature's lifetime divided by the total lifetime.
+
+This gives **7 features × 8 signals = 56 TDA-A features** per second, named `TDA_<signal>_<feature>` (e.g. `TDA_EEG1_H1_max`).
+
+#### Choosing τ and m (once, on training data)
+
+τ and m must be fixed before training, using pilot (training) patients only, never the test patients.
+
+- **τ: first minimum of the average mutual information** (AMI). Mutual information measures how much knowing `x[t]` tells you about `x[t+lag]`. At lag 0 it is maximal; it falls as the lag grows. The first minimum is the smallest delay at which the two coordinates carry mostly new information, without being so far apart that they are unrelated. Computed with 16 quantile bins, lags up to 64 samples (256 Hz signals) or 10 samples (25 Hz signals).
+- **m: false nearest neighbours** (FNN; Kennel et al., *Phys. Rev. A* 1992). In too few dimensions, points that are far apart in reality get squashed together and look like neighbours ("false neighbours"). Increase m one step at a time and stop at the first m where fewer than 5% of nearest neighbours are false. Thresholds: distance ratio 10 and attractor-size ratio 2, the values from Kennel et al. Capped at m = 6.
+
+Procedure ([`build.py params`](../src/seizure/features/build.py)): 10 pilot patients drawn at random (seed 42); from each, the first background chunk, cleaned and normalised (broken motion sensors excluded); 20 random windows per signal; τ and m computed for each window; the **median** taken per signal. Result ([`tda_params.csv`](../results/tables/tda_params.csv)):
+
+| Signal | τ (samples) | τ (ms) | τ middle 50% | m | m middle 50% | Windows |
+|---|---|---|---|---|---|---|
+| EEG1 | 6 | 23 | 5-10 | 5 | 4-6 | 200 |
+| EEG2 | 7 | 27 | 5-11 | 5 | 4-6 | 200 |
+| ECG | 13 | 51 | 8-19 | 5 | 5-6 | 200 |
+| EMG | 2 | 8 | 2-4 | 6 | 3-6 | 200 |
+| ACC_neck | 3 | 120 | 2-3 | 6 | 6-6 | 180 |
+| ACC_chest | 3 | 120 | 2-3 | 6 | 6-6 | 180 |
+| GYR_neck | 3 | 120 | 2-3 | 6 | 4-6 | 180 |
+| GYR_chest | 3 | 120 | 2-3 | 6 | 4-6 | 180 |
+
+(Motion signals have 180 windows instead of 200 because one of the 10 sampled patients, sub-066, has broken motion sensors in that chunk, which are left out (Step 1.4). Each patient and signal uses its own random stream (seeded from 42), so leaving out one signal never changes which windows another signal gets.)
+
+EEG and ECG settle at m = 5, within the usual 3–5 range. EMG and motion reach the cap of 6: these signals are noisy and irregular, so false neighbours never fall below 5%. That is common for noisy signals and is accepted rather than raising the cap, because higher dimensions on only about 85 motion points would make the shape less meaningful, not more.
+
+#### Why 150 points instead of 300
+
+The plan said "about 300 points". Persistent homology gets much slower as the number of points grows. Measured with `ripser` on this machine (2026-10-16), for a noisy loop in 3 dimensions:
+
+| Points | Time per diagram | × 8 signals per second |
+|---|---|---|
+| 100 | 7.5 ms | 0.06 s |
+| 150 | 20.8 ms | 0.17 s |
+| 200 | 35.5 ms | 0.28 s |
+| 300 | 129.9 ms | 1.04 s |
+
+At 300 points, TDA alone would take about 1 second of computation for every second of data: no time left for anything else in a live monitor, and days of computation offline. 150 points keeps the 8 signals within the real-time target (≤ 0.2 s per second, success target T7) while still tracing loops clearly (the test loop's H1 persistence was 1.57 at 150 points vs 1.62 at 300).
+
+#### Speed on real windows
+
+Measured on 300 real background windows (sub-004), while the feature build was using the other cores ([`features_speed.csv`](../results/tables/features_speed.csv)):
+
+| Signal | Points per cloud | TDA-A time per window |
+|---|---|---|
+| EEG1, EEG2 | 150 | 9.5 ms each |
+| ECG | 150 | 8.8 ms |
+| EMG | 150 | 10.1 ms |
+| ACC_neck, GYR_neck, ACC_chest, GYR_chest | 85 | 2.8–5.7 ms each |
+| **All 8 signals** | | **≈ 56 ms per second of data** |
+| All 37 classic features | | 0.2 ms per second of data |
+
+**56 ms per second is well under the 0.2 s real-time target (T7)**, leaving room for the health check, TDA-B and the classifier.
+
+#### Do the features separate seizure from background?
+
+Before training any model, each feature was tested **on its own**. Method ([`report.py`](../src/seizure/features/report.py)):
+1. Normalise each feature within each patient: subtract the median and divide by the robust standard deviation of that patient's background windows. This removes patient-to-patient differences, as the classifier will see them.
+2. Pool all 30 patients and compute the **AUROC** of the single feature for seizure vs background.
+
+AUROC is the probability that a randomly chosen seizure window has a higher value than a randomly chosen background window. 0.5 means no information; 1.0 (or 0.0) means perfect separation. "Separation" below is |AUROC − 0.5|, so features that are *lower* during seizures count too.
+
+**Top 15 features** (all 93 in [`features_auroc.csv`](../results/tables/features_auroc.csv)):
+
+| Rank | Feature | Family | AUROC |
+|---|---|---|---|
+| 1 | `TDA_EEG2_H1_total` | TDA-A | 0.801 |
+| 2 | `TDA_EEG2_H0_total` | TDA-A | 0.799 |
+| 3 | `EEG2_alpha` | classic | 0.789 |
+| 4 | `EEG2_linelen` | classic | 0.780 |
+| 5 | `EEG2_logpow` | classic | 0.780 |
+| 6 | `EEG2_beta` | classic | 0.777 |
+| 7 | `EEG2_std` | classic | 0.770 |
+| 8 | `TDA_EEG1_H0_total` | TDA-A | 0.770 |
+| 9 | `TDA_EEG1_H1_total` | TDA-A | 0.768 |
+| 10 | `EEG2_theta` | classic | 0.767 |
+| 11 | `EEG1_alpha` | classic | 0.766 |
+| 12 | `TDA_EEG2_H0_max` | TDA-A | 0.757 |
+| 13 | `EEG1_linelen` | classic | 0.756 |
+| 14 | `EEG1_theta` | classic | 0.755 |
+| 15 | `EEG1_beta` | classic | 0.753 |
+
+**Best single feature per signal:**
+
+| Signal | Best TDA-A separation | Best classic separation |
+|---|---|---|
+| EEG2 | 0.301 | 0.289 |
+| EEG1 | 0.270 | 0.266 |
+| GYR_neck | 0.221 | 0.225 |
+| ACC_neck | 0.216 | 0.214 |
+| GYR_chest | 0.203 | 0.211 |
+| ACC_chest | 0.202 | 0.200 |
+| ECG | 0.200 | 0.216 |
+| EMG | 0.141 | 0.128 |
+
+What this shows:
+- **EEG carries the most information**, as expected; EEG2 (the second, usually cross-head channel, whose electrodes are further apart) is slightly better than EEG1.
+- **TDA-A is on par with the classic features on every signal**, and the single best feature overall is topological.
+- **Every modality carries some information** (separation 0.14–0.30), so when EEG fails, the remaining sensors are not useless. This is what the robustness experiments rely on.
+
+#### Caveat: the strongest TDA features largely measure amplitude
+
+Persistent homology is computed on per-patient normalised signals, not per-window normalised ones, so a larger window gives a larger point cloud and longer bars. Spearman correlation between TDA-A features of EEG2 and the classic EEG2 features (all 298,625 windows):
+
+| TDA-A feature | Highest |correlation| with any classic EEG2 feature | Kind |
+|---|---|---|
+| `H0_total` | 0.96 (with `std`) | Size |
+| `H0_max` | 0.90 | Size |
+| `H1_max` | 0.90 (with `std`) | Size |
+| `H1_total` | 0.84 | Size |
+| `H1_entropy` | 0.58 | Shape |
+| `H1_count` | 0.57 | Shape |
+| `H0_entropy` | 0.35 | Shape |
+
+The **size** features (total and longest bars) are largely a topological measure of amplitude, which is why they rank so high: seizures are larger. The **shape** features (entropy, loop count) are much less related to the classic features, so they are where TDA can add information the classic model does not have. ECG is a good example: `TDA_ECG_H1_max` has correlation −0.04 with heart rate.
+
+This matters for the paper's claim. Step 5 must show that TDA adds something beyond amplitude, through ablations (classic only vs classic + TDA shape features vs classic + all TDA). A possible addition, **not yet done**, is a second TDA-A variant computed on each window scaled to unit variance, which removes amplitude entirely and keeps pure shape.
+
 
 ### 4B. TDA-B: network of sensors
 Captures how sensors move together. During a seizure, regions synchronise and sensors across modalities change together.
@@ -339,9 +633,34 @@ Why it helps with robustness: persistent homology is stable, so small changes to
 
 Limitation: 8–16 nodes in SeizeIT2, many of them motion axes that move together, gives limited shape, so TDA-B is expected to be stronger on CHB-MIT and TDA-A to carry more weight on SeizeIT2.
 
-### 4C. Baseline features
-- **Classic features:** EEG band powers, line length, heart rate, heart-rate variability, motion energy.
-- **Raw windows:** input to the CNN baseline.
+### 4C. Baseline features ([`classic.py`](../src/seizure/features/classic.py))
+
+Standard hand-crafted features used in wearable seizure detection, computed on the same windows as TDA-A. They feed the classic baseline model (Step 5.6) and are also available to the main model.
+
+| Signal | Feature | How it is computed | What it captures |
+|---|---|---|---|
+| EEG1, EEG2 | `delta`, `theta`, `alpha`, `beta`, `gamma` | Welch power spectrum (1 s segments, 1 Hz resolution), log₁₀ power in 1–4, 4–8, 8–13, 13–30, 30–40 Hz | Seizures shift power between frequency bands, often into theta and beta |
+| | `logpow` | log₁₀ power over 1–40 Hz | Overall EEG strength |
+| | `linelen` | Mean absolute difference between consecutive samples | Rises sharply with fast, large seizure activity; a classic seizure feature |
+| | `std` | Standard deviation | Amplitude |
+| ECG | `hr` | Median interval between heartbeats in the last 15 s, as beats per minute | Heart rate often rises at seizure onset (ictal tachycardia) |
+| | `rmssd` | Root mean square of successive differences between beat intervals, in ms | Heart-rate variability, which changes with the nervous system's state |
+| EMG | `logrms` | log₁₀ of the standard deviation | Muscle activation strength |
+| | `linelen` | as above | Fast muscle activity |
+| | `zcr` | Fraction of samples where the signal changes sign | Dominant frequency of muscle firing |
+| ACC_neck, ACC_chest, GYR_neck, GYR_chest | `mean`, `std`, `max`, `linelen` | Of the movement magnitude | How much and how abruptly the patient moves |
+
+That is **8 × 2 EEG + 2 ECG + 3 EMG + 4 × 4 motion = 37 classic features** per second.
+
+**Heartbeat detection.** Beats are found once per chunk, then counted in each 15-second window:
+1. Band-pass 5–20 Hz (where the sharp QRS spike of each beat has most of its energy), square, and smooth with a 0.1 s moving average. This turns each beat into one clear bump, whatever the ECG's polarity.
+2. Find bumps at least 0.3 s apart (heart rates up to 200 beats/min).
+3. Keep a bump only if it is higher than 30% of the 99th percentile of the **previous 10 seconds**.
+4. In each window, keep beat intervals between 0.3 and 2.0 s (30–200 beats/min). With at least 3 intervals, compute heart rate and RMSSD; otherwise leave them empty.
+
+The local, past-only threshold in step 3 matters. The first version used one threshold for the whole chunk (30% of its 99th percentile). On sub-004, a single minute of large artefact (signal 10× normal) raised that threshold so much that normal beats in the rest of the chunk fell below it, and heart rate was missing in **41%** of windows (95% in the worst chunk). With the 10-second local threshold, an artefact only affects the following 10 seconds, and missing heart rate fell to **0–1.8% per chunk**. It also removed a small look-ahead (the chunk-wide percentile used future samples), so the detector is now fully causal.
+
+**Raw windows** are the input to the CNN baseline (Step 5.6) and are not stored; they are re-streamed when the CNN is trained.
 
 Features are cached for each version of the data (clean, and each fault type and severity), because persistent homology is the slowest step.
 

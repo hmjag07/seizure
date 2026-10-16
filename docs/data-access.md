@@ -367,6 +367,8 @@ The gyroscope signals (`GYR A/B/C`) are labelled `g` in the header. That cannot 
 
 In one hour of sub-067 run-01 (seconds 10,000–13,600), the neck accelerometer's Z axis (`EEG SD ACC Z`) is stuck at the largest possible stored value (32,767) **96% of the time**. It has only 67 distinct values in an hour, against 228–263 for the X and Y axes of the same device. This is a genuine sensor failure in the published data: the kind this project studies. The health check (pipeline Step 3) should flag it, and it is a useful real-world example for the paper.
 
+A survey of the motion data in all 304 planned chunks (2026-10-16) found that sub-067 is not alone: **33 chunks (11%) across 10 patients** have at least one dead, saturated or wrongly scaled accelerometer or gyroscope axis. The details, and how these sensors are detected and left out, are in [pipeline Step 1.4](pipeline.md#14-clean-the-signals-preprocesspy).
+
 ### 5.7 Summary
 
 | Check | Expected | Result | Status |
@@ -378,6 +380,7 @@ In one hour of sub-067 run-01 (seconds 10,000–13,600), the neck accelerometer'
 | Accelerometer at rest | 1 g | 0.5 or 0.167 depending on patient | ✗ dataset problem; rescale using gravity |
 | Gyroscope unit | deg/s | labelled `g` | ✗ dataset problem; normalise per patient |
 | Duplicate channel names (CHB-MIT) | all kept | `T8-P8` kept twice | ✓ fixed |
+| Motion sensors working | all axes vary normally | 33 of 304 planned chunks have a dead, saturated or wrongly scaled axis | ✗ real sensor faults; detected and left out (pipeline 1.4) |
 
 ---
 
