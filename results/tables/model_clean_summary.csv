@@ -1,0 +1,4 @@
+model,features,auroc,aupr,seizures,detected,sensitivity,false_alarms,fa_per_h,median_delay_s
+classic,111,0.8035,0.2534,199,139,0.6985,831,10.4869,8.0
+classic+TDA,263,0.8175,0.3305,199,153,0.7688,786,9.9191,10.0
+classic+TDA_shape,183,0.8162,0.3359,199,149,0.7487,757,9.5531,11.0

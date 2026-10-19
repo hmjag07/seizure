@@ -30,4 +30,4 @@ tda:
 
 alarm:
   threshold: 0.5
-  x_of_y: [8, 10]
+  x_of_y: [5, 10]            # SeizeIT2 benchmark used 8 of 10; changed 2026-10-19 to catch short seizures

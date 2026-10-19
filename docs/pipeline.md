@@ -666,34 +666,174 @@ Features are cached for each version of the data (clean, and each fault type and
 
 ---
 
-## Step 5: Train
+## Step 5: Train ([`train.py`](../src/seizure/models/train.py))
+
+**Progress (2026-10-19):**
+
+| Part | Status |
+|---|---|
+| 5.1–5.2 Classifier on clean data | ✓ Done: XGBoost, 3 feature sets |
+| 5.3 Sensor-dropout augmentation | To do (with Steps 2–3) |
+| 5.4 Class imbalance | ✓ Class weights |
+| 5.5 Patient-grouped 5-fold CV | ✓ Done |
+| 5.6 Classic baseline | ✓ Done. CNN baseline: to do |
+| Clean-data target T1 (≥ 60% sensitivity at ≤ 11 FA/h) | ✓ **Met: 76.9% at 9.9 FA/h** |
 
 ### 5.1 Inputs
+
+Each second is one row of the feature table (Step 1.7). Before training, the table goes through two steps.
+
+**1. Per-patient feature normalisation.** Every feature is turned into a robust z-score within its patient:
+
 ```
-[ TDA-A features per sensor ] + [ TDA-B network features ] + [ health score per sensor ]
+z = (x − median_patient) / (1.4826 × MAD_patient),     MAD = median(|x − median|)
 ```
-A failed sensor's features are set to missing (NaN).
+
+The median and MAD are computed over **all** of the patient's seconds, **without using labels**. (Seizures are only 4.5% of seconds, so they barely move the median.) The factor 1.4826 makes MAD equal to the standard deviation for normally distributed data, so z is on the familiar scale. Median and MAD are used instead of mean and standard deviation because artefacts produce extreme values that would distort both.
+
+This removes patient-to-patient differences: after it, "z = 3" means "3 robust standard deviations above this patient's typical value", whoever the patient is. It raised AUROC by 0.02–0.03 for every model (5.7).
+
+*Caveat:* it uses each patient's whole recording, including later data. A real monitor would estimate the median and MAD from a calibration period at the start, or keep a running estimate. This must be stated in the paper.
+
+**2. Short-term context features.** A single second judged in isolation is noisy, but seizures build up over several seconds. For each classic feature and the six main TDA-A summaries of each signal (`H0_total`, `H1_total`, `H1_max`, `H0_entropy`, `H1_count`, `H1_entropy`), two extra columns are added:
+
+| Column | Formula | Meaning |
+|---|---|---|
+| `<feature>_m10` | mean of the feature over the last 10 s (t−9 … t) | Smoothed recent level |
+| `<feature>_d60` | `_m10` at t − (mean over the 60 s ending at t−10) | How much the recent level changed compared with the minute before |
+
+Both use past seconds only and are computed within each chunk, so they are possible in a live monitor. This was the single biggest improvement (5.7).
+
+A failed or missing sensor's features stay empty (NaN); XGBoost learns where to send missing values at each split.
 
 ### 5.2 Classifier
-XGBoost or LightGBM:
-- They handle missing values natively.
-- They train fast.
-- They give feature importances, which are useful for explaining results.
+
+**XGBoost** (gradient-boosted decision trees). It builds many small decision trees one after another; each new tree corrects the mistakes of the trees before it. It handles missing values natively, trains quickly on 300,000 rows, and shows which features it relies on.
+
+| Setting | Value | Meaning |
+|---|---|---|
+| `n_estimators` | 400 | Number of trees |
+| `max_depth` | 6 | Each tree asks at most 6 questions in a row |
+| `learning_rate` | 0.05 | How strongly each tree corrects the previous ones (small = cautious) |
+| `subsample`, `colsample_bytree` | 0.8, 0.8 | Each tree sees a random 80% of rows and features (reduces overfitting) |
+| `min_child_weight` | 5 | Leaves need enough data behind them |
+| `scale_pos_weight` | background ÷ seizure seconds in the training folds (about 21) | Class weighting, 5.4 |
+
+These are reasonable defaults, not tuned yet (Step 6).
+
+**Three feature sets**, trained on identical folds:
+
+| Model | Inputs | Purpose |
+|---|---|---|
+| `classic` | 37 classic + 74 context = 111 | Baseline |
+| `classic+TDA` | + 56 TDA-A + 96 TDA context = 263 | Main model |
+| `classic+TDA_shape` | classic + only the TDA *shape* summaries (entropies, loop count) and their context = 183 | Tests whether TDA adds more than amplitude ([Step 4A caveat](#caveat-the-strongest-tda-features-largely-measure-amplitude)) |
 
 ### 5.3 Sensor-dropout augmentation
-During training, randomly remove sensors and inject faults of random type and severity. Without this, the model depends on every sensor and collapses when one fails.
+During training, randomly remove sensors and inject faults of random type and severity. Without this, the model depends on every sensor and collapses when one fails. **Not done yet**; comes with fault injection (Steps 2–3).
 
 ### 5.4 Class imbalance
-Use class weights (e.g. `scale_pos_weight`).
+Only 4.5% of seconds are seizure. Without correction, a model can score 95.5% accuracy by never predicting seizure. `scale_pos_weight` makes each seizure second count about 21 times as much as a background second during training, so both classes carry equal total weight.
 
 ### 5.5 Patient-level splits
-A patient's data never appears in both training and testing. Within the pilot, use 5-fold cross-validation grouped by patient.
+
+A patient's data never appears in both training and testing. The 30 pilot patients are split into **5 folds of 6 patients** (`GroupKFold`, shuffled, seed 42). Each model is trained 5 times, on 24 patients, and predicts the 6 it never saw. Every second therefore gets an **out-of-fold** prediction from a model that has never seen that patient, which is what "cross-patient" means.
+
+| Fold | Patients |
+|---|---|
+| 0 | sub-035, 039, 060, 066, 079, 089 |
+| 1 | sub-002, 022, 046, 064, 080, 092 |
+| 2 | sub-004, 015, 025, 043, 055, 077 |
+| 3 | sub-021, 067, 076, 084, 086, 094 |
+| 4 | sub-031, 034, 040, 056, 071, 072 |
 
 ### 5.6 Baselines
-1. Classic features + XGBoost.
-2. Small 1D CNN on raw windows, with failed sensors filled with zeros.
+1. **Classic features + XGBoost:** ✓ done (`classic` above). Same data, folds, normalisation and context features as the TDA model, so the only difference is the TDA features.
+2. **Small 1D CNN on raw windows**, with failed sensors filled with zeros: to do.
 
-All models use the same data, splits and fault augmentation.
+All models use the same data, splits and (later) fault augmentation.
+
+### 5.7 How the models are scored ([`metrics.py`](../src/seizure/evaluation/metrics.py), [`alarm.py`](../src/seizure/models/alarm.py))
+
+The model outputs a **probability** of seizure for every second. Two kinds of scores are reported.
+
+**Per-second scores** (no threshold needed):
+
+| Score | Meaning | Chance level here |
+|---|---|---|
+| **AUROC** | Probability that a random seizure second gets a higher probability than a random background second | 0.5 |
+| **AUPR** | Average precision: how pure the alarms are (what fraction are real seizures) as the threshold is lowered to catch more seizures. Sensitive to false alarms when seizures are rare. | 0.045 (the seizure share) |
+
+AUPR is the stricter score for rare events. A model can have a high AUROC while most of its "seizure" seconds are false, because the background is so large; AUPR exposes that.
+
+**Seizure-level scores** (what a clinician experiences), following the SeizeIT2 benchmark:
+1. **Threshold:** each second with probability ≥ threshold is a "seizure second".
+2. **Alarm rule:** the alarm is on at second *t* if at least **5 of the last 10** seconds are seizure seconds. (The SeizeIT2 benchmark used 8 of 10; changed 2026-10-19, see Step 6.)
+3. **Alarm events:** each continuous stretch of "alarm on" is one alarm.
+4. **Sensitivity (any-overlap):** a seizure counts as **detected** if any alarm overlaps it. Sensitivity = detected seizures ÷ all seizures.
+5. **False alarms:** alarms that overlap no seizure. Reported **per hour** of non-seizure data.
+6. **Detection delay:** first alarm second inside the seizure minus the seizure onset.
+
+**Choosing the threshold honestly.** The threshold decides the trade-off between catching seizures and raising false alarms. Picking it by looking at the test patients' results would flatter the scores. So, for each fold:
+1. Take the out-of-fold predictions of the **other four folds** only.
+2. Try thresholds 0.10, 0.15, …, 0.95, and pick the one with the highest sensitivity while staying at **≤ 11 false alarms per hour** (the budget from target T1).
+3. Apply that threshold to the held-out fold.
+
+The chosen thresholds were very stable (0.35–0.45 in every fold), so the result does not depend on a lucky choice.
+
+### 5.8 Results on clean data (2026-10-19)
+
+([`model_clean_summary.csv`](../results/tables/model_clean_summary.csv), [`model_clean_folds.csv`](../results/tables/model_clean_folds.csv))
+
+| Model | Inputs | AUROC | AUPR | Seizures detected | Sensitivity | False alarms / h | Median delay |
+|---|---|---|---|---|---|---|---|
+| Classic | 111 | 0.804 | 0.253 | 139 / 199 | 69.8% | 10.5 | 8 s |
+| **Classic + TDA** | 263 | **0.818** | 0.331 | **153 / 199** | **76.9%** | **9.9** | 10 s |
+| Classic + TDA shape only | 183 | 0.816 | **0.336** | 149 / 199 | 74.9% | 9.6 | 11 s |
+
+(199 seizure events: the 189 used seizures, plus seizures not selected by the cap that happen to fall inside another seizure's context window.)
+
+**Success target T1 (≥ 60% sensitivity at ≤ 11 FA/h): met**, at 76.9% and 9.9 FA/h.
+
+**Per fold, classic + TDA:**
+
+| Fold | Threshold | AUROC | Sensitivity | False alarms / h |
+|---|---|---|---|---|
+| 0 | 0.35 | 0.740 | 55.6% | 12.3 |
+| 1 | 0.35 | 0.796 | 84.2% | 8.0 |
+| 2 | 0.35 | 0.732 | 76.5% | 10.3 |
+| 3 | 0.35 | 0.892 | 95.5% | 10.4 |
+| 4 | 0.35 | 0.907 | 92.9% | 8.5 |
+
+Fold 0 is the weakest and slightly exceeds the false-alarm budget. It holds sub-035 and sub-039, which have many very short seizures.
+
+**What the results show:**
+1. **TDA improves on the classic baseline:** +7.1 points of sensitivity (69.8% → 76.9%) with fewer false alarms, and AUPR +31% (0.253 → 0.331).
+2. **TDA adds more than amplitude.** The shape-only TDA features (entropies, loop count), which correlate only 0.35–0.58 with classic features, give almost the same gain and the best AUPR. This answers the Step 4A caveat.
+3. **Short seizures remain hard.** Detection by seizure length (classic + TDA with context, scratch run with the same method):
+
+| Seizure length | ≤ 10 s | 11–20 s | 21–40 s | 41–80 s | > 80 s |
+|---|---|---|---|---|---|
+| Detected | 35% | 69% | 81% | 80% | 90% |
+
+#### How we got here: what each change contributed
+
+Sensitivity at ≤ 11 FA/h, classic + TDA (the first row used a fixed threshold of 0.5; the rest use the honest per-fold threshold):
+
+| Version | Sensitivity | FA/h | AUROC | AUPR |
+|---|---|---|---|---|
+| First model: raw features, 8-of-10 alarm, threshold 0.5 | 44.2% | 10.6 | 0.766 | 0.200 |
+| + per-patient feature normalisation | 52.8% | 10.6 | 0.794 | 0.275 |
+| + 5-of-10 alarm | 57.3% | 10.3 | 0.794 | 0.275 |
+| + short-term context features | **76.9%** | **9.9** | **0.818** | **0.331** |
+
+With context features, 5-of-10 and 8-of-10 detect almost the same number of seizures (77% vs 78% in the scratch run), because the context features already smooth the output. 5-of-10 raises the alarm sooner (median 10.5 s vs 13 s after onset), so it was kept.
+
+#### Caveats
+1. **Normalisation uses each patient's whole recording** (5.1). A deployed monitor needs a calibration period or running estimate.
+2. **False alarms per hour are measured on the fetched data,** which is concentrated around seizures (20 minutes of context per seizure). That is harder than an average hour of recording, so the real-world rate is probably lower, but it is not directly comparable with the SeizeIT2 benchmark (71.1% at 11.0 FA/h on full recordings).
+3. **Clean data only.** Robustness to sensor faults is the next experiment.
+4. **The model settings are untuned defaults;** tuning (Step 6) may improve results further.
 
 ---
 
@@ -701,10 +841,10 @@ All models use the same data, splits and fault augmentation.
 
 1. **TDA settings:** window length, τ, m, number of points, which diagram summaries to use.
 2. **Classifier:** depth, learning rate, number of trees (grid search or Optuna inside the grouped cross-validation).
-3. **Alarm rule.** The SeizeIT2 benchmark raises an alarm when at least 8 of the last 10 one-second segments are classified as seizure. Tune:
-   - the probability threshold,
-   - the X-of-Y rule,
-   - weighting each second by its health scores.
+3. **Alarm rule.**
+   - ✓ **Probability threshold:** chosen per fold on the other folds' patients at ≤ 11 FA/h (5.7).
+   - ✓ **X-of-Y rule: changed from 8 of 10 (the SeizeIT2 benchmark) to 5 of 10** (2026-10-19). With 8 of 10, a seizure shorter than about 8 seconds cannot trigger an alarm; in the first model only 1 of 20 seizures of ≤ 10 s was detected. With context features both rules detect about the same number of seizures, and 5 of 10 alarms about 2.5 s sooner.
+   - To do: weighting each second by its health scores.
 
    This sets the trade-off between sensitivity and false alarms.
 4. **CHB-MIT:** same pipeline and code, but a **separate model**. Its sensors differ (18 scalp EEG channels, no ECG or motion), so the SeizeIT2 model can't be fine-tuned on it directly.
