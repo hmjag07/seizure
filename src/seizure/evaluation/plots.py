@@ -241,6 +241,30 @@ def fig_single_sensor(r):
     save(fig, "8_single_sensor_loss")
 
 
+def fig_dropout_compare(before, after):
+    """Robustness curves before and after sensor-dropout training (at least one EEG alive)."""
+    fig, ax = plt.subplots(figsize=(8.5, 5.5))
+    for col in ("classic", "classic+TDA"):
+        name, color = MODELS[col]
+        for r, style, label in ((before, ":", "normal training"), (after, "-", "sensor-dropout training")):
+            g = r[r.eeg_alive & (r.model == col)].groupby("dead").sensitivity.mean()
+            ax.plot(g.index, g.values, ls=style, color=color, marker="o", ms=5, label=f"{name}, {label}")
+    clean = after[(after.model == "classic+TDA") & (after.dead == 0)].sensitivity.iloc[0]
+    ax.axhline(clean - 0.15, color=INK2, ls="--", lw=1)
+    ax.text(0.05, clean - 0.15 + 0.012, "target: at most 15 points below clean (classic + TDA, dropout)",
+            fontsize=8.5, color=INK2)
+    ax.axvline(5, color=MUTED, lw=1, ls=":")
+    ax.text(5.08, 0.03, "5 of 8 dead (60%)", fontsize=8.5, color=INK2)
+    ax.set_xticks(range(0, 8), [f"{k}\n({k / 8:.0%})" for k in range(8)])
+    ax.set_xlabel("Sensors dead (out of 8)")
+    ax.set_ylim(0, 1)
+    ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
+    ax.set_ylabel("Seizures caught")
+    ax.set_title("Before and after sensor-dropout training")
+    ax.legend(loc="lower left", fontsize=8.5)
+    save(fig, "9_dropout_before_after")
+
+
 def main():
     p = pd.read_parquet(CACHE.parent / "predictions" / "clean_oof.parquet")
     summary = pd.read_csv(TABLES / "model_clean_summary.csv")
@@ -259,6 +283,9 @@ def main():
         r = pd.read_csv(rob)
         fig_robustness(r)
         fig_single_sensor(r)
+        drop = TABLES / "robustness_dead_sensors_dropout.csv"
+        if drop.exists():
+            fig_dropout_compare(r, pd.read_csv(drop))
     print("written to", FIGS)
 
 
