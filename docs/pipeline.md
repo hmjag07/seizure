@@ -810,11 +810,22 @@ Fold 0 is the weakest and slightly exceeds the false-alarm budget. It holds sub-
 **What the results show:**
 1. **TDA improves on the classic baseline:** +7.1 points of sensitivity (69.8% → 76.9%) with fewer false alarms, and AUPR +31% (0.253 → 0.331).
 2. **TDA adds more than amplitude.** The shape-only TDA features (entropies, loop count), which correlate only 0.35–0.58 with classic features, give almost the same gain and the best AUPR. This answers the Step 4A caveat.
-3. **Short seizures remain hard.** Detection by seizure length (classic + TDA with context, scratch run with the same method):
+3. **Short seizures remain hard.** Detection by seizure length (classic + TDA):
 
 | Seizure length | ≤ 10 s | 11–20 s | 21–40 s | 41–80 s | > 80 s |
 |---|---|---|---|---|---|
-| Detected | 35% | 69% | 81% | 80% | 90% |
+| Detected | 35% (7/20) | 67% (24/36) | 81% (30/37) | 81% (44/54) | 92% (48/52) |
+
+#### Figures ([`plots.py`](../src/seizure/evaluation/plots.py), `python -m seizure.evaluation.plots`)
+
+| Figure | Shows |
+|---|---|
+| ![](../results/figures/1_timelines.png) | **What the model does.** Second-by-second seizure probability around three real seizures: a long one detected, a short one detected, and one missed (with two false alarms a few minutes earlier). Grey band = seizure; dashed line = threshold; black bars = alarm on. |
+| ![](../results/figures/2_tradeoff.png) | **Trade-off curve.** Seizures caught vs false alarms per hour for every threshold. The blue box is target T1; the large dots are the honest operating points. TDA (orange, green) lies above the classic model (blue) almost everywhere. |
+| ![](../results/figures/3_progression.png) | **How each improvement added up**, from 44% to 77%. |
+| ![](../results/figures/4_by_seizure_length.png) | **Detection by seizure length.** |
+| ![](../results/figures/5_per_fold.png) | **Per fold.** Sensitivity and false alarms for each group of 6 test patients; fold 0 is the hardest. |
+| ![](../results/figures/6_precision_recall.png) | **Precision–recall curves.** The area under each is the AUPR; the dashed line is random guessing (0.045). TDA's curves sit well above the classic one at every recall below about 0.6. |
 
 #### How we got here: what each change contributed
 
