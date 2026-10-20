@@ -265,6 +265,32 @@ def fig_dropout_compare(before, after):
     save(fig, "9_dropout_before_after")
 
 
+def fig_sensor_aware(r):
+    """Robustness at an equal false-alarm budget (sensor-aware thresholds), at least one EEG alive."""
+    fig, ax = plt.subplots(figsize=(8.5, 5.5))
+    for col in ("classic", "classic+TDA"):
+        name, color = MODELS[col]
+        for training, style, label in (("clean", ":", "normal training"), ("dropout", "-", "sensor-dropout training")):
+            g = r[r.eeg_alive & (r.model == col) & (r.training == training)].groupby("dead").sensitivity.mean()
+            ax.plot(g.index, g.values, ls=style, color=color, marker="o", ms=5, label=f"{name}, {label}")
+    clean = r[(r.model == "classic+TDA") & (r.training == "dropout") & (r.dead == 0)].sensitivity.iloc[0]
+    ax.axhline(clean - 0.15, color=INK2, ls="--", lw=1)
+    ax.text(0.05, clean - 0.15 + 0.012, "target: at most 15 points below clean (classic + TDA, dropout)",
+            fontsize=8.5, color=INK2)
+    ax.axvline(5, color=MUTED, lw=1, ls=":")
+    ax.text(5.08, 0.03, "5 of 8 dead (60%)", fontsize=8.5, color=INK2)
+    ax.set_xticks(range(0, 8), [f"{k}\n({k / 8:.0%})" for k in range(8)])
+    ax.set_xlabel("Sensors dead (out of 8)")
+    ax.set_ylim(0, 1)
+    ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
+    ax.set_ylabel("Seizures caught (at ≤ 11 false alarms/h)")
+    ax.set_title("Fair comparison: every point at ≤ 11 false alarms per hour")
+    ax.legend(loc="lower left", fontsize=8.5)
+    ax.text(0, -0.2, "Threshold chosen per combination of working sensors, on the other folds' patients. "
+            "At least one EEG channel alive.", transform=ax.transAxes, fontsize=8, color=MUTED)
+    save(fig, "10_sensor_aware")
+
+
 def main():
     p = pd.read_parquet(CACHE.parent / "predictions" / "clean_oof.parquet")
     summary = pd.read_csv(TABLES / "model_clean_summary.csv")
@@ -286,6 +312,9 @@ def main():
         drop = TABLES / "robustness_dead_sensors_dropout.csv"
         if drop.exists():
             fig_dropout_compare(r, pd.read_csv(drop))
+    aware = TABLES / "robustness_sensor_aware.csv"
+    if aware.exists():
+        fig_sensor_aware(pd.read_csv(aware))
     print("written to", FIGS)
 
 
