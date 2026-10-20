@@ -668,16 +668,17 @@ Features are cached for each version of the data (clean, and each fault type and
 
 ## Step 5: Train ([`train.py`](../src/seizure/models/train.py))
 
-**Progress (2026-10-19):**
+**Progress (2026-10-20):**
 
 | Part | Status |
 |---|---|
 | 5.1–5.2 Classifier on clean data | ✓ Done: XGBoost, 3 feature sets |
-| 5.3 Sensor-dropout augmentation | To do (with Steps 2–3) |
+| 5.3 Sensor-dropout augmentation | ✓ Done (dead sensors); faults of other types come with Step 2 |
 | 5.4 Class imbalance | ✓ Class weights |
 | 5.5 Patient-grouped 5-fold CV | ✓ Done |
 | 5.6 Classic baseline | ✓ Done. CNN baseline: to do |
 | Clean-data target T1 (≥ 60% sensitivity at ≤ 11 FA/h) | ✓ **Met: 76.9% at 9.9 FA/h** |
+| Robustness target (≤ 15-point drop with 5 of 8 sensors dead) | ✓ **Met on average with dropout training + sensor-aware threshold** (6.8 points); see Step 8 |
 
 ### 5.1 Inputs
 
@@ -729,8 +730,29 @@ These are reasonable defaults, not tuned yet (Step 6).
 | `classic+TDA` | + 56 TDA-A + 96 TDA context = 263 | Main model |
 | `classic+TDA_shape` | classic + only the TDA *shape* summaries (entropies, loop count) and their context = 183 | Tests whether TDA adds more than amplitude ([Step 4A caveat](#caveat-the-strongest-tda-features-largely-measure-amplitude)) |
 
-### 5.3 Sensor-dropout augmentation
-During training, randomly remove sensors and inject faults of random type and severity. Without this, the model depends on every sensor and collapses when one fails. **Not done yet**; comes with fault injection (Steps 2–3).
+### 5.3 Sensor-dropout augmentation ([`robustness.py`](../src/seizure/models/robustness.py) `dropout`)
+
+**Why.** A model trained only on complete data has never seen a missing heart, muscle or brain sensor (only motion sensors were sometimes missing, because of real faults). When one disappears, its probabilities drift and a fixed threshold no longer fits: in the dead-sensor test (Step 8) the normally trained model fell from 76.9% to 25.1% of seizures caught with 5 of 8 sensors dead.
+
+**How.** Each fold's training data is used twice: once as it is, and once as a copy in which every second loses a random number of sensors, blanked completely (all base, TDA and context features become missing):
+
+```
+k = random whole number from 1 to 6           (sensors that die in this second)
+put the 8 sensors in a random order; the first k die
+chance that a given sensor dies in a copied row = average k ÷ 8 = 3.5 ÷ 8 ≈ 44%
+```
+
+The model trains on both halves together (about 480,000 rows per fold). Its threshold is then chosen on **clean** data from the other folds' patients, exactly as in 5.7. A check of the copy found 1–6 dead sensors per row in equal proportions, every sensor dead in about 44% of rows, and never a partly blanked sensor. Fold models are saved to `cache/models/`.
+
+**Effect on clean data** (all sensors working; same scoring as 5.8):
+
+| Model | Normal training | Sensor-dropout training |
+|---|---|---|
+| Classic | 69.8% at 10.5 FA/h | 73.9% at 9.8 FA/h |
+| Classic + TDA | 76.9% at 9.9 FA/h | 77.9% at 10.2 FA/h |
+| Classic + TDA shape | 74.9% at 9.6 FA/h | 78.4% at 9.9 FA/h |
+
+Practising with missing sensors also made every model slightly better with all sensors present, because it no longer leans on any single one. Its effect under sensor failure is in Step 8 (Robustness to dead sensors).
 
 ### 5.4 Class imbalance
 Only 4.5% of seconds are seizure. Without correction, a model can score 95.5% accuracy by never predicting seizure. `scale_pos_weight` makes each seizure second count about 21 times as much as a background second during training, so both classes carry equal total weight.
@@ -855,6 +877,7 @@ With context features, 5-of-10 and 8-of-10 detect almost the same number of seiz
 3. **Alarm rule.**
    - ✓ **Probability threshold:** chosen per fold on the other folds' patients at ≤ 11 FA/h (5.7).
    - ✓ **X-of-Y rule: changed from 8 of 10 (the SeizeIT2 benchmark) to 5 of 10** (2026-10-19). With 8 of 10, a seizure shorter than about 8 seconds cannot trigger an alarm; in the first model only 1 of 20 seizures of ≤ 10 s was detected. With context features both rules detect about the same number of seizures, and 5 of 10 alarms about 2.5 s sooner.
+   - ✓ **Sensor-aware threshold** (2026-10-20): one threshold per combination of working sensors, each chosen in advance on other patients at ≤ 11 FA/h. It turns dead-sensor robustness from a 51.8-point drop into 6.8 points (with dropout training); details in Step 8.
    - To do: weighting each second by its health scores.
 
    This sets the trade-off between sensitivity and false alarms.
@@ -907,7 +930,110 @@ For each model (TDA, classic, CNN), each fault type (3), each severity (0–100%
 - False alarms per hour are always reported alongside sensitivity.
 - Measured on held-out patients (SeizeIT2 sub-097 to sub-125), never on the pilot patients used for tuning.
 - The TDA model's drop is also compared with the classic and CNN baselines.
-- On SeizeIT2, the target applies only to failure combinations where at least one EEG channel survives. With about 6 sensors, 60% failing can remove both EEG channels; those cases are still run and reported, but have no target.
+- On SeizeIT2, the target applies only to failure combinations where at least one EEG channel survives. With 8 signals (corrected from "about 6"; there are two motion devices), 60% failing means 5 of 8 and can remove both EEG channels; those cases are still run and reported, but have no target.
+
+**Amendment (2026-10-20): fixed threshold vs sensor-aware threshold.** The rule above says the threshold is tuned once on clean data and kept fixed. The robustness tests showed that with one fixed threshold a model either goes quiet (normal training) or over-alarms (dropout training) when sensors die, so sensitivity alone stops being comparable. We therefore also report a **sensor-aware threshold**: one threshold per combination of working sensors, every one of them fixed in advance from other patients at the same ≤ 11 false alarms per hour; nothing is tuned on the test patients or during a recording. Both versions are reported:
+
+| Rule | Classic + TDA, dropout training, 5 of 8 dead |
+|---|---|
+| Fixed clean threshold (original rule) | 93.5% caught but 28.0 false alarms per hour; not a meaningful pass |
+| Sensor-aware threshold (amended rule) | 71.1% caught at 10.2 false alarms per hour; average drop 6.8 points, 10 of 12 combinations pass |
+
+The sensor-aware rule depends on knowing which sensors are dead, which the health check (Step 3) must provide.
+
+### Robustness to dead sensors (2026-10-20)
+
+([`robustness.py`](../src/seizure/models/robustness.py), [`sensor_aware.py`](../src/seizure/models/sensor_aware.py), [`robustness_dead_sensors.csv`](../results/tables/robustness_dead_sensors.csv), [`robustness_dead_sensors_dropout.csv`](../results/tables/robustness_dead_sensors_dropout.csv), [`robustness_sensor_aware.csv`](../results/tables/robustness_sensor_aware.csv))
+
+These are the first robustness results: **whole-recording sensor death**, simulated on the existing features and cross-validated on the 30 pilot patients. Faults that start partway through, and faults other than death (pops, decline, intermittent dropout), come with Step 2.
+
+#### Test design
+
+- **Channels.** The 8 cleaned signals of Step 1.4: EEG1, EEG2, ECG, EMG, ACC_neck, ACC_chest, GYR_neck, GYR_chest. 60% of channels failing means 5 of 8.
+- **A dead sensor** has every one of its features (base, TDA and context) set to missing, as a real dead sensor would give.
+- **Combinations.** For each number of dead sensors (0–7): all 8 single-sensor losses; otherwise up to 12 random combinations that keep at least one EEG channel alive (these count for the target) and up to 6 where both EEG channels die (reported, no target). 102 combinations in total, the same set for every model (seed 42).
+- **Scoring.** As in 5.7: 5-of-10 alarm, any-overlap sensitivity, false alarms per hour, each patient scored by a model that never saw them.
+
+```
+drop (percentage points) = sensitivity with all sensors − sensitivity with sensors dead
+average drop at a level  = sum of the drops of that level's combinations ÷ number of combinations
+pass                     if drop ≤ 15
+```
+
+#### Test 1: normal training, fixed clean threshold
+
+| Sensors dead | Classic | Classic + TDA | AUROC (classic + TDA) |
+|---|---|---|---|
+| 0 | 69.8% | 76.9% | 0.818 |
+| 1 | 56.4% | 66.3% | 0.806 |
+| 2 | 48.0% | 63.1% | 0.801 |
+| 3 | 37.1% | 48.4% | 0.810 |
+| 4 | 26.3% | 37.0% | 0.794 |
+| **5** | **16.1%** | **25.1%** | **0.784** |
+| 6 | 13.1% | 10.4% | 0.782 |
+
+With 5 of 8 dead the drop is 51.8 points (classic + TDA) and 53.7 (classic): **target missed**. But AUROC, which needs no threshold, barely falls. The model can still rank seizure seconds above normal ones; its probabilities shift so they no longer meet the fixed threshold. Losing ECG (−31 points), chest rotation (−28) or EMG (−28) makes it go quiet (false alarms fall to 3–4 per hour); losing EEG2 makes it over-alarm (31.7 per hour).
+
+| ![](../results/figures/7_robustness_dead_sensors.png) | ![](../results/figures/8_single_sensor_loss.png) |
+|---|---|
+
+#### Test 2: sensor-dropout training (5.3), fixed clean threshold
+
+| Sensors dead | Classic + TDA, caught | False alarms / h | AUROC |
+|---|---|---|---|
+| 0 | 77.9% | 10.2 | 0.824 |
+| 1 | 82.4% | 13.9 | 0.823 |
+| 3 | 87.4% | 19.2 | 0.827 |
+| **5** | **93.5%** | **28.0** | **0.810** |
+| 6 | 94.4% | 29.9 | 0.813 |
+
+The ranking now holds up (AUROC 0.810 with 5 dead), but with one fixed threshold the model **over-alarms** as sensors die: more seizures caught, at nearly three times the false alarms. Every combination formally "passes" (the drop is negative), but this is not a meaningful pass, because the extra sensitivity is bought with false alarms.
+
+![](../results/figures/9_dropout_before_after.png)
+
+#### Test 3: sensor-aware threshold
+
+A monitor knows which of its sensors are dead (the health check, Step 3), so it can switch to a threshold set in advance for that combination of working sensors. For each combination and each fold, the threshold is chosen **on the other folds' patients, with the same sensors dead**, as the one with the highest sensitivity at ≤ 11 false alarms per hour, then applied to the held-out fold. Every result is therefore at the same false-alarm budget as clean data, which makes the comparison fair.
+
+The search uses the fact that false alarms fall as the threshold rises: a halving search over 46 thresholds (0.01–0.99) finds the lowest one within budget in about 6 scorings, then checks the next 3 up. On the clean predictions it picked exactly the same threshold as trying all 46, in 15 of 15 cases. Scoring uses `FastEvents` ([`metrics.py`](../src/seizure/evaluation/metrics.py)), a vectorised version of the 5.7 scoring that gave identical results on every threshold tested and runs about 5× faster.
+
+Seizures caught, every cell at about 10–11 false alarms per hour (at least one EEG alive):
+
+| Sensors dead | Classic, normal | Classic + TDA, normal | Classic, dropout | **Classic + TDA, dropout** |
+|---|---|---|---|---|
+| 0 | 69.8% | 76.9% | 73.9% | **77.9%** |
+| 1 | 66.4% | 73.0% | 73.1% | **76.9%** |
+| 2 | 63.4% | 69.7% | 72.9% | **76.3%** |
+| 3 | 64.7% | 70.8% | 73.2% | **77.7%** |
+| 4 | 58.5% | 68.5% | 69.0% | **73.9%** |
+| **5** | 54.9% | 63.3% | 65.3% | **71.1%** |
+| 6 | 55.0% | 60.2% | 66.5% | **71.2%** |
+| 7 | 53.5% | 55.0% | 61.6% | **68.1%** |
+
+Target check, 5 of 8 dead:
+
+| Model | Average drop | Worst drop | Combinations passing | False alarms / h |
+|---|---|---|---|---|
+| Classic, normal training | 14.9 | 27.6 | 5 of 12 | 10.5 |
+| Classic + TDA, normal training | 13.6 | 18.6 | 6 of 12 | 10.1 |
+| Classic, dropout training | 8.5 | 19.1 | 8 of 12 | 10.4 |
+| **Classic + TDA, dropout training** | **6.8** | **18.1** | **10 of 12** | **10.2** |
+
+The two failing combinations for the best model both lose **EEG2** (EEG2 + ECG + three motion sensors: drops of 15.6 and 18.1 points). Whenever EEG2 survives, every combination passes, with a drop of at most 3.5 points. With both EEG channels dead, the best model catches about 46% with 5 sensors dead, which supports limiting the target to combinations with an EEG channel alive.
+
+![](../results/figures/10_sensor_aware.png)
+
+#### What the robustness tests show
+
+1. **Most of the collapse in Test 1 was the threshold, not lost information.** A sensor-aware threshold alone cut the classic + TDA drop from 51.8 to 13.6 points, without retraining.
+2. **Dropout training plus a sensor-aware threshold works best:** 71.1% of seizures caught with 5 of 8 sensors dead at 10.2 false alarms per hour, an average drop of 6.8 points.
+3. **TDA is more robust than the classic baseline at every failure level**, and the gap widens after dropout training (71.1% vs 65.3% with 5 dead).
+4. **EEG2 is the critical sensor.** It is the only sensor whose loss can push the best model past the 15-point limit.
+
+#### Assumptions and limits
+- Test 3 assumes the monitor knows **exactly** which sensors are dead. A real health check will sometimes be wrong, so real performance will be somewhat lower; this is tested once the health check exists (Step 3).
+- One threshold per combination of working sensors works for 8 sensors (256 combinations) but not for many channels (CHB-MIT's 18 give 262,144). A threshold keyed on how many sensors of each type are working, or "sensor working" flags as model inputs, would scale.
+- Results are cross-validation on the 30 pilot patients; the success target is finally judged on the 29 held-out patients.
 
 ---
 
