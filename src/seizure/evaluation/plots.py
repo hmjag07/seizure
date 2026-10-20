@@ -197,6 +197,50 @@ def fig_pr(p):
     save(fig, "6_precision_recall")
 
 
+def fig_robustness(r):
+    """Sensitivity vs number of dead sensors (combinations with at least one EEG alive)."""
+    alive = r[r.eeg_alive]
+    fig, ax = plt.subplots(figsize=(8.5, 5.5))
+    for col, (name, color) in MODELS.items():
+        g = alive[alive.model == col].groupby("dead").sensitivity.agg(["mean", "min", "max"])
+        if col == "classic+TDA":
+            ax.fill_between(g.index, g["min"], g["max"], color=color, alpha=0.15, lw=0,
+                            label="Classic + TDA: best to worst combination")
+        ax.plot(g.index, g["mean"], color=color, marker="o", ms=6, label=name)
+    clean = alive[(alive.model == "classic+TDA") & (alive.dead == 0)].sensitivity.iloc[0]
+    ax.axhline(clean - 0.15, color=INK2, ls="--", lw=1)
+    ax.text(0.05, clean - 0.15 + 0.012, "target: at most 15 points below clean (classic + TDA)", fontsize=8.5, color=INK2)
+    ax.axvline(5, color=MUTED, lw=1, ls=":")
+    ax.text(5.08, 0.03, "5 of 8 dead (60%)", fontsize=8.5, color=INK2)
+    ax.set_xticks(range(0, 8), [f"{k}\n({k / 8:.0%})" for k in range(8)])
+    ax.set_xlabel("Sensors dead (out of 8)")
+    ax.set_ylim(0, 1)
+    ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
+    ax.set_ylabel("Seizures caught")
+    ax.set_title("Robustness: seizures caught as sensors die (at least one EEG alive)")
+    ax.legend(loc="lower left")
+    ax.text(0, -0.2, "Lines: average over sampled sensor combinations; band: best to worst combination (classic + TDA). "
+            "Thresholds fixed at their clean-data values.", transform=ax.transAxes, fontsize=8, color=MUTED)
+    save(fig, "7_robustness_dead_sensors")
+
+
+def fig_single_sensor(r):
+    one = r[r.dead == 1].pivot(index="sensors_dead", columns="model", values="drop_pts")
+    order = one["classic+TDA"].sort_values(ascending=False).index
+    fig, ax = plt.subplots(figsize=(9, 4.5))
+    w = 0.26
+    x = np.arange(len(order))
+    for i, (col, (name, color)) in enumerate(MODELS.items()):
+        ax.bar(x + (i - 1) * w, one.loc[order, col], width=w, color=color, label=name)
+    ax.axhline(0, color=MUTED, lw=1)
+    ax.set_xticks(x, order)
+    ax.set_ylabel("Drop in seizures caught (percentage points)")
+    ax.set_title("Which single sensor hurts most when it dies")
+    ax.grid(axis="x", visible=False)
+    ax.legend(loc="upper right", fontsize=8.5)
+    save(fig, "8_single_sensor_loss")
+
+
 def main():
     p = pd.read_parquet(CACHE.parent / "predictions" / "clean_oof.parquet")
     summary = pd.read_csv(TABLES / "model_clean_summary.csv")
@@ -210,6 +254,11 @@ def main():
     fig_by_length(out)
     fig_folds(folds)
     fig_pr(p)
+    rob = TABLES / "robustness_dead_sensors.csv"
+    if rob.exists():
+        r = pd.read_csv(rob)
+        fig_robustness(r)
+        fig_single_sensor(r)
     print("written to", FIGS)
 
 
