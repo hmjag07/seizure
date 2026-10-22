@@ -418,44 +418,122 @@ The two working configurations match the 3:1 ratio found in [data-access.md](dat
 
 ---
 
-## Step 2: Inject faults
+## Step 2: Inject faults ([`inject.py`](../src/seizure/faults/inject.py), [`build_faulty.py`](../src/seizure/faults/build_faulty.py))
 
-Clean windows are damaged deliberately in code, so it is known exactly what is broken, when, and how badly.
+Clean signals are damaged deliberately in code, so it is known exactly what is broken, when, and how badly.
 
-| Fault | Simulation | Severity knob |
+**Progress (2026-10-23):** ✓ Done for all 30 pilot patients: 3 fault types × 4 severities × 8 sensors, about 17.5 million faulty seconds.
+
+### 2.1 The three faults
+
+Each fault damages one sensor's **raw** signal (before cleaning) from an onset time onwards, at a severity `s` between 0 and 1. Sizes are relative to the signal's own robust spread before the onset (`scale` = 1.4826 × MAD), so the same severity means the same damage on every sensor. For motion sensors the scale is at least 5% of gravity, because a still axis barely varies.
+
+| Fault | What it imitates | How it is simulated |
 |---|---|---|
-| Electrode pop / motion artefact | Sudden large spikes or step jumps that decay back | How large and how frequent |
-| Gradual decline (rising impedance) | Slowly shrink the signal and add growing noise over minutes | How fast and how far it declines |
-| Intermittent dropout | Short random bursts set to zero / flat | Fraction of time missing |
+| **Electrode pop** | A loose electrode or a knock to the sensor | Sudden steps that decay back. Number per minute ~ Poisson(6 × s); size = s × 20 × scale × random(0.5–1), random sign; decay time 0.3–2 s |
+| **Gradual decline** | Rising electrode impedance (gel drying, contact loosening) | Over 5 minutes the signal shrinks and noise grows: `y = x × (1 − s·p) + noise × s·p × scale`, where `p` rises from 0 to 1 over the 5 minutes. At s = 1 the signal ends as pure noise |
+| **Intermittent dropout** | A connection cutting in and out | Flat bursts at zero, each 0.5–5 s long, covering a share `s` of the time after the onset. At s = 1 the sensor is dead from the onset |
 
-- Faults start **partway through a recording**, not from the beginning.
-- Severity levels: 0, 25, 50, 75, 100%.
-- Affected sensors: one EEG channel, both EEG, ECG only, motion only, combinations.
-- Save the ground-truth fault labels (sensor, fault, seconds). These are the training labels for Step 3.
-- Faults are also injected into training data (random type, sensor, severity). See Step 5.3.
+For each fault the code also records the **effective severity** at every sample (0 before the onset; `s` after it for pops and dropout; `s × p`, growing, for decline). This is the ground truth for the health check (Step 3).
+
+Checks on synthetic data: the signal before the onset is untouched; pops reach up to 33× the normal spread at full severity; dropout flattens 25%, 51% and 100% of the time at 25%, 50% and 100% severity.
+
+### 2.2 How the faulty data is built
+
+- **Onset partway through.** For every chunk, fault and severity, the onset is drawn at random between 20% and 60% of the way through the chunk (seeded, reproducible). Seizure chunks are about 20 minutes long, so faults start both before and after seizures.
+- **One sensor at a time.** A fault on one sensor changes only that sensor's features. So each sensor is damaged on its own, and its features (classic and TDA-A, Step 4) are recomputed **for the seconds after the onset only**. Every combination of faulty sensors ("EEG2 and ECG popping", "5 of 8 declining") is then assembled later by swapping in the affected sensors' features, with no recomputation. The onset is the same for every sensor of a condition, so combinations line up.
+- **Cleaning without look-ahead.** The whole-chunk "stuck axis" check (Step 1.4) is not used on faulty data, because it would see a fault that starts later and remove the sensor from the beginning. `preprocess.clean_one` cleans one sensor without it.
+- **Sensors already broken in the clean data** (Step 1.4) are skipped.
+- **Storage.** One row per second, fault, severity and sensor, with generic column names (`linelen`, `TDA_H1_max`, `q_flat`, …) and a `sensor` column. This keeps memory about 10× lower than one column per sensor. Output: `cache/faults/<subject>_faulty.parquet` and `<subject>_quality.parquet` (git-ignored).
+
+**Cost.** Each patient's signal is streamed once and every condition applied in memory. About 35 hours of processing in total (6 patients in parallel, about 6 hours of wall time), dominated by TDA. One patient was finished before a pause and the build resumed for the other 29.
+
+**A small data issue found here.** Two adjacent background chunks share their boundary second, which happens once in the data (sub-055, run 01, second 14,430). It is kept once everywhere from Step 3 on; it does not affect any earlier result.
 
 ---
 
-## Step 3: Health check (fault detection)
+## Step 3: Health check ([`health.py`](../src/seizure/faults/health.py), [`train_health.py`](../src/seizure/faults/train_health.py))
 
-For every sensor in every window, decide whether it is **healthy, degraded or failed**.
+For every sensor, every second, decide whether it is **healthy, degraded or failed**. Failed sensors are switched off: their features are blanked and the sensor-aware threshold for the remaining sensors is used (Step 6).
 
-**Signal-quality features:**
-- Variance: near zero means flatline or dropout.
-- Kurtosis and maximum jump: spikes or pops.
-- Line length.
-- Fraction of flat or clipped samples: dropout or saturation.
-- Baseline drift and amplitude trend over the last few minutes: gradual decline.
-- Correlation with the sensor's own recent history: sudden change in behaviour.
+**Progress (2026-10-23):** ✓ Done.
 
-**Classifier:** a small model (e.g. random forest) per sensor type, trained on the labels from Step 2.
+### 3.1 Quality features
 
-**Output:** a health score from 0 to 1 per sensor per window.
-- **Healthy:** use the sensor normally.
-- **Degraded:** use it, but trust it less.
-- **Failed:** ignore it.
+Computed per sensor per window; none depends on the sensor's units, so one recipe serves every sensor.
 
-The checker's own accuracy (faults caught, and how quickly) is reported as part of the results.
+| Feature | Formula | Responds to |
+|---|---|---|
+| `q_logstd` | log₁₀ of the spread of the normalised, cleaned window | Dropout (falls), decline (changes) |
+| `q_range` | max − min of the normalised window | Pops |
+| `q_kurt` | kurtosis of the cleaned window | Spiky windows (pops) |
+| `q_flat` | share of consecutive raw samples that are identical | Flat bursts (dropout) |
+| `q_jump` | largest raw sample-to-sample jump ÷ the median one | Sudden steps (pops) |
+
+**Context**, within each sensor's series, past seconds only: the 10 s mean and its change against the minute before (`_m10`, `_d60`), the largest jump in the last 60 s (`q_jump_max60`, remembers pops), the mean flat share over the last 60 s (`q_flat_m60`, remembers dropouts), and the strength now against 5 minutes ago (`q_logstd_d300`, slow decline). Plus which sensor it is (8 indicator columns): 26 inputs in total.
+
+Each fault leaves a clear fingerprint (sub-025, medians): dropout's flat share rises from 0.04 (healthy) to 0.27 / 0.55 / 0.82 / 1.00 with severity; pops' largest jump from 8 to 10 / 13 / 23 / 42.
+
+### 3.2 Labels and training
+
+```
+effective severity = 0            → healthy
+0 < effective severity < 0.6      → degraded   (still used)
+effective severity ≥ 0.6          → failed     (switched off)
+```
+
+XGBoost, 3 classes, 300 trees, the same 5 patient-grouped folds as the seizure model. To fit in memory, a random 20% of **whole series** (one sensor, one chunk, one fault condition) is kept: 3.76 million seconds (0.46 M healthy, 1.82 M degraded, 1.48 M failed). Whole series rather than single seconds keep time continuous for smoothing. A faulty series includes the clean seconds before its onset, so the context features see the change.
+
+### 3.3 The switch-off decision
+
+The failed-probability is averaged over the last 15 s; the sensor is switched off when that average reaches a cut-off, and back on only after 30 s in a row below it (hysteresis, so decisions do not flicker). The cut-off of each fold is chosen on the other folds' patients as the one with the best F1 for "failed", which balances failed sensors left on against working sensors switched off. It came out at 0.5 in every fold.
+
+```
+smoothed(t) = mean of p_failed over seconds t−14 … t
+F1(failed)  = 2 × (switched off and truly failed) ÷ (switched off + truly failed)
+```
+
+### 3.4 Results
+
+**Most likely class, per second** (rows = truth):
+
+| Truth ↓ / answer → | Healthy | Degraded | Failed |
+|---|---|---|---|
+| Healthy | **83.7%** | 14.7% | 1.6% |
+| Degraded | 4.4% | **81.3%** | 14.3% |
+| Failed | 0.9% | 19.5% | **79.6%** |
+
+**Switch-off decisions**, first version (failed if most likely, no memory or smoothing) vs final:
+
+| Truth | Switched off, first version | Switched off, final |
+|---|---|---|
+| Failed (should be off) | 79.6% | **85.9%** |
+| Degraded (should stay on) | 14.3% | 19.0% |
+| Healthy (should stay on) | 1.6% | 1.7% |
+
+**Faulty seconds flagged** (degraded or failed):
+
+| Fault | 25% | 50% | 75% | 100% |
+|---|---|---|---|---|
+| Decline | 99.2% | 99.2% | 99.2% | 99.2% |
+| Dropout | 92.0% | 98.1% | 99.3% | 99.6% |
+| Pops | 88.1% | 96.2% | 98.0% | 98.6% |
+
+**Speed** (50% severity, share flagged by time since onset): decline 35% within 5 s and 99% within 30 s; dropout 43% and 95%; pops 23% and 74%, reaching 92% within a minute. Pops are slowest because the check must see several before it is sure.
+
+**Healthy sensors switched off:** EEG1 0.2%, EEG2 0.1%, ECG 1.9%, EMG 0.7%, movement 0–0.5%, chest rotation 2.1%, **neck rotation 8.1%**. A still gyroscope reads exactly the same value for long stretches, which looks like a dropout.
+
+### 3.5 What limits it
+
+Almost all confusion is between degraded and failed at 50–75% severity, next to the 0.6 line:
+- **Intermittent faults are labelled by their overall severity, not by what is in the window.** Between pops, a 75%-severity window can look clean (median largest jump 12 when called degraded, 44 when called failed). The model is often describing the window correctly and the label is too blunt.
+- **A decline crosses 0.6 gradually,** so seconds near the line are ambiguous.
+
+Longer memory alone changed little (failed called degraded: 19.9% → 19.5%); smoothing with a chosen cut-off gave the gain. Labelling each window by whether its data is actually damaged ("fix D") targets the first cause directly; see Step 8.
+
+### 3.6 Caveats
+- At 25% severity a decline is already caught 99% of the time, because the added noise is sized against the raw signal's spread, which includes slow drift. Real mild declines are likely subtler.
+- These are injected faults with known truth. The real broken motion sensors found in Step 1.4 are a natural further test.
 
 ---
 
@@ -1034,6 +1112,78 @@ The two failing combinations for the best model both lose **EEG2** (EEG2 + ECG +
 - Test 3 assumes the monitor knows **exactly** which sensors are dead. A real health check will sometimes be wrong, so real performance will be somewhat lower; this is tested once the health check exists (Step 3).
 - One threshold per combination of working sensors works for 8 sensors (256 combinations) but not for many channels (CHB-MIT's 18 give 262,144). A threshold keyed on how many sensors of each type are working, or "sensor working" flags as model inputs, would scale.
 - Results are cross-validation on the 30 pilot patients; the success target is finally judged on the 29 held-out patients.
+
+### Robustness to injected faults (2026-10-23)
+
+([`evaluate.py`](../src/seizure/faults/evaluate.py), [`faults_eval.csv`](../results/tables/faults_eval.csv))
+
+The main experiment: real fault types that start partway through a recording, detected by the health check (Step 3), with the seizure model adapting (Steps 5.3 and 6).
+
+#### Design
+
+- **Faults:** pops, decline, intermittent dropout at 25, 50, 75 and 100% severity (Step 2).
+- **Sensor sets (16):** each of the 8 sensors alone; both EEG channels; all 4 motion sensors; 6 random sets of 5 of the 8 sensors with at least one EEG channel fault-free (the target case). 12 fault conditions × 16 sets = 192 scenarios.
+- **Assembling a scenario:** the faulty sensors' features are swapped in from the onset, normalised with the patient's **clean** median and MAD (a monitor calibrates before faults appear), and their context features recomputed.
+- **Three ways of running the seizure model:**
+
+| Way | What happens |
+|---|---|
+| A, no health check | Faulty features go in as they are; the fold's fixed clean threshold |
+| B, health check | Sensors the health check switches off are blanked for that second; the threshold is the sensor-aware one for the sensors it believes are working |
+| C, perfect health check | As B, but using the true labels (failed = effective severity ≥ 0.6) |
+
+- **Models:** classic and classic + TDA with sensor-dropout training, and classic + TDA with normal training. 1,728 results in total.
+- **Scoring** as in 5.7. Where nothing is switched off, B and C are identical to A and reuse its result.
+- **Run time:** two processes of 6 fault conditions each, about 70 minutes.
+
+```
+drop (points) = seizures caught on clean data − seizures caught with the fault
+average drop  = mean over the six 5-of-8 sensor sets;   pass if ≤ 15
+clean data: classic + TDA 77.9%, classic 73.9% (both with dropout training)
+```
+
+#### Faults on 5 of 8 sensors
+
+Seizures caught, classic + TDA:
+
+| Fault | Way | 25% | 50% | 75% | 100% |
+|---|---|---|---|---|---|
+| Pops | No health check | 74.6% | 68.3% | 61.2% | 52.9% |
+| | **Health check** | **77.0%** | **75.5%** | **76.6%** | **76.0%** |
+| | Perfect check | 74.6% | 68.3% | 75.5% | 73.7% |
+| Decline | No health check | 66.3% | 64.7% | 60.2% | 54.1% |
+| | **Health check** | **69.2%** | **68.7%** | **69.2%** | **68.8%** |
+| | Perfect check | 66.3% | 64.7% | 70.8% | 71.4% |
+| Dropout | No health check | 55.0% | 39.6% | 32.8% | 22.6% |
+| | **Health check** | 57.0% | 49.9% | **71.4%** | **76.6%** |
+| | Perfect check | 55.0% | 39.6% | 75.0% | 75.0% |
+
+Classic model with the health check, same scenarios: pops 73.3 / 71.9 / 71.1 / 70.8%; decline 60.5 / 61.4 / 63.2 / 58.3%; dropout 57.5 / 57.5 / 67.8 / 70.4%. False alarms with the health check: 6–11 per hour (a few cells reach 11.2, just over the 11 budget).
+
+**Target check, classic + TDA with the health check** (average drop in points):
+
+| Fault | 25% | 50% | 75% | 100% |
+|---|---|---|---|---|
+| Pops | ✓ 0.9 | ✓ 2.4 | ✓ 1.3 | ✓ 1.9 |
+| Decline | ✓ 8.7 | ✓ 9.2 | ✓ 8.7 | ✓ 9.1 |
+| Dropout | ✗ 21.0 | ✗ 28.0 | ✓ 6.5 | ✓ 1.4 |
+
+**Met on average in 10 of 12 fault conditions** with the health check, against 3 of 12 without it.
+
+![](../results/figures/11_faults_5of8.png)
+
+#### Fault on a single sensor
+
+With the health check, a single faulty sensor of any type and severity leaves classic + TDA at **73–79%** of seizures caught, about the same as clean data. Without it, a full dropout on one sensor costs about 23 points (55.2%).
+
+![](../results/figures/12_faults_single.png)
+
+#### What the injected-fault tests show
+
+1. **The health check is what makes the system robust.** At full severity on 5 sensors it turns 22.6% into 76.6% (dropout) and 52.9% into 76.0% (pops).
+2. **TDA is more robust than the classic model:** ahead in 10 of 12 conditions with the health check (pops at 100%: 76.0% vs 70.8%; decline at 50%: 68.7% vs 61.4%). The exceptions are the two mild dropouts.
+3. **Partial dropout (25–50%) is the weak spot.** Such a sensor is "degraded" by our definition, so it stays on while half its windows are flat. Even the perfect check keeps it on, which is why the perfect check is worse there (39.6% at 50%).
+4. **Our health check sometimes beats the "perfect" one,** by switching off badly hit "degraded" sensors. The 0.6 line that defines "failed" is not the best place to draw it; labelling each window by whether its own data is damaged (fix D) addresses this.
 
 ---
 
