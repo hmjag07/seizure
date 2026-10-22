@@ -495,6 +495,8 @@ F1(failed)  = 2 × (switched off and truly failed) ÷ (switched off + truly fail
 
 ### 3.4 Results
 
+*First version, with severity labels (3.2). The final version uses window-level labels: see 3.7.*
+
 **Most likely class, per second** (rows = truth):
 
 | Truth ↓ / answer → | Healthy | Degraded | Failed |
@@ -529,11 +531,51 @@ Almost all confusion is between degraded and failed at 50–75% severity, next t
 - **Intermittent faults are labelled by their overall severity, not by what is in the window.** Between pops, a 75%-severity window can look clean (median largest jump 12 when called degraded, 44 when called failed). The model is often describing the window correctly and the label is too blunt.
 - **A decline crosses 0.6 gradually,** so seconds near the line are ambiguous.
 
-Longer memory alone changed little (failed called degraded: 19.9% → 19.5%); smoothing with a chosen cut-off gave the gain. Labelling each window by whether its data is actually damaged ("fix D") targets the first cause directly; see Step 8.
+Longer memory alone changed little (failed called degraded: 19.9% → 19.5%); smoothing with a chosen cut-off gave the gain. Labelling each window by whether its data is actually damaged ("fix D") targets the first cause directly: see 3.7.
 
 ### 3.6 Caveats
 - At 25% severity a decline is already caught 99% of the time, because the added noise is sized against the raw signal's spread, which includes slow drift. Real mild declines are likely subtler.
 - These are injected faults with known truth. The real broken motion sensors found in Step 1.4 are a natural further test.
+
+### 3.7 Window-level labels ("fix D", 2026-10-23; [`window_labels.py`](../src/seizure/faults/window_labels.py))
+
+**Why.** With severity labels (3.2), every second after an intermittent fault's onset got the fault's overall label, even when the window itself was clean (between pops) or completely flat (inside a dropout burst of a "degraded" 50% dropout). The seizure-model evaluation (Step 8) showed the cost: partial dropouts (25–50%) stayed switched on while half their windows were flat.
+
+**What changed.** Each faulty window is labelled by what the fault did **inside that window**:
+
+| Fault | Measured in the window | Failed | Degraded | Healthy |
+|---|---|---|---|---|
+| Dropout | share of samples flattened | ≥ 0.5 | > 0 | 0 |
+| Pop | largest added step, in units of the signal's spread | ≥ 5 | ≥ 1 | < 1 (no pop, or faded) |
+| Decline | effective severity at the window's end (unchanged) | ≥ 0.6 | > 0 | 0 |
+
+The cut-offs (half flat; 5× and 1× the spread) are judgement calls.
+
+**How, without recomputing features.** The faults were generated from seeded random numbers whose use does not depend on the signal's values. Replaying `inject()` on arrays of ones with the same length, start, seed and channel order reproduces where every pop and flat burst fell. Checked against the real fault build on brain, heart and motion sensors at two severities each: identical flat samples and identical pop steps (zero difference). 16.6 million window labels, about 15 s per patient.
+
+**Effect on the labels** (share of faulty windows):
+
+| Fault, severity | Healthy | Degraded | Failed | Severity label was |
+|---|---|---|---|---|
+| Dropout 25% | 27% | 33% | 40% | all degraded |
+| Dropout 50% | 8% | 21% | 71% | all degraded |
+| Dropout 75% | 1% | 8% | 91% | all failed |
+| Pop 25% | 75% | 25% | 0.5% | all degraded |
+| Pop 75% | 38% | 9% | 53% | all failed |
+| Pop 100% | 28% | 9% | 64% | all failed |
+
+**Health check retrained on window labels** (same features, smoothing and cut-off selection; cut-offs 0.5–0.55):
+
+| | Severity labels | Window labels |
+|---|---|---|
+| Truly failed, called failed | 79.6% | **87.3%** |
+| Truly failed, called degraded | 19.5% | **8.7%** |
+| Truly degraded, called degraded | 81.3% | 70.4% |
+| Healthy EEG1 / EEG2 switched off | 0.2% / 0.1% | 0.1% / 0.1% |
+| Healthy ECG / EMG switched off | 1.9% / 0.7% | 3.0% / 0.6% |
+| Healthy chest / neck gyroscope switched off | 2.1% / 8.1% | **15.7% / 22.2%** |
+
+The confusion between failed and degraded is more than halved. The side effect is on the gyroscopes: the model now learns that "partly flat" means failed, and a still gyroscope repeats the same value for long stretches. They are among the least informative sensors, and the detection results in Step 8 include this effect. Results of the first version are kept as `results/tables/health_*_severity_labels.csv`.
 
 ---
 
@@ -1183,7 +1225,46 @@ With the health check, a single faulty sensor of any type and severity leaves cl
 1. **The health check is what makes the system robust.** At full severity on 5 sensors it turns 22.6% into 76.6% (dropout) and 52.9% into 76.0% (pops).
 2. **TDA is more robust than the classic model:** ahead in 10 of 12 conditions with the health check (pops at 100%: 76.0% vs 70.8%; decline at 50%: 68.7% vs 61.4%). The exceptions are the two mild dropouts.
 3. **Partial dropout (25–50%) is the weak spot.** Such a sensor is "degraded" by our definition, so it stays on while half its windows are flat. Even the perfect check keeps it on, which is why the perfect check is worse there (39.6% at 50%).
-4. **Our health check sometimes beats the "perfect" one,** by switching off badly hit "degraded" sensors. The 0.6 line that defines "failed" is not the best place to draw it; labelling each window by whether its own data is damaged (fix D) addresses this.
+4. **Our health check sometimes beats the "perfect" one,** by switching off badly hit "degraded" sensors. The 0.6 line that defines "failed" is not the best place to draw it; labelling each window by whether its own data is damaged (fix D) addresses this; see the results below.
+
+#### With window-level labels (fix D, 2026-10-23)
+
+The same evaluation, re-run with the health check trained on window-level labels (Step 3.7); the perfect check now also uses window labels. Results of the first version are kept in [`faults_eval_severity_labels.csv`](../results/tables/faults_eval_severity_labels.csv); the tables above (Design, 5-of-8 and single-sensor) describe that first version.
+
+Classic + TDA with the health check, faults on 5 of 8 sensors (clean 77.9%):
+
+| Fault | Labels | 25% | 50% | 75% | 100% |
+|---|---|---|---|---|---|
+| Dropout | severity | 57.0% | 49.9% | 71.4% | 76.6% |
+| | **window** | **75.0%** | **75.6%** | 74.4% | 74.9% |
+| Pops | severity | 77.0% | 75.5% | 76.6% | 76.0% |
+| | **window** | 78.1% | 77.6% | 78.3% | 76.0% |
+| Decline | severity | 69.2% | 68.7% | 69.2% | 68.8% |
+| | **window** | 68.7% | 68.3% | 68.7% | 68.6% |
+
+Target check, classic + TDA with the window-label health check (average drop in points; share of the six 5-of-8 sets passing):
+
+| Fault | 25% | 50% | 75% | 100% |
+|---|---|---|---|---|
+| Pops | ✓ −0.2 (6/6) | ✓ 0.3 (6/6) | ✓ −0.4 (6/6) | ✓ 1.9 (6/6) |
+| Decline | ✓ 9.2 (6/6) | ✓ 9.6 (5/6) | ✓ 9.2 (4/6) | ✓ 9.3 (4/6) |
+| Dropout | ✓ 2.9 (6/6) | ✓ 2.3 (6/6) | ✓ 3.5 (6/6) | ✓ 3.0 (6/6) |
+
+| Model (health check) | Fault conditions meeting the target, severity labels | Window labels |
+|---|---|---|
+| **Classic + TDA** | 10 of 12 | **12 of 12** |
+| Classic | 9 of 12 | 11 of 12 (misses decline at 100% by 0.1: drop 15.1) |
+
+False alarms with the health check: 5.8–11.6 per hour (a few cells slightly over the 11 budget). A fault on a single sensor leaves classic + TDA at **78–80%** caught for every fault type and severity, equal to or slightly above clean data.
+
+![](../results/figures/13_window_labels_before_after.png)
+
+**What fix D shows:**
+1. **The partial-dropout gap is closed** (57.0% → 75.0% at 25%, 49.9% → 75.6% at 50%): half-flat windows are now switched off instead of confusing the model.
+2. **The complete system** (health check with window labels, sensor-dropout training, sensor-aware threshold) **meets the robustness target in every fault condition** with classic + TDA, and TDA stays ahead of the classic model.
+3. **Labelling faults by what is in the window matters**, a methods point for the paper.
+4. **Our health check again beats the "perfect" one in places** (dropout 25%: 75.0% vs 69.8%), because it also switches off some damaged windows that are not "failed": the dropout-trained model copes better with a missing sensor than with a damaged one.
+5. **Remaining limits:** decline is now the hardest fault (68–69% caught, worst set drop 18.1); resting gyroscopes are over-flagged; a few cells exceed 11 false alarms per hour; all results are cross-validation on 30 pilot patients.
 
 ---
 
