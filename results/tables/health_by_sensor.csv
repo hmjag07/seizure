@@ -1,9 +1,9 @@
 sensor,healthy_switched_off_before,healthy_switched_off_now
-ACC_chest,0.003,0.005
-ACC_neck,0.0,0.0
-ECG,0.021,0.019
-EEG1,0.003,0.002
-EEG2,0.004,0.001
-EMG,0.01,0.007
-GYR_chest,0.016,0.021
-GYR_neck,0.072,0.081
+ACC_chest,0.011,0.009
+ACC_neck,0.005,0.002
+ECG,0.029,0.03
+EEG1,0.007,0.001
+EEG2,0.006,0.001
+EMG,0.008,0.006
+GYR_chest,0.15,0.157
+GYR_neck,0.222,0.222

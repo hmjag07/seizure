@@ -1,4 +1,4 @@
 y,switched_off_before,switched_off_now
-degraded,0.143,0.19
-failed,0.796,0.859
-healthy,0.016,0.017
+degraded,0.176,0.301
+failed,0.873,0.856
+healthy,0.056,0.247

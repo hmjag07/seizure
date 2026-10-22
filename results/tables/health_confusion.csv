@@ -1,4 +1,4 @@
 y,degraded,failed,healthy
-degraded,0.813,0.143,0.044
-failed,0.195,0.796,0.009
-healthy,0.147,0.016,0.837
+degraded,0.704,0.176,0.12
+failed,0.087,0.873,0.04
+healthy,0.067,0.056,0.877
