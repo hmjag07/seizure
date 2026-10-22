@@ -291,6 +291,41 @@ def fig_sensor_aware(r):
     save(fig, "10_sensor_aware")
 
 
+FAULT_NAMES = {"pop": "Electrode pops", "decline": "Gradual decline", "dropout": "Intermittent dropout"}
+CLEAN_SENS = {("dropout", "classic+TDA"): 0.779, ("dropout", "classic"): 0.739, ("clean", "classic+TDA"): 0.769}
+
+
+def fig_fault_curves(r, sel, title, name, target=False):
+    """Seizures caught vs fault severity, one panel per fault type (rows chosen by sel)."""
+    lines = [(("dropout", "classic+TDA", "B"), MODELS["classic+TDA"][1], "-", "Classic + TDA, health check"),
+             (("dropout", "classic+TDA", "A"), MODELS["classic+TDA"][1], ":", "Classic + TDA, no health check"),
+             (("dropout", "classic+TDA", "C"), INK2, "--", "Classic + TDA, perfect health check"),
+             (("dropout", "classic", "B"), MODELS["classic"][1], "-", "Classic, health check")]
+    fig, axes = plt.subplots(1, 3, figsize=(13, 4.6), sharey=True)
+    s = r[sel]
+    for ax, fault in zip(axes, ("pop", "decline", "dropout")):
+        for (tr, nm, mode), color, style, label in lines:
+            g = s[(s.fault == fault) & (s.training == tr) & (s.model == nm) & (s["mode"] == mode)]
+            g = g.groupby("severity").sensitivity.mean()
+            x = [0.0] + list(g.index)
+            y = [CLEAN_SENS[(tr, nm)]] + list(g.values)
+            ax.plot(x, y, ls=style, color=color, marker="o", ms=5, label=label)
+        if target:
+            ax.axhline(CLEAN_SENS[("dropout", "classic+TDA")] - 0.15, color=MUTED, lw=1, ls="--")
+        ax.set_title(FAULT_NAMES[fault], fontsize=11)
+        ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0], ["0%", "25%", "50%", "75%", "100%"])
+        ax.set_xlabel("Fault severity")
+        ax.set_ylim(0, 1)
+        ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
+    axes[0].set_ylabel("Seizures caught")
+    axes[0].legend(loc="lower left", fontsize=8)
+    if target:
+        axes[0].text(0.02, CLEAN_SENS[("dropout", "classic+TDA")] - 0.15 + 0.015, "target line", fontsize=8, color=INK2)
+    fig.suptitle(title, x=0.01, ha="left", fontsize=13, fontweight="bold")
+    fig.tight_layout()
+    save(fig, name)
+
+
 def main():
     p = pd.read_parquet(CACHE.parent / "predictions" / "clean_oof.parquet")
     summary = pd.read_csv(TABLES / "model_clean_summary.csv")
@@ -315,6 +350,13 @@ def main():
     aware = TABLES / "robustness_sensor_aware.csv"
     if aware.exists():
         fig_sensor_aware(pd.read_csv(aware))
+    faults = TABLES / "faults_eval.csv"
+    if faults.exists():
+        f = pd.read_csv(faults)
+        fig_fault_curves(f, (f.n_sensors == 5) & f.eeg_alive,
+                         "Injected faults on 5 of 8 sensors (at least one EEG fault-free)", "11_faults_5of8", target=True)
+        fig_fault_curves(f, f.n_sensors == 1, "Injected fault on a single sensor (average over the 8 sensors)",
+                         "12_faults_single")
     print("written to", FIGS)
 
 

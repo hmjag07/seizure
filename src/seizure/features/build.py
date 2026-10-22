@@ -68,6 +68,23 @@ def gravity_scales(sub, plan, headers):
     return per_run
 
 
+def sensor_features(name, x, stats, params, fetch_t0, ends):
+    """Classic and TDA-A features of one cleaned signal (not ECG heart rate) for windows ending at ends."""
+    fs, L = pp.FS[name], WINDOW_S[name]
+    med, sd = stats.get(name, (0.0, 1.0))
+    w = windows((x - med) / sd, fs, L, fetch_t0, ends)
+    out = {}
+    if name.startswith("EEG"):
+        out.update(classic.eeg_features(w, fs, name))
+    elif name == "EMG":
+        out.update(classic.emg_features(w))
+    elif name != "ECG":
+        out.update(classic.motion_features(w, name))
+    if name in params:
+        out.update(tda.tda_features(w, *params[name], name=f"TDA_{name}"))
+    return out
+
+
 def chunk_features(sub, row, raw, scales, stats, seizures, impd, params):
     sig = pp.clean_chunk(raw["eeg"], raw["ecg"], raw["emg"], raw["mov"], scales)
     ends = window_ends(row.fetch_t0, row.t0, row.t1)
@@ -81,24 +98,15 @@ def chunk_features(sub, row, raw, scales, stats, seizures, impd, params):
         peaks = classic.ecg_rpeaks(sig["ECG"], pp.FS["ECG"])
         out.update(classic.hr_features(peaks, ends, WINDOW_S["ECG"], row.fetch_t0))
     for name in pp.SIGNALS:
-        if name not in sig:
-            continue
-        fs, L = pp.FS[name], WINDOW_S[name]
-        med, sd = stats.get(name, (0.0, 1.0))
-        w = windows((sig[name] - med) / sd, fs, L, row.fetch_t0, ends)
-        if name.startswith("EEG"):
-            out.update(classic.eeg_features(w, fs, name))
-        elif name == "EMG":
-            out.update(classic.emg_features(w))
-        elif name != "ECG":
-            out.update(classic.motion_features(w, name))
-        if name in params:
-            out.update(tda.tda_features(w, *params[name], name=f"TDA_{name}"))
+        if name in sig:
+            out.update(sensor_features(name, sig[name], stats, params, row.fetch_t0, ends))
     return pd.DataFrame(out)
 
 
-def build_subject(sub, params):
-    t_start = time.time()
+def patient_setup(sub):
+    """Everything per patient that does not depend on a chunk: plan, headers, seizure and impedance
+    intervals, gravity scales, and normalisation statistics from the background chunks.
+    Also returns the streamed background chunks, so they need not be streamed twice."""
     plan = load_plan().query("subject == @sub")
     runs = sorted(plan.run.unique())
     headers = {(r, m): read_header(edf_url(sub, r, m)) for r in runs for m in MODALITIES}
@@ -110,21 +118,26 @@ def build_subject(sub, params):
     scales = gravity_scales(sub, plan, headers)
 
     # Patient normalisation from background chunks only (no seizure data).
-    bg = {}
-    for row in plan.query("kind == 'background'").itertuples():
-        raw = stream(sub, row.run, row.fetch_t0, row.t1, headers=headers)
-        bg[row.Index] = raw
+    bg = {row.Index: stream(sub, row.run, row.fetch_t0, row.t1, headers=headers)
+          for row in plan.query("kind == 'background'").itertuples()}
     collected = {}
     for idx, raw in bg.items():
         for name, x in pp.clean_chunk(raw["eeg"], raw["ecg"], raw["emg"], raw["mov"],
                                       scales[plan.loc[idx, "run"]]).items():
             collected.setdefault(name, []).append(x[int(30 * pp.FS[name]):])  # skip filter warm-up
     stats = {name: pp.robust_stats(xs) for name, xs in collected.items()}
+    return dict(plan=plan, headers=headers, sz=sz, impd=impd, scales=scales, stats=stats, bg=bg)
 
+
+def build_subject(sub, params):
+    t_start = time.time()
+    ctx = patient_setup(sub)
+    plan, scales, bg = ctx["plan"], ctx["scales"], ctx["bg"]
     frames = []
     for row in plan.itertuples():
-        raw = bg.pop(row.Index, None) or stream(sub, row.run, row.fetch_t0, row.t1, headers=headers)
-        frames.append(chunk_features(sub, row, raw, scales[row.run], stats, sz[row.run], impd[row.run], params))
+        raw = bg.pop(row.Index, None) or stream(sub, row.run, row.fetch_t0, row.t1, headers=ctx["headers"])
+        frames.append(chunk_features(sub, row, raw, scales[row.run], ctx["stats"], ctx["sz"][row.run],
+                                     ctx["impd"][row.run], params))
     df = pd.concat(frames, ignore_index=True)
     CACHE.mkdir(parents=True, exist_ok=True)
     df.to_parquet(CACHE / f"{sub}.parquet")
