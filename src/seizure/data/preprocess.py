@@ -109,6 +109,33 @@ def clean_chunk(eeg, ecg, emg, mov, scales):
     return out
 
 
+def clean_one(raw, name, scales):
+    """One cleaned signal (SIGNALS naming) from raw read_physical() dicts, without the stuck-axis check.
+
+    Used for injected faults: the stuck check looks at the whole chunk, which would let a fault
+    that starts later remove the sensor from the start. Returns None if the signal is absent.
+    """
+    if name in ("EEG1", "EEG2"):
+        keys = [k for k in raw["eeg"] if k in EEG_NAMES]
+        i = 0 if name == "EEG1" else 1
+        return clean_eeg(raw["eeg"][keys[i]][0], FS[name]) if len(keys) > i else None
+    if name == "ECG":
+        return clean_ecg(raw["ecg"]["ECG SD"][0], FS[name]) if "ECG SD" in raw["ecg"] else None
+    if name == "EMG":
+        return clean_emg(raw["emg"]["EMG SD"][0], FS[name]) if "EMG SD" in raw["emg"] else None
+    kind, dev = name.split("_")
+    keys = [f"{DEVICES[dev]} {kind} {a}" for a in ("XYZ" if kind == "ACC" else "ABC")]
+    if not all(k in raw["mov"] for k in keys):
+        return None
+    xyz = np.stack([raw["mov"][k][0] for k in keys])
+    sos = _sos("lowpass", 10, 25)
+    if kind == "GYR":
+        return sosfilt(sos, np.linalg.norm(xyz, axis=0))
+    if not valid_scale(scales.get(dev)):
+        return None
+    return sosfilt(sos, np.linalg.norm(xyz / scales[dev], axis=0) - 1.0)
+
+
 def robust_stats(arrays):
     """Median and robust std (1.4826 x MAD) of concatenated arrays, for per-patient z-scoring."""
     x = np.concatenate(arrays)

@@ -1,0 +1,1729 @@
+fault,severity,sensors,n_sensors,eeg_alive,training,model,mode,sensitivity,fa_per_h
+pop,0.25,EEG1,1,True,dropout,classic+TDA,A,0.7688,10.1589
+pop,0.25,EEG1,1,True,dropout,classic+TDA,B,0.7839,10.752
+pop,0.25,EEG1,1,True,dropout,classic+TDA,C,0.7688,10.1589
+pop,0.25,EEG1,1,True,dropout,classic,A,0.7387,10.5879
+pop,0.25,EEG1,1,True,dropout,classic,B,0.7588,11.118
+pop,0.25,EEG1,1,True,dropout,classic,C,0.7387,10.5879
+pop,0.25,EEG1,1,True,clean,classic+TDA,A,0.7739,10.3355
+pop,0.25,EEG1,1,True,clean,classic+TDA,B,0.799,10.5753
+pop,0.25,EEG1,1,True,clean,classic+TDA,C,0.7739,10.3355
+pop,0.25,EEG2,1,True,dropout,classic+TDA,A,0.7638,10.1589
+pop,0.25,EEG2,1,True,dropout,classic+TDA,B,0.7739,10.4744
+pop,0.25,EEG2,1,True,dropout,classic+TDA,C,0.7638,10.1589
+pop,0.25,EEG2,1,True,dropout,classic,A,0.7487,10.5248
+pop,0.25,EEG2,1,True,dropout,classic,B,0.7437,10.9918
+pop,0.25,EEG2,1,True,dropout,classic,C,0.7487,10.5248
+pop,0.25,EEG2,1,True,clean,classic+TDA,A,0.7638,10.3482
+pop,0.25,EEG2,1,True,clean,classic+TDA,B,0.7739,10.6763
+pop,0.25,EEG2,1,True,clean,classic+TDA,C,0.7638,10.3482
+pop,0.25,ECG,1,True,dropout,classic+TDA,A,0.7688,10.3482
+pop,0.25,ECG,1,True,dropout,classic+TDA,B,0.799,10.8403
+pop,0.25,ECG,1,True,dropout,classic+TDA,C,0.7688,10.3482
+pop,0.25,ECG,1,True,dropout,classic,A,0.7487,10.3986
+pop,0.25,ECG,1,True,dropout,classic,B,0.7638,10.9413
+pop,0.25,ECG,1,True,dropout,classic,C,0.7487,10.3986
+pop,0.25,ECG,1,True,clean,classic+TDA,A,0.7688,10.6258
+pop,0.25,ECG,1,True,clean,classic+TDA,B,0.7789,10.7394
+pop,0.25,ECG,1,True,clean,classic+TDA,C,0.7688,10.6258
+pop,0.25,EMG,1,True,dropout,classic+TDA,A,0.7789,10.222
+pop,0.25,EMG,1,True,dropout,classic+TDA,B,0.809,10.6006
+pop,0.25,EMG,1,True,dropout,classic+TDA,C,0.7789,10.222
+pop,0.25,EMG,1,True,dropout,classic,A,0.7437,10.3986
+pop,0.25,EMG,1,True,dropout,classic,B,0.7638,10.7899
+pop,0.25,EMG,1,True,dropout,classic,C,0.7437,10.3986
+pop,0.25,EMG,1,True,clean,classic+TDA,A,0.7688,10.4996
+pop,0.25,EMG,1,True,clean,classic+TDA,B,0.794,10.5375
+pop,0.25,EMG,1,True,clean,classic+TDA,C,0.7688,10.4996
+pop,0.25,ACC_neck,1,True,dropout,classic+TDA,A,0.7286,9.1493
+pop,0.25,ACC_neck,1,True,dropout,classic+TDA,B,0.7437,9.7172
+pop,0.25,ACC_neck,1,True,dropout,classic+TDA,C,0.7286,9.1493
+pop,0.25,ACC_neck,1,True,dropout,classic,A,0.7136,9.2755
+pop,0.25,ACC_neck,1,True,dropout,classic,B,0.7437,9.7677
+pop,0.25,ACC_neck,1,True,dropout,classic,C,0.7136,9.2755
+pop,0.25,ACC_neck,1,True,clean,classic+TDA,A,0.7437,8.8212
+pop,0.25,ACC_neck,1,True,clean,classic+TDA,B,0.7538,9.3007
+pop,0.25,ACC_neck,1,True,clean,classic+TDA,C,0.7437,8.8212
+pop,0.25,ACC_chest,1,True,dropout,classic+TDA,A,0.7839,10.7646
+pop,0.25,ACC_chest,1,True,dropout,classic+TDA,B,0.794,11.1432
+pop,0.25,ACC_chest,1,True,dropout,classic+TDA,C,0.7839,10.7646
+pop,0.25,ACC_chest,1,True,dropout,classic,A,0.7337,10.7394
+pop,0.25,ACC_chest,1,True,dropout,classic,B,0.7588,11.2189
+pop,0.25,ACC_chest,1,True,dropout,classic,C,0.7337,10.7394
+pop,0.25,ACC_chest,1,True,clean,classic+TDA,A,0.7688,11.0422
+pop,0.25,ACC_chest,1,True,clean,classic+TDA,B,0.7889,11.2315
+pop,0.25,ACC_chest,1,True,clean,classic+TDA,C,0.7688,11.0422
+pop,0.25,GYR_neck,1,True,dropout,classic+TDA,A,0.7588,10.1715
+pop,0.25,GYR_neck,1,True,dropout,classic+TDA,B,0.7839,10.651
+pop,0.25,GYR_neck,1,True,dropout,classic+TDA,C,0.7588,10.1715
+pop,0.25,GYR_neck,1,True,dropout,classic,A,0.7387,10.487
+pop,0.25,GYR_neck,1,True,dropout,classic,B,0.7437,10.853
+pop,0.25,GYR_neck,1,True,dropout,classic,C,0.7387,10.487
+pop,0.25,GYR_neck,1,True,clean,classic+TDA,A,0.7688,10.3103
+pop,0.25,GYR_neck,1,True,clean,classic+TDA,B,0.7839,10.5879
+pop,0.25,GYR_neck,1,True,clean,classic+TDA,C,0.7688,10.3103
+pop,0.25,GYR_chest,1,True,dropout,classic+TDA,A,0.7789,10.2851
+pop,0.25,GYR_chest,1,True,dropout,classic+TDA,B,0.7889,10.8151
+pop,0.25,GYR_chest,1,True,dropout,classic+TDA,C,0.7789,10.2851
+pop,0.25,GYR_chest,1,True,dropout,classic,A,0.7437,10.3482
+pop,0.25,GYR_chest,1,True,dropout,classic,B,0.7588,10.9918
+pop,0.25,GYR_chest,1,True,dropout,classic,C,0.7437,10.3482
+pop,0.25,GYR_chest,1,True,clean,classic+TDA,A,0.794,10.4365
+pop,0.25,GYR_chest,1,True,clean,classic+TDA,B,0.809,10.6889
+pop,0.25,GYR_chest,1,True,clean,classic+TDA,C,0.794,10.4365
+pop,0.25,EEG1 EEG2,2,False,dropout,classic+TDA,A,0.7588,10.1589
+pop,0.25,EEG1 EEG2,2,False,dropout,classic+TDA,B,0.7688,10.7646
+pop,0.25,EEG1 EEG2,2,False,dropout,classic+TDA,C,0.7588,10.1589
+pop,0.25,EEG1 EEG2,2,False,dropout,classic,A,0.7437,10.9665
+pop,0.25,EEG1 EEG2,2,False,dropout,classic,B,0.7437,11.6606
+pop,0.25,EEG1 EEG2,2,False,dropout,classic,C,0.7437,10.9665
+pop,0.25,EEG1 EEG2,2,False,clean,classic+TDA,A,0.7688,10.1462
+pop,0.25,EEG1 EEG2,2,False,clean,classic+TDA,B,0.7688,10.651
+pop,0.25,EEG1 EEG2,2,False,clean,classic+TDA,C,0.7688,10.1462
+pop,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,A,0.7387,9.8055
+pop,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,B,0.7487,10.3608
+pop,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,C,0.7387,9.8055
+pop,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,A,0.7136,9.5531
+pop,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,B,0.7186,10.2851
+pop,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,C,0.7136,9.5531
+pop,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,A,0.7487,9.6036
+pop,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,B,0.7588,10.1336
+pop,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,C,0.7487,9.6036
+pop,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.7538,9.5784
+pop,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.7789,10.1967
+pop,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7538,9.5784
+pop,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,A,0.7286,9.6919
+pop,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,B,0.7437,10.3103
+pop,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,C,0.7286,9.6919
+pop,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.7538,9.4648
+pop,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.7487,10.2977
+pop,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.7538,9.4648
+pop,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,A,0.7286,9.1872
+pop,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,B,0.7538,9.6793
+pop,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,C,0.7286,9.1872
+pop,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,A,0.7286,9.4395
+pop,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,B,0.7387,10.0453
+pop,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,C,0.7286,9.4395
+pop,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,A,0.7236,8.859
+pop,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,B,0.7387,9.3638
+pop,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,C,0.7236,8.859
+pop,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,A,0.7387,9.2124
+pop,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,B,0.7688,9.7803
+pop,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,C,0.7387,9.2124
+pop,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,A,0.7236,9.5405
+pop,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,B,0.7085,10.0327
+pop,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,C,0.7236,9.5405
+pop,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,A,0.7487,8.7833
+pop,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,B,0.7387,9.7677
+pop,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,C,0.7487,8.7833
+pop,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,A,0.7337,9.5026
+pop,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,B,0.7588,10.1336
+pop,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,C,0.7337,9.5026
+pop,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,A,0.7387,9.9822
+pop,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,B,0.7186,10.5501
+pop,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,C,0.7387,9.9822
+pop,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,A,0.7387,9.2376
+pop,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,B,0.7487,10.1841
+pop,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,C,0.7387,9.2376
+pop,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,A,0.7337,9.591
+pop,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,B,0.7387,10.1715
+pop,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,C,0.7337,9.591
+pop,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,A,0.7136,9.8308
+pop,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,B,0.7186,10.3229
+pop,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,C,0.7136,9.8308
+pop,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,A,0.7387,9.5657
+pop,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,B,0.7487,10.1589
+pop,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,C,0.7387,9.5657
+pop,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.7889,10.9539
+pop,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.8191,11.5597
+pop,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7889,10.9539
+pop,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,A,0.7538,11.0549
+pop,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,B,0.7688,11.6859
+pop,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,C,0.7538,11.0549
+pop,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.7789,11.3073
+pop,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.799,11.7868
+pop,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.7789,11.3073
+pop,0.75,EEG1,1,True,dropout,classic+TDA,A,0.7638,9.8308
+pop,0.75,EEG1,1,True,dropout,classic+TDA,B,0.794,10.853
+pop,0.75,EEG1,1,True,dropout,classic+TDA,C,0.7638,10.4617
+pop,0.75,EEG1,1,True,dropout,classic,A,0.7437,11.2189
+pop,0.75,EEG1,1,True,dropout,classic,B,0.7538,11.0422
+pop,0.75,EEG1,1,True,dropout,classic,C,0.7337,10.5375
+pop,0.75,EEG1,1,True,clean,classic+TDA,A,0.7588,10.0453
+pop,0.75,EEG1,1,True,clean,classic+TDA,B,0.7688,10.8277
+pop,0.75,EEG1,1,True,clean,classic+TDA,C,0.7186,10.5248
+pop,0.75,EEG2,1,True,dropout,classic+TDA,A,0.7437,9.9948
+pop,0.75,EEG2,1,True,dropout,classic+TDA,B,0.7638,10.6384
+pop,0.75,EEG2,1,True,dropout,classic+TDA,C,0.7387,9.8434
+pop,0.75,EEG2,1,True,dropout,classic,A,0.7638,13.4905
+pop,0.75,EEG2,1,True,dropout,classic,B,0.7286,11.2442
+pop,0.75,EEG2,1,True,dropout,classic,C,0.7136,10.4113
+pop,0.75,EEG2,1,True,clean,classic+TDA,A,0.7337,10.3734
+pop,0.75,EEG2,1,True,clean,classic+TDA,B,0.7085,11.3704
+pop,0.75,EEG2,1,True,clean,classic+TDA,C,0.6633,10.853
+pop,0.75,ECG,1,True,dropout,classic+TDA,A,0.7889,10.8782
+pop,0.75,ECG,1,True,dropout,classic+TDA,B,0.799,10.9539
+pop,0.75,ECG,1,True,dropout,classic+TDA,C,0.7688,10.386
+pop,0.75,ECG,1,True,dropout,classic,A,0.7487,10.0958
+pop,0.75,ECG,1,True,dropout,classic,B,0.7286,10.8403
+pop,0.75,ECG,1,True,dropout,classic,C,0.7136,10.0327
+pop,0.75,ECG,1,True,clean,classic+TDA,A,0.7688,10.9539
+pop,0.75,ECG,1,True,clean,classic+TDA,B,0.7588,10.651
+pop,0.75,ECG,1,True,clean,classic+TDA,C,0.6985,10.0831
+pop,0.75,EMG,1,True,dropout,classic+TDA,A,0.7789,10.3482
+pop,0.75,EMG,1,True,dropout,classic+TDA,B,0.809,10.752
+pop,0.75,EMG,1,True,dropout,classic+TDA,C,0.794,10.3103
+pop,0.75,EMG,1,True,dropout,classic,A,0.7337,10.3355
+pop,0.75,EMG,1,True,dropout,classic,B,0.7588,10.9034
+pop,0.75,EMG,1,True,dropout,classic,C,0.7487,10.5627
+pop,0.75,EMG,1,True,clean,classic+TDA,A,0.7688,10.6258
+pop,0.75,EMG,1,True,clean,classic+TDA,B,0.7538,10.9791
+pop,0.75,EMG,1,True,clean,classic+TDA,C,0.7337,10.9287
+pop,0.75,ACC_neck,1,True,dropout,classic+TDA,A,0.6181,6.5875
+pop,0.75,ACC_neck,1,True,dropout,classic+TDA,B,0.7889,10.5248
+pop,0.75,ACC_neck,1,True,dropout,classic+TDA,C,0.7789,10.3355
+pop,0.75,ACC_neck,1,True,dropout,classic,A,0.5628,6.7011
+pop,0.75,ACC_neck,1,True,dropout,classic,B,0.7437,10.5375
+pop,0.75,ACC_neck,1,True,dropout,classic,C,0.7437,10.4365
+pop,0.75,ACC_neck,1,True,clean,classic+TDA,A,0.593,6.3351
+pop,0.75,ACC_neck,1,True,clean,classic+TDA,B,0.7739,10.5248
+pop,0.75,ACC_neck,1,True,clean,classic+TDA,C,0.7739,10.7394
+pop,0.75,ACC_chest,1,True,dropout,classic+TDA,A,0.7688,11.5849
+pop,0.75,ACC_chest,1,True,dropout,classic+TDA,B,0.7839,11.1558
+pop,0.75,ACC_chest,1,True,dropout,classic+TDA,C,0.7638,10.4996
+pop,0.75,ACC_chest,1,True,dropout,classic,A,0.7186,11.383
+pop,0.75,ACC_chest,1,True,dropout,classic,B,0.7588,11.3956
+pop,0.75,ACC_chest,1,True,dropout,classic,C,0.7286,10.5753
+pop,0.75,ACC_chest,1,True,clean,classic+TDA,A,0.7739,12.6702
+pop,0.75,ACC_chest,1,True,clean,classic+TDA,B,0.7688,11.5597
+pop,0.75,ACC_chest,1,True,clean,classic+TDA,C,0.7487,10.7268
+pop,0.75,GYR_neck,1,True,dropout,classic+TDA,A,0.7236,9.3638
+pop,0.75,GYR_neck,1,True,dropout,classic+TDA,B,0.7889,10.3482
+pop,0.75,GYR_neck,1,True,dropout,classic+TDA,C,0.7739,10.2851
+pop,0.75,GYR_neck,1,True,dropout,classic,A,0.7286,9.6415
+pop,0.75,GYR_neck,1,True,dropout,classic,B,0.7739,10.6763
+pop,0.75,GYR_neck,1,True,dropout,classic,C,0.7739,10.4996
+pop,0.75,GYR_neck,1,True,clean,classic+TDA,A,0.7186,9.0988
+pop,0.75,GYR_neck,1,True,clean,classic+TDA,B,0.7688,10.2346
+pop,0.75,GYR_neck,1,True,clean,classic+TDA,C,0.7739,10.2724
+pop,0.75,GYR_chest,1,True,dropout,classic+TDA,A,0.7588,10.386
+pop,0.75,GYR_chest,1,True,dropout,classic+TDA,B,0.799,10.6763
+pop,0.75,GYR_chest,1,True,dropout,classic+TDA,C,0.7839,10.222
+pop,0.75,GYR_chest,1,True,dropout,classic,A,0.7286,9.6162
+pop,0.75,GYR_chest,1,True,dropout,classic,B,0.7588,10.7772
+pop,0.75,GYR_chest,1,True,dropout,classic,C,0.7538,10.6132
+pop,0.75,GYR_chest,1,True,clean,classic+TDA,A,0.7538,10.3103
+pop,0.75,GYR_chest,1,True,clean,classic+TDA,B,0.799,11.0675
+pop,0.75,GYR_chest,1,True,clean,classic+TDA,C,0.7688,10.6006
+pop,0.75,EEG1 EEG2,2,False,dropout,classic+TDA,A,0.7487,9.8308
+pop,0.75,EEG1 EEG2,2,False,dropout,classic+TDA,B,0.7638,11.0549
+pop,0.75,EEG1 EEG2,2,False,dropout,classic+TDA,C,0.6834,10.5879
+pop,0.75,EEG1 EEG2,2,False,dropout,classic,A,0.7588,15.6737
+pop,0.75,EEG1 EEG2,2,False,dropout,classic,B,0.7387,11.9256
+pop,0.75,EEG1 EEG2,2,False,dropout,classic,C,0.7236,10.386
+pop,0.75,EEG1 EEG2,2,False,clean,classic+TDA,A,0.7437,10.7015
+pop,0.75,EEG1 EEG2,2,False,clean,classic+TDA,B,0.6131,10.752
+pop,0.75,EEG1 EEG2,2,False,clean,classic+TDA,C,0.4221,9.2124
+pop,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,A,0.5327,6.1332
+pop,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,B,0.7789,10.651
+pop,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,C,0.7839,10.651
+pop,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,A,0.5528,6.537
+pop,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,B,0.7186,10.0074
+pop,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,C,0.7688,10.3986
+pop,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,A,0.5126,6.5875
+pop,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,B,0.7387,10.2977
+pop,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,C,0.7236,10.3482
+pop,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.6281,7.1806
+pop,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.794,11.6732
+pop,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7739,10.3103
+pop,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,A,0.593,7.6475
+pop,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,B,0.7186,11.2442
+pop,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,C,0.7035,10.4996
+pop,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.603,7.8747
+pop,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.7337,11.4208
+pop,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.7236,10.3986
+pop,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,A,0.5226,5.5401
+pop,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,B,0.7538,10.2724
+pop,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,C,0.7739,10.487
+pop,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,A,0.5779,6.4361
+pop,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,B,0.7186,10.6006
+pop,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,C,0.7487,10.2472
+pop,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,A,0.5226,5.8682
+pop,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,B,0.7136,10.4617
+pop,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,C,0.6884,10.3608
+pop,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,A,0.5879,6.5244
+pop,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,B,0.7337,11.0044
+pop,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,C,0.7186,11.0927
+pop,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,A,0.5879,7.433
+pop,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,B,0.6533,11.0549
+pop,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,C,0.6231,10.3103
+pop,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,A,0.5427,6.2468
+pop,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,B,0.7035,11.4713
+pop,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,C,0.5779,9.7424
+pop,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,A,0.6231,7.2185
+pop,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,B,0.7337,11.2568
+pop,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,C,0.7035,10.3734
+pop,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,A,0.603,9.0483
+pop,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,B,0.6834,11.8247
+pop,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,C,0.6181,10.3103
+pop,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,A,0.6131,8.2785
+pop,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,B,0.7035,12.0644
+pop,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,C,0.6332,10.5879
+pop,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,A,0.5126,5.8429
+pop,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,B,0.7638,10.9918
+pop,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,C,0.7839,11.017
+pop,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,A,0.5729,6.9913
+pop,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,B,0.7487,10.752
+pop,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,C,0.7789,10.6258
+pop,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,A,0.4975,6.6253
+pop,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,B,0.7136,10.3608
+pop,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,C,0.7186,10.6384
+pop,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.799,13.5914
+pop,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.8191,11.8373
+pop,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7789,10.0831
+pop,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,A,0.7437,12.4178
+pop,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,B,0.7437,11.6101
+pop,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,C,0.7136,10.1715
+pop,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.7588,14.4748
+pop,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.6985,10.8656
+pop,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.6382,9.4648
+decline,0.25,EEG1,1,True,dropout,classic+TDA,A,0.7538,9.6667
+decline,0.25,EEG1,1,True,dropout,classic+TDA,B,0.7688,10.0958
+decline,0.25,EEG1,1,True,dropout,classic+TDA,C,0.7538,9.6667
+decline,0.25,EEG1,1,True,dropout,classic,A,0.7186,9.4648
+decline,0.25,EEG1,1,True,dropout,classic,B,0.7337,10.0831
+decline,0.25,EEG1,1,True,dropout,classic,C,0.7186,9.4648
+decline,0.25,EEG1,1,True,clean,classic+TDA,A,0.7638,10.2472
+decline,0.25,EEG1,1,True,clean,classic+TDA,B,0.7789,10.5122
+decline,0.25,EEG1,1,True,clean,classic+TDA,C,0.7638,10.2472
+decline,0.25,EEG2,1,True,dropout,classic+TDA,A,0.7487,9.061
+decline,0.25,EEG2,1,True,dropout,classic+TDA,B,0.7688,9.225
+decline,0.25,EEG2,1,True,dropout,classic+TDA,C,0.7487,9.061
+decline,0.25,EEG2,1,True,dropout,classic,A,0.7186,9.0231
+decline,0.25,EEG2,1,True,dropout,classic,B,0.7236,9.49
+decline,0.25,EEG2,1,True,dropout,classic,C,0.7186,9.0231
+decline,0.25,EEG2,1,True,clean,classic+TDA,A,0.7085,9.0231
+decline,0.25,EEG2,1,True,clean,classic+TDA,B,0.6935,9.4522
+decline,0.25,EEG2,1,True,clean,classic+TDA,C,0.7085,9.0231
+decline,0.25,ECG,1,True,dropout,classic+TDA,A,0.7437,9.8055
+decline,0.25,ECG,1,True,dropout,classic+TDA,B,0.7789,10.0201
+decline,0.25,ECG,1,True,dropout,classic+TDA,C,0.7437,9.8055
+decline,0.25,ECG,1,True,dropout,classic,A,0.7487,10.0201
+decline,0.25,ECG,1,True,dropout,classic,B,0.7638,10.4996
+decline,0.25,ECG,1,True,dropout,classic,C,0.7487,10.0201
+decline,0.25,ECG,1,True,clean,classic+TDA,A,0.7538,9.7803
+decline,0.25,ECG,1,True,clean,classic+TDA,B,0.7739,9.7803
+decline,0.25,ECG,1,True,clean,classic+TDA,C,0.7538,9.7803
+decline,0.25,EMG,1,True,dropout,classic+TDA,A,0.7487,9.3133
+decline,0.25,EMG,1,True,dropout,classic+TDA,B,0.7789,10.2093
+decline,0.25,EMG,1,True,dropout,classic+TDA,C,0.7487,9.3133
+decline,0.25,EMG,1,True,dropout,classic,A,0.7035,9.0357
+decline,0.25,EMG,1,True,dropout,classic,B,0.7286,9.8939
+decline,0.25,EMG,1,True,dropout,classic,C,0.7035,9.0357
+decline,0.25,EMG,1,True,clean,classic+TDA,A,0.7387,9.1998
+decline,0.25,EMG,1,True,clean,classic+TDA,B,0.7739,9.49
+decline,0.25,EMG,1,True,clean,classic+TDA,C,0.7387,9.1998
+decline,0.25,ACC_neck,1,True,dropout,classic+TDA,A,0.6834,7.4835
+decline,0.25,ACC_neck,1,True,dropout,classic+TDA,B,0.6985,8.165
+decline,0.25,ACC_neck,1,True,dropout,classic+TDA,C,0.6834,7.4835
+decline,0.25,ACC_neck,1,True,dropout,classic,A,0.593,6.6884
+decline,0.25,ACC_neck,1,True,dropout,classic,B,0.6181,7.5466
+decline,0.25,ACC_neck,1,True,dropout,classic,C,0.593,6.6884
+decline,0.25,ACC_neck,1,True,clean,classic+TDA,A,0.6633,7.4078
+decline,0.25,ACC_neck,1,True,clean,classic+TDA,B,0.6985,7.963
+decline,0.25,ACC_neck,1,True,clean,classic+TDA,C,0.6633,7.4078
+decline,0.25,ACC_chest,1,True,dropout,classic+TDA,A,0.7588,10.1967
+decline,0.25,ACC_chest,1,True,dropout,classic+TDA,B,0.7739,10.6889
+decline,0.25,ACC_chest,1,True,dropout,classic+TDA,C,0.7588,10.1967
+decline,0.25,ACC_chest,1,True,dropout,classic,A,0.7437,10.4113
+decline,0.25,ACC_chest,1,True,dropout,classic,B,0.7638,10.9539
+decline,0.25,ACC_chest,1,True,dropout,classic,C,0.7437,10.4113
+decline,0.25,ACC_chest,1,True,clean,classic+TDA,A,0.7688,10.5753
+decline,0.25,ACC_chest,1,True,clean,classic+TDA,B,0.7839,10.8277
+decline,0.25,ACC_chest,1,True,clean,classic+TDA,C,0.7688,10.5753
+decline,0.25,GYR_neck,1,True,dropout,classic+TDA,A,0.7839,11.3956
+decline,0.25,GYR_neck,1,True,dropout,classic+TDA,B,0.7889,11.547
+decline,0.25,GYR_neck,1,True,dropout,classic+TDA,C,0.7839,11.3956
+decline,0.25,GYR_neck,1,True,dropout,classic,A,0.7538,10.7646
+decline,0.25,GYR_neck,1,True,dropout,classic,B,0.7739,10.9791
+decline,0.25,GYR_neck,1,True,dropout,classic,C,0.7538,10.7646
+decline,0.25,GYR_neck,1,True,clean,classic+TDA,A,0.7789,11.2442
+decline,0.25,GYR_neck,1,True,clean,classic+TDA,B,0.7839,11.118
+decline,0.25,GYR_neck,1,True,clean,classic+TDA,C,0.7789,11.2442
+decline,0.25,GYR_chest,1,True,dropout,classic+TDA,A,0.7889,10.0074
+decline,0.25,GYR_chest,1,True,dropout,classic+TDA,B,0.799,10.4617
+decline,0.25,GYR_chest,1,True,dropout,classic+TDA,C,0.7889,10.0074
+decline,0.25,GYR_chest,1,True,dropout,classic,A,0.7286,10.3986
+decline,0.25,GYR_chest,1,True,dropout,classic,B,0.7487,11.1306
+decline,0.25,GYR_chest,1,True,dropout,classic,C,0.7286,10.3986
+decline,0.25,GYR_chest,1,True,clean,classic+TDA,A,0.7739,10.2472
+decline,0.25,GYR_chest,1,True,clean,classic+TDA,B,0.7839,10.4744
+decline,0.25,GYR_chest,1,True,clean,classic+TDA,C,0.7739,10.2472
+decline,0.25,EEG1 EEG2,2,False,dropout,classic+TDA,A,0.7437,8.7581
+decline,0.25,EEG1 EEG2,2,False,dropout,classic+TDA,B,0.7538,9.1619
+decline,0.25,EEG1 EEG2,2,False,dropout,classic+TDA,C,0.7437,8.7581
+decline,0.25,EEG1 EEG2,2,False,dropout,classic,A,0.6935,8.4678
+decline,0.25,EEG1 EEG2,2,False,dropout,classic,B,0.6985,9.1872
+decline,0.25,EEG1 EEG2,2,False,dropout,classic,C,0.6935,8.4678
+decline,0.25,EEG1 EEG2,2,False,clean,classic+TDA,A,0.7085,9.0105
+decline,0.25,EEG1 EEG2,2,False,clean,classic+TDA,B,0.6784,9.0862
+decline,0.25,EEG1 EEG2,2,False,clean,classic+TDA,C,0.7085,9.0105
+decline,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,A,0.6884,8.4047
+decline,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,B,0.7035,8.8843
+decline,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,C,0.6884,8.4047
+decline,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,A,0.5879,7.0292
+decline,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,B,0.598,8.0009
+decline,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,C,0.5879,7.0292
+decline,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,A,0.6583,8.4804
+decline,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,B,0.6784,8.9474
+decline,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,C,0.6583,8.4804
+decline,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.6533,7.0544
+decline,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.6734,7.8242
+decline,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.6533,7.0544
+decline,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,A,0.593,6.5496
+decline,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,B,0.608,7.5466
+decline,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,C,0.593,6.5496
+decline,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.6432,6.9661
+decline,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.6683,7.7233
+decline,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.6432,6.9661
+decline,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,A,0.6633,6.7515
+decline,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,B,0.6834,7.4835
+decline,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,C,0.6633,6.7515
+decline,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,A,0.5528,5.7041
+decline,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,B,0.5779,6.6127
+decline,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,C,0.5528,5.7041
+decline,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,A,0.6482,6.6632
+decline,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,B,0.6683,7.4582
+decline,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,C,0.6482,6.6632
+decline,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,A,0.6382,5.8303
+decline,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,B,0.6683,6.7515
+decline,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,C,0.6382,5.8303
+decline,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,A,0.5377,5.1615
+decline,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,B,0.5578,6.1079
+decline,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,C,0.5377,5.1615
+decline,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,A,0.5678,5.9313
+decline,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,B,0.603,6.7894
+decline,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,C,0.5678,5.9313
+decline,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,A,0.6382,6.0953
+decline,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,B,0.6734,6.8399
+decline,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,C,0.6382,6.0953
+decline,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,A,0.5477,5.6158
+decline,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,B,0.5628,6.5496
+decline,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,C,0.5477,5.6158
+decline,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,A,0.598,6.1963
+decline,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,B,0.6784,7.0923
+decline,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,C,0.598,6.1963
+decline,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,A,0.6784,7.8747
+decline,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,B,0.7035,8.7455
+decline,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,C,0.6784,7.8747
+decline,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,A,0.5879,6.4739
+decline,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,B,0.608,7.5592
+decline,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,C,0.5879,6.4739
+decline,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,A,0.6633,8.064
+decline,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,B,0.6784,8.6066
+decline,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,C,0.6633,8.064
+decline,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.7085,7.8873
+decline,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.7487,8.8338
+decline,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7085,7.8873
+decline,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,A,0.6985,8.6445
+decline,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,B,0.7136,9.3386
+decline,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,C,0.6985,8.6445
+decline,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.7035,8.3038
+decline,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.7688,9.1367
+decline,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.7035,8.3038
+decline,0.75,EEG1,1,True,dropout,classic+TDA,A,0.7387,11.6606
+decline,0.75,EEG1,1,True,dropout,classic+TDA,B,0.7789,10.651
+decline,0.75,EEG1,1,True,dropout,classic+TDA,C,0.7739,10.5122
+decline,0.75,EEG1,1,True,dropout,classic,A,0.6935,9.755
+decline,0.75,EEG1,1,True,dropout,classic,B,0.7437,10.1462
+decline,0.75,EEG1,1,True,dropout,classic,C,0.7387,10.1589
+decline,0.75,EEG1,1,True,clean,classic+TDA,A,0.7437,11.7237
+decline,0.75,EEG1,1,True,clean,classic+TDA,B,0.7638,10.6889
+decline,0.75,EEG1,1,True,clean,classic+TDA,C,0.7588,10.5375
+decline,0.75,EEG2,1,True,dropout,classic+TDA,A,0.6734,9.7929
+decline,0.75,EEG2,1,True,dropout,classic+TDA,B,0.7588,9.9317
+decline,0.75,EEG2,1,True,dropout,classic+TDA,C,0.7437,9.8812
+decline,0.75,EEG2,1,True,dropout,classic,A,0.6181,8.2785
+decline,0.75,EEG2,1,True,dropout,classic,B,0.7136,9.6667
+decline,0.75,EEG2,1,True,dropout,classic,C,0.7186,9.9822
+decline,0.75,EEG2,1,True,clean,classic+TDA,A,0.6533,9.3007
+decline,0.75,EEG2,1,True,clean,classic+TDA,B,0.7186,10.6637
+decline,0.75,EEG2,1,True,clean,classic+TDA,C,0.7035,10.4996
+decline,0.75,ECG,1,True,dropout,classic+TDA,A,0.6985,8.2659
+decline,0.75,ECG,1,True,dropout,classic+TDA,B,0.7739,9.8308
+decline,0.75,ECG,1,True,dropout,classic+TDA,C,0.7588,9.9191
+decline,0.75,ECG,1,True,dropout,classic,A,0.7437,10.1967
+decline,0.75,ECG,1,True,dropout,classic,B,0.7688,10.6006
+decline,0.75,ECG,1,True,dropout,classic,C,0.7337,10.1336
+decline,0.75,ECG,1,True,clean,classic+TDA,A,0.7085,8.594
+decline,0.75,ECG,1,True,clean,classic+TDA,B,0.7437,9.8308
+decline,0.75,ECG,1,True,clean,classic+TDA,C,0.7387,9.9443
+decline,0.75,EMG,1,True,dropout,classic+TDA,A,0.7136,8.0135
+decline,0.75,EMG,1,True,dropout,classic+TDA,B,0.7839,9.6793
+decline,0.75,EMG,1,True,dropout,classic+TDA,C,0.7789,9.8181
+decline,0.75,EMG,1,True,dropout,classic,A,0.7236,8.7202
+decline,0.75,EMG,1,True,dropout,classic,B,0.7487,10.0201
+decline,0.75,EMG,1,True,dropout,classic,C,0.7487,10.0074
+decline,0.75,EMG,1,True,clean,classic+TDA,A,0.7538,8.3542
+decline,0.75,EMG,1,True,clean,classic+TDA,B,0.7789,9.5784
+decline,0.75,EMG,1,True,clean,classic+TDA,C,0.7538,10.121
+decline,0.75,ACC_neck,1,True,dropout,classic+TDA,A,0.6784,7.6097
+decline,0.75,ACC_neck,1,True,dropout,classic+TDA,B,0.7588,9.4143
+decline,0.75,ACC_neck,1,True,dropout,classic+TDA,C,0.7538,9.4395
+decline,0.75,ACC_neck,1,True,dropout,classic,A,0.5729,6.2846
+decline,0.75,ACC_neck,1,True,dropout,classic,B,0.6834,8.7959
+decline,0.75,ACC_neck,1,True,dropout,classic,C,0.6734,9.2124
+decline,0.75,ACC_neck,1,True,clean,classic+TDA,A,0.6533,6.9661
+decline,0.75,ACC_neck,1,True,clean,classic+TDA,B,0.7085,9.2755
+decline,0.75,ACC_neck,1,True,clean,classic+TDA,C,0.7186,9.2124
+decline,0.75,ACC_chest,1,True,dropout,classic+TDA,A,0.7588,10.6763
+decline,0.75,ACC_chest,1,True,dropout,classic+TDA,B,0.7688,10.8403
+decline,0.75,ACC_chest,1,True,dropout,classic+TDA,C,0.7588,10.3608
+decline,0.75,ACC_chest,1,True,dropout,classic,A,0.7588,10.651
+decline,0.75,ACC_chest,1,True,dropout,classic,B,0.7688,10.9287
+decline,0.75,ACC_chest,1,True,dropout,classic,C,0.7487,10.8025
+decline,0.75,ACC_chest,1,True,clean,classic+TDA,A,0.7638,11.1432
+decline,0.75,ACC_chest,1,True,clean,classic+TDA,B,0.7789,11.1432
+decline,0.75,ACC_chest,1,True,clean,classic+TDA,C,0.7538,10.6384
+decline,0.75,GYR_neck,1,True,dropout,classic+TDA,A,0.7889,11.9635
+decline,0.75,GYR_neck,1,True,dropout,classic+TDA,B,0.7889,11.3577
+decline,0.75,GYR_neck,1,True,dropout,classic+TDA,C,0.7889,10.8782
+decline,0.75,GYR_neck,1,True,dropout,classic,A,0.7739,10.7899
+decline,0.75,GYR_neck,1,True,dropout,classic,B,0.7839,10.7772
+decline,0.75,GYR_neck,1,True,dropout,classic,C,0.7889,10.7268
+decline,0.75,GYR_neck,1,True,clean,classic+TDA,A,0.7889,11.5218
+decline,0.75,GYR_neck,1,True,clean,classic+TDA,B,0.794,10.8403
+decline,0.75,GYR_neck,1,True,clean,classic+TDA,C,0.799,10.6763
+decline,0.75,GYR_chest,1,True,dropout,classic+TDA,A,0.794,10.222
+decline,0.75,GYR_chest,1,True,dropout,classic+TDA,B,0.804,10.5627
+decline,0.75,GYR_chest,1,True,dropout,classic+TDA,C,0.7839,10.2851
+decline,0.75,GYR_chest,1,True,dropout,classic,A,0.7487,10.6258
+decline,0.75,GYR_chest,1,True,dropout,classic,B,0.7638,10.9918
+decline,0.75,GYR_chest,1,True,dropout,classic,C,0.7538,10.5122
+decline,0.75,GYR_chest,1,True,clean,classic+TDA,A,0.7739,10.2977
+decline,0.75,GYR_chest,1,True,clean,classic+TDA,B,0.799,10.651
+decline,0.75,GYR_chest,1,True,clean,classic+TDA,C,0.799,10.6132
+decline,0.75,EEG1 EEG2,2,False,dropout,classic+TDA,A,0.6432,10.4239
+decline,0.75,EEG1 EEG2,2,False,dropout,classic+TDA,B,0.6985,10.5501
+decline,0.75,EEG1 EEG2,2,False,dropout,classic+TDA,C,0.6935,10.4491
+decline,0.75,EEG1 EEG2,2,False,dropout,classic,A,0.598,8.6445
+decline,0.75,EEG1 EEG2,2,False,dropout,classic,B,0.7035,9.591
+decline,0.75,EEG1 EEG2,2,False,dropout,classic,C,0.7136,9.8686
+decline,0.75,EEG1 EEG2,2,False,clean,classic+TDA,A,0.593,10.3355
+decline,0.75,EEG1 EEG2,2,False,clean,classic+TDA,B,0.6131,10.1462
+decline,0.75,EEG1 EEG2,2,False,clean,classic+TDA,C,0.5779,9.5026
+decline,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,A,0.7337,9.5657
+decline,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,B,0.7739,10.2093
+decline,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,C,0.7739,10.0958
+decline,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,A,0.6231,7.0166
+decline,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,B,0.6884,8.7581
+decline,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,C,0.7186,9.4269
+decline,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,A,0.6935,9.3386
+decline,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,B,0.7337,10.3986
+decline,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,C,0.7337,9.8812
+decline,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.608,7.1554
+decline,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.6935,9.6415
+decline,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7136,9.2376
+decline,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,A,0.5377,6.7011
+decline,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,B,0.6683,9.0483
+decline,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,C,0.6432,9.0862
+decline,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.608,7.0923
+decline,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.6683,9.5784
+decline,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.6834,9.4143
+decline,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,A,0.5829,6.5496
+decline,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,B,0.7085,8.6824
+decline,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,C,0.7085,9.2755
+decline,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,A,0.4724,5.0984
+decline,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,B,0.6181,7.4961
+decline,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,C,0.6482,8.5688
+decline,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,A,0.5829,6.4613
+decline,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,B,0.6633,8.43
+decline,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,C,0.6935,9.0483
+decline,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,A,0.5377,5.6915
+decline,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,B,0.6332,8.064
+decline,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,C,0.6784,9.5784
+decline,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,A,0.4623,4.8586
+decline,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,B,0.5528,7.4078
+decline,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,C,0.5678,8.6319
+decline,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,A,0.4623,5.6284
+decline,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,B,0.5678,8.1902
+decline,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,C,0.5678,8.3416
+decline,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,A,0.5126,5.8429
+decline,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,B,0.608,7.5087
+decline,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,C,0.6583,9.0357
+decline,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,A,0.4623,5.1236
+decline,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,B,0.5377,7.7864
+decline,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,C,0.5628,8.4931
+decline,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,A,0.4623,6.007
+decline,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,B,0.6131,8.9095
+decline,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,C,0.603,9.3007
+decline,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,A,0.6935,10.2724
+decline,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,B,0.7588,10.651
+decline,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,C,0.7387,10.5501
+decline,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,A,0.5427,6.3856
+decline,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,B,0.6834,8.9221
+decline,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,C,0.6884,9.1493
+decline,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,A,0.6683,9.7424
+decline,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,B,0.7085,10.1967
+decline,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,C,0.7136,10.0958
+decline,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.6784,7.4582
+decline,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.7487,9.4143
+decline,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7487,9.3891
+decline,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,A,0.6784,8.8086
+decline,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,B,0.7337,9.9822
+decline,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,C,0.7035,9.755
+decline,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.6834,8.1523
+decline,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.7588,10.4365
+decline,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.7236,8.9852
+dropout,0.25,EEG1,1,True,dropout,classic+TDA,A,0.7236,8.6824
+dropout,0.25,EEG1,1,True,dropout,classic+TDA,B,0.7437,9.1872
+dropout,0.25,EEG1,1,True,dropout,classic+TDA,C,0.7236,8.6824
+dropout,0.25,EEG1,1,True,dropout,classic,A,0.7437,10.651
+dropout,0.25,EEG1,1,True,dropout,classic,B,0.7638,11.118
+dropout,0.25,EEG1,1,True,dropout,classic,C,0.7437,10.651
+dropout,0.25,EEG1,1,True,clean,classic+TDA,A,0.7136,8.9852
+dropout,0.25,EEG1,1,True,clean,classic+TDA,B,0.7337,9.0736
+dropout,0.25,EEG1,1,True,clean,classic+TDA,C,0.7136,8.9852
+dropout,0.25,EEG2,1,True,dropout,classic+TDA,A,0.6834,9.2502
+dropout,0.25,EEG2,1,True,dropout,classic+TDA,B,0.7136,9.8939
+dropout,0.25,EEG2,1,True,dropout,classic+TDA,C,0.6834,9.2502
+dropout,0.25,EEG2,1,True,dropout,classic,A,0.6985,12.6828
+dropout,0.25,EEG2,1,True,dropout,classic,B,0.7085,13.2886
+dropout,0.25,EEG2,1,True,dropout,classic,C,0.6985,12.6828
+dropout,0.25,EEG2,1,True,clean,classic+TDA,A,0.6633,9.0862
+dropout,0.25,EEG2,1,True,clean,classic+TDA,B,0.6935,9.4395
+dropout,0.25,EEG2,1,True,clean,classic+TDA,C,0.6633,9.0862
+dropout,0.25,ECG,1,True,dropout,classic+TDA,A,0.7739,10.121
+dropout,0.25,ECG,1,True,dropout,classic+TDA,B,0.7889,10.5879
+dropout,0.25,ECG,1,True,dropout,classic+TDA,C,0.7739,10.121
+dropout,0.25,ECG,1,True,dropout,classic,A,0.7286,10.1715
+dropout,0.25,ECG,1,True,dropout,classic,B,0.7487,10.5627
+dropout,0.25,ECG,1,True,dropout,classic,C,0.7286,10.1715
+dropout,0.25,ECG,1,True,clean,classic+TDA,A,0.7538,10.2724
+dropout,0.25,ECG,1,True,clean,classic+TDA,B,0.7739,10.3608
+dropout,0.25,ECG,1,True,clean,classic+TDA,C,0.7538,10.2724
+dropout,0.25,EMG,1,True,dropout,classic+TDA,A,0.7688,9.9696
+dropout,0.25,EMG,1,True,dropout,classic+TDA,B,0.7889,10.3734
+dropout,0.25,EMG,1,True,dropout,classic+TDA,C,0.7688,9.9696
+dropout,0.25,EMG,1,True,dropout,classic,A,0.7236,10.1715
+dropout,0.25,EMG,1,True,dropout,classic,B,0.7538,10.6132
+dropout,0.25,EMG,1,True,dropout,classic,C,0.7236,10.1715
+dropout,0.25,EMG,1,True,clean,classic+TDA,A,0.7688,10.0705
+dropout,0.25,EMG,1,True,clean,classic+TDA,B,0.7839,10.4744
+dropout,0.25,EMG,1,True,clean,classic+TDA,C,0.7688,10.0705
+dropout,0.25,ACC_neck,1,True,dropout,classic+TDA,A,0.608,6.2341
+dropout,0.25,ACC_neck,1,True,dropout,classic+TDA,B,0.6281,6.8777
+dropout,0.25,ACC_neck,1,True,dropout,classic+TDA,C,0.608,6.2341
+dropout,0.25,ACC_neck,1,True,dropout,classic,A,0.5729,6.0575
+dropout,0.25,ACC_neck,1,True,dropout,classic,B,0.603,6.4992
+dropout,0.25,ACC_neck,1,True,dropout,classic,C,0.5729,6.0575
+dropout,0.25,ACC_neck,1,True,clean,classic+TDA,A,0.5729,5.9565
+dropout,0.25,ACC_neck,1,True,clean,classic+TDA,B,0.6231,6.4108
+dropout,0.25,ACC_neck,1,True,clean,classic+TDA,C,0.5729,5.9565
+dropout,0.25,ACC_chest,1,True,dropout,classic+TDA,A,0.7739,11.4966
+dropout,0.25,ACC_chest,1,True,dropout,classic+TDA,B,0.7889,11.9004
+dropout,0.25,ACC_chest,1,True,dropout,classic+TDA,C,0.7739,11.4966
+dropout,0.25,ACC_chest,1,True,dropout,classic,A,0.7186,11.1053
+dropout,0.25,ACC_chest,1,True,dropout,classic,B,0.7337,11.5849
+dropout,0.25,ACC_chest,1,True,dropout,classic,C,0.7186,11.1053
+dropout,0.25,ACC_chest,1,True,clean,classic+TDA,A,0.7789,12.8973
+dropout,0.25,ACC_chest,1,True,clean,classic+TDA,B,0.794,13.2002
+dropout,0.25,ACC_chest,1,True,clean,classic+TDA,C,0.7789,12.8973
+dropout,0.25,GYR_neck,1,True,dropout,classic+TDA,A,0.7789,10.651
+dropout,0.25,GYR_neck,1,True,dropout,classic+TDA,B,0.7889,11.0549
+dropout,0.25,GYR_neck,1,True,dropout,classic+TDA,C,0.7789,10.651
+dropout,0.25,GYR_neck,1,True,dropout,classic,A,0.7538,10.6763
+dropout,0.25,GYR_neck,1,True,dropout,classic,B,0.7638,11.017
+dropout,0.25,GYR_neck,1,True,dropout,classic,C,0.7538,10.6763
+dropout,0.25,GYR_neck,1,True,clean,classic+TDA,A,0.794,10.5879
+dropout,0.25,GYR_neck,1,True,clean,classic+TDA,B,0.804,10.8151
+dropout,0.25,GYR_neck,1,True,clean,classic+TDA,C,0.794,10.5879
+dropout,0.25,GYR_chest,1,True,dropout,classic+TDA,A,0.7688,10.3482
+dropout,0.25,GYR_chest,1,True,dropout,classic+TDA,B,0.7839,10.8025
+dropout,0.25,GYR_chest,1,True,dropout,classic+TDA,C,0.7688,10.3482
+dropout,0.25,GYR_chest,1,True,dropout,classic,A,0.7437,10.5248
+dropout,0.25,GYR_chest,1,True,dropout,classic,B,0.7638,10.9413
+dropout,0.25,GYR_chest,1,True,dropout,classic,C,0.7437,10.5248
+dropout,0.25,GYR_chest,1,True,clean,classic+TDA,A,0.7739,10.6889
+dropout,0.25,GYR_chest,1,True,clean,classic+TDA,B,0.799,10.853
+dropout,0.25,GYR_chest,1,True,clean,classic+TDA,C,0.7739,10.6889
+dropout,0.25,EEG1 EEG2,2,False,dropout,classic+TDA,A,0.6382,7.5844
+dropout,0.25,EEG1 EEG2,2,False,dropout,classic+TDA,B,0.6633,8.1776
+dropout,0.25,EEG1 EEG2,2,False,dropout,classic+TDA,C,0.6382,7.5844
+dropout,0.25,EEG1 EEG2,2,False,dropout,classic,A,0.6884,13.9826
+dropout,0.25,EEG1 EEG2,2,False,dropout,classic,B,0.7035,14.7398
+dropout,0.25,EEG1 EEG2,2,False,dropout,classic,C,0.6884,13.9826
+dropout,0.25,EEG1 EEG2,2,False,clean,classic+TDA,A,0.6231,7.8621
+dropout,0.25,EEG1 EEG2,2,False,clean,classic+TDA,B,0.6482,8.3669
+dropout,0.25,EEG1 EEG2,2,False,clean,classic+TDA,C,0.6231,7.8621
+dropout,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,A,0.6432,6.638
+dropout,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,B,0.6533,7.1806
+dropout,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,C,0.6432,6.638
+dropout,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,A,0.5678,6.7515
+dropout,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,B,0.593,7.2059
+dropout,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,C,0.5678,6.7515
+dropout,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,A,0.6382,7.0166
+dropout,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,B,0.6583,7.5213
+dropout,0.25,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,C,0.6382,7.0166
+dropout,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.5327,5.6032
+dropout,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.5628,6.2215
+dropout,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.5327,5.6032
+dropout,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,A,0.5477,6.8273
+dropout,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,B,0.5678,7.3321
+dropout,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,C,0.5477,6.8273
+dropout,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.5427,6.1332
+dropout,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.5729,6.5623
+dropout,0.25,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.5427,6.1332
+dropout,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,A,0.5226,5.2372
+dropout,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,B,0.5276,5.7546
+dropout,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,C,0.5226,5.2372
+dropout,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,A,0.5327,6.007
+dropout,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,B,0.5528,6.4487
+dropout,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,C,0.5327,6.007
+dropout,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,A,0.5276,5.1615
+dropout,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,B,0.5578,5.4896
+dropout,0.25,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,C,0.5276,5.1615
+dropout,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,A,0.5025,5.5274
+dropout,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,B,0.5377,6.0575
+dropout,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,C,0.5025,5.5274
+dropout,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,A,0.5025,7.1301
+dropout,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,B,0.5276,7.6097
+dropout,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,C,0.5025,7.1301
+dropout,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,A,0.4925,5.6032
+dropout,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,B,0.5477,6.0322
+dropout,0.25,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,C,0.4925,5.6032
+dropout,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,A,0.4824,5.7293
+dropout,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,B,0.5126,6.2594
+dropout,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,C,0.4824,5.7293
+dropout,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,A,0.5126,7.433
+dropout,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,B,0.5427,7.8495
+dropout,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,C,0.5126,7.433
+dropout,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,A,0.5276,6.5118
+dropout,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,B,0.5528,6.7768
+dropout,0.25,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,C,0.5276,6.5118
+dropout,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,A,0.5678,5.5022
+dropout,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,B,0.5678,6.0701
+dropout,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,C,0.5678,5.5022
+dropout,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,A,0.5477,6.9913
+dropout,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,B,0.5578,7.3952
+dropout,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,C,0.5477,6.9913
+dropout,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,A,0.5678,6.3603
+dropout,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,B,0.593,6.7642
+dropout,0.25,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,C,0.5678,6.3603
+dropout,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.6935,9.6541
+dropout,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.7085,10.2472
+dropout,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.6935,9.6541
+dropout,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,A,0.6935,10.9413
+dropout,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,B,0.7035,11.4587
+dropout,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,C,0.6935,10.9413
+dropout,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.7035,11.8247
+dropout,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.7387,12.0644
+dropout,0.25,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.7035,11.8247
+dropout,0.75,EEG1,1,True,dropout,classic+TDA,A,0.6131,6.1332
+dropout,0.75,EEG1,1,True,dropout,classic+TDA,B,0.7789,10.6006
+dropout,0.75,EEG1,1,True,dropout,classic+TDA,C,0.7588,10.3734
+dropout,0.75,EEG1,1,True,dropout,classic,A,0.608,8.3542
+dropout,0.75,EEG1,1,True,dropout,classic,B,0.7437,10.752
+dropout,0.75,EEG1,1,True,dropout,classic,C,0.7136,10.4239
+dropout,0.75,EEG1,1,True,clean,classic+TDA,A,0.5729,6.5623
+dropout,0.75,EEG1,1,True,clean,classic+TDA,B,0.7236,10.7268
+dropout,0.75,EEG1,1,True,clean,classic+TDA,C,0.7085,10.7141
+dropout,0.75,EEG2,1,True,dropout,classic+TDA,A,0.4422,5.5022
+dropout,0.75,EEG2,1,True,dropout,classic+TDA,B,0.7286,10.1462
+dropout,0.75,EEG2,1,True,dropout,classic+TDA,C,0.7387,9.8812
+dropout,0.75,EEG2,1,True,dropout,classic,A,0.5176,8.064
+dropout,0.75,EEG2,1,True,dropout,classic,B,0.7035,10.5879
+dropout,0.75,EEG2,1,True,dropout,classic,C,0.7085,10.3103
+dropout,0.75,EEG2,1,True,clean,classic+TDA,A,0.4372,5.8051
+dropout,0.75,EEG2,1,True,clean,classic+TDA,B,0.6884,11.1558
+dropout,0.75,EEG2,1,True,clean,classic+TDA,C,0.6734,10.8782
+dropout,0.75,ECG,1,True,dropout,classic+TDA,A,0.7186,8.1145
+dropout,0.75,ECG,1,True,dropout,classic+TDA,B,0.7889,10.5248
+dropout,0.75,ECG,1,True,dropout,classic+TDA,C,0.7739,10.3103
+dropout,0.75,ECG,1,True,dropout,classic,A,0.7236,11.6228
+dropout,0.75,ECG,1,True,dropout,classic,B,0.7186,10.6889
+dropout,0.75,ECG,1,True,dropout,classic,C,0.7035,10.1715
+dropout,0.75,ECG,1,True,clean,classic+TDA,A,0.6683,8.5814
+dropout,0.75,ECG,1,True,clean,classic+TDA,B,0.7387,10.4113
+dropout,0.75,ECG,1,True,clean,classic+TDA,C,0.7186,10.3355
+dropout,0.75,EMG,1,True,dropout,classic+TDA,A,0.7136,8.0388
+dropout,0.75,EMG,1,True,dropout,classic+TDA,B,0.794,10.6258
+dropout,0.75,EMG,1,True,dropout,classic+TDA,C,0.7889,10.2977
+dropout,0.75,EMG,1,True,dropout,classic,A,0.6482,7.9378
+dropout,0.75,EMG,1,True,dropout,classic,B,0.7538,10.8782
+dropout,0.75,EMG,1,True,dropout,classic,C,0.7487,10.6384
+dropout,0.75,EMG,1,True,clean,classic+TDA,A,0.7085,8.43
+dropout,0.75,EMG,1,True,clean,classic+TDA,B,0.7387,11.0549
+dropout,0.75,EMG,1,True,clean,classic+TDA,C,0.7286,11.0044
+dropout,0.75,ACC_neck,1,True,dropout,classic+TDA,A,0.5226,5.4012
+dropout,0.75,ACC_neck,1,True,dropout,classic+TDA,B,0.7638,9.9696
+dropout,0.75,ACC_neck,1,True,dropout,classic+TDA,C,0.7839,10.386
+dropout,0.75,ACC_neck,1,True,dropout,classic,A,0.4874,5.7041
+dropout,0.75,ACC_neck,1,True,dropout,classic,B,0.7286,9.9065
+dropout,0.75,ACC_neck,1,True,dropout,classic,C,0.7286,10.4491
+dropout,0.75,ACC_neck,1,True,clean,classic+TDA,A,0.5226,5.4391
+dropout,0.75,ACC_neck,1,True,clean,classic+TDA,B,0.7487,9.957
+dropout,0.75,ACC_neck,1,True,clean,classic+TDA,C,0.7789,10.7268
+dropout,0.75,ACC_chest,1,True,dropout,classic+TDA,A,0.7588,10.9665
+dropout,0.75,ACC_chest,1,True,dropout,classic+TDA,B,0.7889,11.0296
+dropout,0.75,ACC_chest,1,True,dropout,classic+TDA,C,0.7688,10.4491
+dropout,0.75,ACC_chest,1,True,dropout,classic,A,0.6985,10.3608
+dropout,0.75,ACC_chest,1,True,dropout,classic,B,0.7487,11.1432
+dropout,0.75,ACC_chest,1,True,dropout,classic,C,0.7286,10.6763
+dropout,0.75,ACC_chest,1,True,clean,classic+TDA,A,0.7739,13.4779
+dropout,0.75,ACC_chest,1,True,clean,classic+TDA,B,0.7739,11.1811
+dropout,0.75,ACC_chest,1,True,clean,classic+TDA,C,0.7538,10.5753
+dropout,0.75,GYR_neck,1,True,dropout,classic+TDA,A,0.7588,9.9317
+dropout,0.75,GYR_neck,1,True,dropout,classic+TDA,B,0.794,10.7141
+dropout,0.75,GYR_neck,1,True,dropout,classic+TDA,C,0.794,10.3355
+dropout,0.75,GYR_neck,1,True,dropout,classic,A,0.7387,10.5627
+dropout,0.75,GYR_neck,1,True,dropout,classic,B,0.7638,11.017
+dropout,0.75,GYR_neck,1,True,dropout,classic,C,0.7638,10.5879
+dropout,0.75,GYR_neck,1,True,clean,classic+TDA,A,0.7739,10.222
+dropout,0.75,GYR_neck,1,True,clean,classic+TDA,B,0.7739,10.651
+dropout,0.75,GYR_neck,1,True,clean,classic+TDA,C,0.7889,10.3482
+dropout,0.75,GYR_chest,1,True,dropout,classic+TDA,A,0.7889,10.6637
+dropout,0.75,GYR_chest,1,True,dropout,classic+TDA,B,0.799,10.7268
+dropout,0.75,GYR_chest,1,True,dropout,classic+TDA,C,0.7839,10.2093
+dropout,0.75,GYR_chest,1,True,dropout,classic,A,0.7337,10.4491
+dropout,0.75,GYR_chest,1,True,dropout,classic,B,0.7538,11.0044
+dropout,0.75,GYR_chest,1,True,dropout,classic,C,0.7487,10.6006
+dropout,0.75,GYR_chest,1,True,clean,classic+TDA,A,0.7789,11.2442
+dropout,0.75,GYR_chest,1,True,clean,classic+TDA,B,0.7789,10.9791
+dropout,0.75,GYR_chest,1,True,clean,classic+TDA,C,0.7739,10.8277
+dropout,0.75,EEG1 EEG2,2,False,dropout,classic+TDA,A,0.3266,4.3664
+dropout,0.75,EEG1 EEG2,2,False,dropout,classic+TDA,B,0.6834,10.4365
+dropout,0.75,EEG1 EEG2,2,False,dropout,classic+TDA,C,0.6935,10.5627
+dropout,0.75,EEG1 EEG2,2,False,dropout,classic,A,0.4523,6.6758
+dropout,0.75,EEG1 EEG2,2,False,dropout,classic,B,0.6985,10.6258
+dropout,0.75,EEG1 EEG2,2,False,dropout,classic,C,0.7186,10.386
+dropout,0.75,EEG1 EEG2,2,False,clean,classic+TDA,A,0.3116,4.4674
+dropout,0.75,EEG1 EEG2,2,False,clean,classic+TDA,B,0.5176,9.5784
+dropout,0.75,EEG1 EEG2,2,False,clean,classic+TDA,C,0.4824,9.5657
+dropout,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,A,0.4975,5.8303
+dropout,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,B,0.7437,10.3482
+dropout,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,C,0.7889,10.6763
+dropout,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,A,0.5226,6.2972
+dropout,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,B,0.7236,10.0327
+dropout,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,C,0.7638,10.4617
+dropout,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,A,0.5126,6.9408
+dropout,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,B,0.6834,10.2977
+dropout,0.75,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,C,0.7337,10.5627
+dropout,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.3417,4.2781
+dropout,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.7337,10.0958
+dropout,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7588,10.5248
+dropout,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,A,0.4372,5.9439
+dropout,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,B,0.6935,10.4113
+dropout,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,C,0.6734,10.7141
+dropout,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.3367,4.4548
+dropout,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.6784,10.5627
+dropout,0.75,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.7136,10.6889
+dropout,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,A,0.3015,4.1266
+dropout,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,B,0.7136,9.755
+dropout,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,C,0.7739,10.4365
+dropout,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,A,0.397,4.9722
+dropout,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,B,0.6935,9.9696
+dropout,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,C,0.7136,10.4239
+dropout,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,A,0.2915,4.215
+dropout,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,B,0.6734,10.0958
+dropout,0.75,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,C,0.6834,10.5753
+dropout,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,A,0.2613,3.7985
+dropout,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,B,0.6784,10.0705
+dropout,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,C,0.7136,10.9287
+dropout,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,A,0.3216,4.6441
+dropout,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,B,0.608,9.8939
+dropout,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,C,0.608,10.2977
+dropout,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,A,0.2714,4.1393
+dropout,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,B,0.5779,9.225
+dropout,0.75,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,C,0.608,9.7298
+dropout,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,A,0.2714,3.95
+dropout,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,B,0.6482,9.3764
+dropout,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,C,0.6935,10.2598
+dropout,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,A,0.3317,4.8081
+dropout,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,B,0.6231,10.1336
+dropout,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,C,0.603,10.1589
+dropout,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,A,0.2814,4.2907
+dropout,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,B,0.6482,10.4365
+dropout,0.75,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,C,0.6432,10.8277
+dropout,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,A,0.3367,4.3538
+dropout,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,B,0.7437,10.2851
+dropout,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,C,0.794,11.0296
+dropout,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,A,0.4271,5.1236
+dropout,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,B,0.7286,10.2977
+dropout,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,C,0.7588,10.6889
+dropout,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,A,0.3467,4.7072
+dropout,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,B,0.6935,10.3229
+dropout,0.75,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,C,0.7186,10.9791
+dropout,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.4573,5.2498
+dropout,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.7638,10.6258
+dropout,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7688,10.2093
+dropout,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,A,0.5176,7.1049
+dropout,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,B,0.7186,10.7899
+dropout,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,C,0.6985,10.3608
+dropout,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.4874,6.1837
+dropout,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.6683,10.2093
+dropout,0.75,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.6281,9.7424
+pop,0.5,EEG1,1,True,dropout,classic+TDA,A,0.7638,10.0201
+pop,0.5,EEG1,1,True,dropout,classic+TDA,B,0.794,10.6006
+pop,0.5,EEG1,1,True,dropout,classic+TDA,C,0.7638,10.0201
+pop,0.5,EEG1,1,True,dropout,classic,A,0.7437,10.8277
+pop,0.5,EEG1,1,True,dropout,classic,B,0.7538,10.853
+pop,0.5,EEG1,1,True,dropout,classic,C,0.7437,10.8277
+pop,0.5,EEG1,1,True,clean,classic+TDA,A,0.7688,10.2472
+pop,0.5,EEG1,1,True,clean,classic+TDA,B,0.7739,10.8656
+pop,0.5,EEG1,1,True,clean,classic+TDA,C,0.7688,10.2472
+pop,0.5,EEG2,1,True,dropout,classic+TDA,A,0.7538,9.9191
+pop,0.5,EEG2,1,True,dropout,classic+TDA,B,0.7688,10.3482
+pop,0.5,EEG2,1,True,dropout,classic+TDA,C,0.7538,9.9191
+pop,0.5,EEG2,1,True,dropout,classic,A,0.7538,11.7868
+pop,0.5,EEG2,1,True,dropout,classic,B,0.7538,11.3073
+pop,0.5,EEG2,1,True,dropout,classic,C,0.7538,11.7868
+pop,0.5,EEG2,1,True,clean,classic+TDA,A,0.7538,10.5627
+pop,0.5,EEG2,1,True,clean,classic+TDA,B,0.7538,11.282
+pop,0.5,EEG2,1,True,clean,classic+TDA,C,0.7538,10.5627
+pop,0.5,ECG,1,True,dropout,classic+TDA,A,0.7688,10.4239
+pop,0.5,ECG,1,True,dropout,classic+TDA,B,0.794,10.9034
+pop,0.5,ECG,1,True,dropout,classic+TDA,C,0.7688,10.4239
+pop,0.5,ECG,1,True,dropout,classic,A,0.7387,10.2851
+pop,0.5,ECG,1,True,dropout,classic,B,0.7538,11.0044
+pop,0.5,ECG,1,True,dropout,classic,C,0.7387,10.2851
+pop,0.5,ECG,1,True,clean,classic+TDA,A,0.7739,10.5879
+pop,0.5,ECG,1,True,clean,classic+TDA,B,0.7688,10.5627
+pop,0.5,ECG,1,True,clean,classic+TDA,C,0.7739,10.5879
+pop,0.5,EMG,1,True,dropout,classic+TDA,A,0.7789,10.1967
+pop,0.5,EMG,1,True,dropout,classic+TDA,B,0.794,10.6132
+pop,0.5,EMG,1,True,dropout,classic+TDA,C,0.7789,10.1967
+pop,0.5,EMG,1,True,dropout,classic,A,0.7387,10.4744
+pop,0.5,EMG,1,True,dropout,classic,B,0.7538,10.8908
+pop,0.5,EMG,1,True,dropout,classic,C,0.7387,10.4744
+pop,0.5,EMG,1,True,clean,classic+TDA,A,0.7739,10.4744
+pop,0.5,EMG,1,True,clean,classic+TDA,B,0.7688,10.6006
+pop,0.5,EMG,1,True,clean,classic+TDA,C,0.7739,10.4744
+pop,0.5,ACC_neck,1,True,dropout,classic+TDA,A,0.6784,7.4078
+pop,0.5,ACC_neck,1,True,dropout,classic+TDA,B,0.7588,9.5153
+pop,0.5,ACC_neck,1,True,dropout,classic+TDA,C,0.6784,7.4078
+pop,0.5,ACC_neck,1,True,dropout,classic,A,0.6432,7.8242
+pop,0.5,ACC_neck,1,True,dropout,classic,B,0.7136,9.6415
+pop,0.5,ACC_neck,1,True,dropout,classic,C,0.6432,7.8242
+pop,0.5,ACC_neck,1,True,clean,classic+TDA,A,0.6432,7.2437
+pop,0.5,ACC_neck,1,True,clean,classic+TDA,B,0.7236,9.5153
+pop,0.5,ACC_neck,1,True,clean,classic+TDA,C,0.6432,7.2437
+pop,0.5,ACC_chest,1,True,dropout,classic+TDA,A,0.7739,11.5092
+pop,0.5,ACC_chest,1,True,dropout,classic+TDA,B,0.7889,11.383
+pop,0.5,ACC_chest,1,True,dropout,classic+TDA,C,0.7739,11.5092
+pop,0.5,ACC_chest,1,True,dropout,classic,A,0.7437,11.118
+pop,0.5,ACC_chest,1,True,dropout,classic,B,0.7487,11.5344
+pop,0.5,ACC_chest,1,True,dropout,classic,C,0.7437,11.118
+pop,0.5,ACC_chest,1,True,clean,classic+TDA,A,0.7889,11.7994
+pop,0.5,ACC_chest,1,True,clean,classic+TDA,B,0.794,11.5597
+pop,0.5,ACC_chest,1,True,clean,classic+TDA,C,0.7889,11.7994
+pop,0.5,GYR_neck,1,True,dropout,classic+TDA,A,0.7337,9.591
+pop,0.5,GYR_neck,1,True,dropout,classic+TDA,B,0.7739,10.2472
+pop,0.5,GYR_neck,1,True,dropout,classic+TDA,C,0.7337,9.591
+pop,0.5,GYR_neck,1,True,dropout,classic,A,0.7387,10.1084
+pop,0.5,GYR_neck,1,True,dropout,classic,B,0.7588,10.7394
+pop,0.5,GYR_neck,1,True,dropout,classic,C,0.7387,10.1084
+pop,0.5,GYR_neck,1,True,clean,classic+TDA,A,0.7638,9.7298
+pop,0.5,GYR_neck,1,True,clean,classic+TDA,B,0.7588,10.2851
+pop,0.5,GYR_neck,1,True,clean,classic+TDA,C,0.7638,9.7298
+pop,0.5,GYR_chest,1,True,dropout,classic+TDA,A,0.7839,10.3103
+pop,0.5,GYR_chest,1,True,dropout,classic+TDA,B,0.809,10.8908
+pop,0.5,GYR_chest,1,True,dropout,classic+TDA,C,0.7839,10.3103
+pop,0.5,GYR_chest,1,True,dropout,classic,A,0.7337,10.0831
+pop,0.5,GYR_chest,1,True,dropout,classic,B,0.7588,10.7772
+pop,0.5,GYR_chest,1,True,dropout,classic,C,0.7337,10.0831
+pop,0.5,GYR_chest,1,True,clean,classic+TDA,A,0.7839,10.4744
+pop,0.5,GYR_chest,1,True,clean,classic+TDA,B,0.794,10.9161
+pop,0.5,GYR_chest,1,True,clean,classic+TDA,C,0.7839,10.4744
+pop,0.5,EEG1 EEG2,2,False,dropout,classic+TDA,A,0.7437,9.6919
+pop,0.5,EEG1 EEG2,2,False,dropout,classic+TDA,B,0.7839,10.7141
+pop,0.5,EEG1 EEG2,2,False,dropout,classic+TDA,C,0.7437,9.6919
+pop,0.5,EEG1 EEG2,2,False,dropout,classic,A,0.7688,13.0235
+pop,0.5,EEG1 EEG2,2,False,dropout,classic,B,0.7638,12.2159
+pop,0.5,EEG1 EEG2,2,False,dropout,classic,C,0.7688,13.0235
+pop,0.5,EEG1 EEG2,2,False,clean,classic+TDA,A,0.7337,10.5501
+pop,0.5,EEG1 EEG2,2,False,clean,classic+TDA,B,0.6985,11.7994
+pop,0.5,EEG1 EEG2,2,False,clean,classic+TDA,C,0.7337,10.5501
+pop,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,A,0.6834,7.5718
+pop,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,B,0.7437,9.9443
+pop,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,C,0.6834,7.5718
+pop,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,A,0.6482,7.9378
+pop,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,B,0.7136,9.7803
+pop,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,C,0.6482,7.9378
+pop,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,A,0.6281,7.5592
+pop,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,B,0.7085,9.7172
+pop,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,C,0.6281,7.5592
+pop,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.6985,8.1902
+pop,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.7739,10.5753
+pop,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.6985,8.1902
+pop,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,A,0.6482,8.6193
+pop,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,B,0.7387,10.6006
+pop,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,C,0.6482,8.6193
+pop,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.6583,8.5183
+pop,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.7136,11.1432
+pop,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.6583,8.5183
+pop,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,A,0.6181,7.0039
+pop,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,B,0.7337,9.5405
+pop,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,C,0.6181,7.0039
+pop,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,A,0.6281,7.8747
+pop,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,B,0.7236,9.7046
+pop,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,C,0.6281,7.8747
+pop,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,A,0.5879,6.9661
+pop,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,B,0.6683,10.4113
+pop,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,C,0.5879,6.9661
+pop,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,A,0.6633,7.6602
+pop,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,B,0.7286,10.0831
+pop,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,C,0.6633,7.6602
+pop,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,A,0.6281,8.1271
+pop,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,B,0.6784,9.9948
+pop,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,C,0.6281,8.1271
+pop,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,A,0.6583,7.4961
+pop,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,B,0.7337,10.8782
+pop,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,C,0.6583,7.4961
+pop,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,A,0.6583,7.9757
+pop,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,B,0.7337,10.5879
+pop,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,C,0.6583,7.9757
+pop,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,A,0.6482,9.2502
+pop,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,B,0.6935,10.7772
+pop,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,C,0.6482,9.2502
+pop,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,A,0.6633,8.3542
+pop,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,B,0.7085,11.1053
+pop,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,C,0.6633,8.3542
+pop,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,A,0.6583,7.5844
+pop,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,B,0.7487,10.4365
+pop,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,C,0.6583,7.5844
+pop,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,A,0.6583,8.2785
+pop,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,B,0.7286,10.121
+pop,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,C,0.6583,8.2785
+pop,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,A,0.6231,7.7864
+pop,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,B,0.6935,9.9317
+pop,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,C,0.6231,7.7864
+pop,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.799,12.4052
+pop,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.809,12.178
+pop,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.799,12.4052
+pop,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,A,0.7437,11.7111
+pop,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,B,0.7538,11.9887
+pop,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,C,0.7437,11.7111
+pop,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.7839,13.2002
+pop,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.7588,13.0488
+pop,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.7839,13.2002
+pop,1.0,EEG1,1,True,dropout,classic+TDA,A,0.7437,9.6162
+pop,1.0,EEG1,1,True,dropout,classic+TDA,B,0.7889,10.7772
+pop,1.0,EEG1,1,True,dropout,classic+TDA,C,0.7688,10.4491
+pop,1.0,EEG1,1,True,dropout,classic,A,0.7236,11.1432
+pop,1.0,EEG1,1,True,dropout,classic,B,0.7337,11.0422
+pop,1.0,EEG1,1,True,dropout,classic,C,0.7136,10.6006
+pop,1.0,EEG1,1,True,clean,classic+TDA,A,0.7337,9.856
+pop,1.0,EEG1,1,True,clean,classic+TDA,B,0.7387,10.9791
+pop,1.0,EEG1,1,True,clean,classic+TDA,C,0.7136,10.6637
+pop,1.0,EEG2,1,True,dropout,classic+TDA,A,0.7136,10.2724
+pop,1.0,EEG2,1,True,dropout,classic+TDA,B,0.7437,10.2724
+pop,1.0,EEG2,1,True,dropout,classic+TDA,C,0.7136,9.7424
+pop,1.0,EEG2,1,True,dropout,classic,A,0.7588,13.8438
+pop,1.0,EEG2,1,True,dropout,classic,B,0.7136,11.017
+pop,1.0,EEG2,1,True,dropout,classic,C,0.7035,10.4491
+pop,1.0,EEG2,1,True,clean,classic+TDA,A,0.7186,10.6132
+pop,1.0,EEG2,1,True,clean,classic+TDA,B,0.7035,11.547
+pop,1.0,EEG2,1,True,clean,classic+TDA,C,0.6633,10.9287
+pop,1.0,ECG,1,True,dropout,classic+TDA,A,0.7739,10.8656
+pop,1.0,ECG,1,True,dropout,classic+TDA,B,0.794,10.8151
+pop,1.0,ECG,1,True,dropout,classic+TDA,C,0.7739,10.3229
+pop,1.0,ECG,1,True,dropout,classic,A,0.7286,9.9696
+pop,1.0,ECG,1,True,dropout,classic,B,0.7337,10.7141
+pop,1.0,ECG,1,True,dropout,classic,C,0.7286,10.121
+pop,1.0,ECG,1,True,clean,classic+TDA,A,0.7638,11.1558
+pop,1.0,ECG,1,True,clean,classic+TDA,B,0.7387,10.4617
+pop,1.0,ECG,1,True,clean,classic+TDA,C,0.7186,10.1084
+pop,1.0,EMG,1,True,dropout,classic+TDA,A,0.7839,10.3103
+pop,1.0,EMG,1,True,dropout,classic+TDA,B,0.794,10.6258
+pop,1.0,EMG,1,True,dropout,classic+TDA,C,0.7839,10.2851
+pop,1.0,EMG,1,True,dropout,classic,A,0.7286,10.487
+pop,1.0,EMG,1,True,dropout,classic,B,0.7487,10.8151
+pop,1.0,EMG,1,True,dropout,classic,C,0.7437,10.6132
+pop,1.0,EMG,1,True,clean,classic+TDA,A,0.7688,10.7015
+pop,1.0,EMG,1,True,clean,classic+TDA,B,0.7487,10.7015
+pop,1.0,EMG,1,True,clean,classic+TDA,C,0.7136,10.7394
+pop,1.0,ACC_neck,1,True,dropout,classic+TDA,A,0.5528,5.8303
+pop,1.0,ACC_neck,1,True,dropout,classic+TDA,B,0.794,10.6006
+pop,1.0,ACC_neck,1,True,dropout,classic+TDA,C,0.7789,10.3355
+pop,1.0,ACC_neck,1,True,dropout,classic,A,0.5327,6.3477
+pop,1.0,ACC_neck,1,True,dropout,classic,B,0.7487,10.7899
+pop,1.0,ACC_neck,1,True,dropout,classic,C,0.7337,10.4617
+pop,1.0,ACC_neck,1,True,clean,classic+TDA,A,0.5477,5.7293
+pop,1.0,ACC_neck,1,True,clean,classic+TDA,B,0.7739,10.7646
+pop,1.0,ACC_neck,1,True,clean,classic+TDA,C,0.7638,10.6258
+pop,1.0,ACC_chest,1,True,dropout,classic+TDA,A,0.7588,11.9761
+pop,1.0,ACC_chest,1,True,dropout,classic+TDA,B,0.7839,10.8656
+pop,1.0,ACC_chest,1,True,dropout,classic+TDA,C,0.7688,10.4996
+pop,1.0,ACC_chest,1,True,dropout,classic,A,0.7186,11.1558
+pop,1.0,ACC_chest,1,True,dropout,classic,B,0.7538,11.1937
+pop,1.0,ACC_chest,1,True,dropout,classic,C,0.7286,10.6889
+pop,1.0,ACC_chest,1,True,clean,classic+TDA,A,0.7789,13.0362
+pop,1.0,ACC_chest,1,True,clean,classic+TDA,B,0.7739,10.9918
+pop,1.0,ACC_chest,1,True,clean,classic+TDA,C,0.7437,10.5627
+pop,1.0,GYR_neck,1,True,dropout,classic+TDA,A,0.7236,8.6824
+pop,1.0,GYR_neck,1,True,dropout,classic+TDA,B,0.7889,10.5879
+pop,1.0,GYR_neck,1,True,dropout,classic+TDA,C,0.7789,10.1841
+pop,1.0,GYR_neck,1,True,dropout,classic,A,0.6834,9.061
+pop,1.0,GYR_neck,1,True,dropout,classic,B,0.7538,10.8656
+pop,1.0,GYR_neck,1,True,dropout,classic,C,0.7588,10.651
+pop,1.0,GYR_neck,1,True,clean,classic+TDA,A,0.7136,9.0357
+pop,1.0,GYR_neck,1,True,clean,classic+TDA,B,0.7739,10.2598
+pop,1.0,GYR_neck,1,True,clean,classic+TDA,C,0.7688,10.2093
+pop,1.0,GYR_chest,1,True,dropout,classic+TDA,A,0.7638,10.4113
+pop,1.0,GYR_chest,1,True,dropout,classic+TDA,B,0.794,10.7899
+pop,1.0,GYR_chest,1,True,dropout,classic+TDA,C,0.7688,10.1967
+pop,1.0,GYR_chest,1,True,dropout,classic,A,0.6985,9.4017
+pop,1.0,GYR_chest,1,True,dropout,classic,B,0.7538,10.9539
+pop,1.0,GYR_chest,1,True,dropout,classic,C,0.7387,10.5879
+pop,1.0,GYR_chest,1,True,clean,classic+TDA,A,0.7588,10.0201
+pop,1.0,GYR_chest,1,True,clean,classic+TDA,B,0.7789,11.1053
+pop,1.0,GYR_chest,1,True,clean,classic+TDA,C,0.7588,10.6637
+pop,1.0,EEG1 EEG2,2,False,dropout,classic+TDA,A,0.6935,10.4113
+pop,1.0,EEG1 EEG2,2,False,dropout,classic+TDA,B,0.6985,10.9413
+pop,1.0,EEG1 EEG2,2,False,dropout,classic+TDA,C,0.6683,10.5753
+pop,1.0,EEG1 EEG2,2,False,dropout,classic,A,0.7638,17.4404
+pop,1.0,EEG1 EEG2,2,False,dropout,classic,B,0.7186,11.5723
+pop,1.0,EEG1 EEG2,2,False,dropout,classic,C,0.7085,10.5248
+pop,1.0,EEG1 EEG2,2,False,clean,classic+TDA,A,0.7035,11.3199
+pop,1.0,EEG1 EEG2,2,False,clean,classic+TDA,B,0.4975,10.4996
+pop,1.0,EEG1 EEG2,2,False,clean,classic+TDA,C,0.4271,9.2502
+pop,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,A,0.4372,5.111
+pop,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,B,0.7789,10.8656
+pop,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,C,0.7688,10.4113
+pop,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,A,0.5025,5.7672
+pop,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,B,0.7337,10.3482
+pop,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,C,0.7588,10.5375
+pop,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,A,0.4623,5.5905
+pop,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,B,0.7286,10.2977
+pop,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,C,0.7286,10.1841
+pop,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.5427,6.5875
+pop,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.7739,11.0044
+pop,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7538,10.3229
+pop,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,A,0.5879,7.1428
+pop,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,B,0.7186,11.1811
+pop,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,C,0.6935,10.6258
+pop,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.5628,7.1932
+pop,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.7035,10.9918
+pop,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.7136,10.3986
+pop,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,A,0.4422,5.0226
+pop,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,B,0.804,10.7646
+pop,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,C,0.7739,10.3986
+pop,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,A,0.5126,6.0196
+pop,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,B,0.7387,10.5122
+pop,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,C,0.7437,10.3229
+pop,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,A,0.4472,5.1488
+pop,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,B,0.7035,10.4617
+pop,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,C,0.6935,10.487
+pop,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,A,0.4925,5.6915
+pop,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,B,0.7085,11.5218
+pop,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,C,0.6834,10.9665
+pop,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,A,0.5327,7.0166
+pop,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,B,0.6482,10.7899
+pop,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,C,0.6131,10.2472
+pop,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,A,0.4824,5.8303
+pop,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,B,0.6281,10.9539
+pop,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,C,0.5729,9.5279
+pop,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,A,0.5327,7.0544
+pop,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,B,0.7085,10.9413
+pop,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,C,0.6784,10.2346
+pop,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,A,0.5829,9.6036
+pop,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,B,0.6683,11.118
+pop,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,C,0.603,10.1715
+pop,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,A,0.5226,8.6571
+pop,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,B,0.6482,11.7111
+pop,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,C,0.6281,10.7268
+pop,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,A,0.4271,5.1488
+pop,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,B,0.7739,11.017
+pop,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,C,0.7688,10.9034
+pop,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,A,0.5226,6.171
+pop,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,B,0.7337,10.8656
+pop,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,C,0.7588,10.5753
+pop,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,A,0.4623,5.8808
+pop,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,B,0.7186,10.5375
+pop,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,C,0.7286,10.7141
+pop,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.7387,14.5631
+pop,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.7889,10.853
+pop,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7638,10.0074
+pop,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,A,0.7136,12.544
+pop,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,B,0.7387,11.0044
+pop,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,C,0.7035,10.2598
+pop,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.7337,16.0901
+pop,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.6784,10.2598
+pop,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.6332,9.4395
+decline,0.5,EEG1,1,True,dropout,classic+TDA,A,0.7286,10.7141
+decline,0.5,EEG1,1,True,dropout,classic+TDA,B,0.7789,10.5248
+decline,0.5,EEG1,1,True,dropout,classic+TDA,C,0.7286,10.7141
+decline,0.5,EEG1,1,True,dropout,classic,A,0.7286,9.5026
+decline,0.5,EEG1,1,True,dropout,classic,B,0.7387,10.0201
+decline,0.5,EEG1,1,True,dropout,classic,C,0.7286,9.5026
+decline,0.5,EEG1,1,True,clean,classic+TDA,A,0.7387,11.0927
+decline,0.5,EEG1,1,True,clean,classic+TDA,B,0.7538,10.8656
+decline,0.5,EEG1,1,True,clean,classic+TDA,C,0.7387,11.0927
+decline,0.5,EEG2,1,True,dropout,classic+TDA,A,0.7136,9.1367
+decline,0.5,EEG2,1,True,dropout,classic+TDA,B,0.7286,9.2376
+decline,0.5,EEG2,1,True,dropout,classic+TDA,C,0.7136,9.1367
+decline,0.5,EEG2,1,True,dropout,classic,A,0.6683,8.3542
+decline,0.5,EEG2,1,True,dropout,classic,B,0.6935,9.0862
+decline,0.5,EEG2,1,True,dropout,classic,C,0.6683,8.3542
+decline,0.5,EEG2,1,True,clean,classic+TDA,A,0.6784,9.1241
+decline,0.5,EEG2,1,True,clean,classic+TDA,B,0.6734,9.8686
+decline,0.5,EEG2,1,True,clean,classic+TDA,C,0.6784,9.1241
+decline,0.5,ECG,1,True,dropout,classic+TDA,A,0.7437,8.8212
+decline,0.5,ECG,1,True,dropout,classic+TDA,B,0.7789,9.1745
+decline,0.5,ECG,1,True,dropout,classic+TDA,C,0.7437,8.8212
+decline,0.5,ECG,1,True,dropout,classic,A,0.7387,10.2346
+decline,0.5,ECG,1,True,dropout,classic,B,0.7638,10.4996
+decline,0.5,ECG,1,True,dropout,classic,C,0.7387,10.2346
+decline,0.5,ECG,1,True,clean,classic+TDA,A,0.7387,8.9221
+decline,0.5,ECG,1,True,clean,classic+TDA,B,0.7487,9.2881
+decline,0.5,ECG,1,True,clean,classic+TDA,C,0.7387,8.9221
+decline,0.5,EMG,1,True,dropout,classic+TDA,A,0.7387,8.2785
+decline,0.5,EMG,1,True,dropout,classic+TDA,B,0.7839,9.5405
+decline,0.5,EMG,1,True,dropout,classic+TDA,C,0.7387,8.2785
+decline,0.5,EMG,1,True,dropout,classic,A,0.6884,8.9095
+decline,0.5,EMG,1,True,dropout,classic,B,0.7085,9.8812
+decline,0.5,EMG,1,True,dropout,classic,C,0.6884,8.9095
+decline,0.5,EMG,1,True,clean,classic+TDA,A,0.7588,8.4426
+decline,0.5,EMG,1,True,clean,classic+TDA,B,0.7739,9.0988
+decline,0.5,EMG,1,True,clean,classic+TDA,C,0.7588,8.4426
+decline,0.5,ACC_neck,1,True,dropout,classic+TDA,A,0.6784,7.7106
+decline,0.5,ACC_neck,1,True,dropout,classic+TDA,B,0.7186,8.9221
+decline,0.5,ACC_neck,1,True,dropout,classic+TDA,C,0.6784,7.7106
+decline,0.5,ACC_neck,1,True,dropout,classic,A,0.5879,6.4739
+decline,0.5,ACC_neck,1,True,dropout,classic,B,0.6482,8.0514
+decline,0.5,ACC_neck,1,True,dropout,classic,C,0.5879,6.4739
+decline,0.5,ACC_neck,1,True,clean,classic+TDA,A,0.6583,7.3447
+decline,0.5,ACC_neck,1,True,clean,classic+TDA,B,0.7136,8.6319
+decline,0.5,ACC_neck,1,True,clean,classic+TDA,C,0.6583,7.3447
+decline,0.5,ACC_chest,1,True,dropout,classic+TDA,A,0.7538,10.5248
+decline,0.5,ACC_chest,1,True,dropout,classic+TDA,B,0.7739,10.8782
+decline,0.5,ACC_chest,1,True,dropout,classic+TDA,C,0.7538,10.5248
+decline,0.5,ACC_chest,1,True,dropout,classic,A,0.7286,10.6763
+decline,0.5,ACC_chest,1,True,dropout,classic,B,0.7588,11.2189
+decline,0.5,ACC_chest,1,True,dropout,classic,C,0.7286,10.6763
+decline,0.5,ACC_chest,1,True,clean,classic+TDA,A,0.7739,11.282
+decline,0.5,ACC_chest,1,True,clean,classic+TDA,B,0.794,11.2694
+decline,0.5,ACC_chest,1,True,clean,classic+TDA,C,0.7739,11.282
+decline,0.5,GYR_neck,1,True,dropout,classic+TDA,A,0.7839,11.7868
+decline,0.5,GYR_neck,1,True,dropout,classic+TDA,B,0.7839,11.648
+decline,0.5,GYR_neck,1,True,dropout,classic+TDA,C,0.7839,11.7868
+decline,0.5,GYR_neck,1,True,dropout,classic,A,0.7437,10.8782
+decline,0.5,GYR_neck,1,True,dropout,classic,B,0.7638,10.8782
+decline,0.5,GYR_neck,1,True,dropout,classic,C,0.7437,10.8782
+decline,0.5,GYR_neck,1,True,clean,classic+TDA,A,0.794,11.6859
+decline,0.5,GYR_neck,1,True,clean,classic+TDA,B,0.7889,11.4335
+decline,0.5,GYR_neck,1,True,clean,classic+TDA,C,0.794,11.6859
+decline,0.5,GYR_chest,1,True,dropout,classic+TDA,A,0.7789,9.9696
+decline,0.5,GYR_chest,1,True,dropout,classic+TDA,B,0.7889,10.4239
+decline,0.5,GYR_chest,1,True,dropout,classic+TDA,C,0.7789,9.9696
+decline,0.5,GYR_chest,1,True,dropout,classic,A,0.7387,10.487
+decline,0.5,GYR_chest,1,True,dropout,classic,B,0.7538,10.9287
+decline,0.5,GYR_chest,1,True,dropout,classic,C,0.7387,10.487
+decline,0.5,GYR_chest,1,True,clean,classic+TDA,A,0.7638,10.1715
+decline,0.5,GYR_chest,1,True,clean,classic+TDA,B,0.7889,10.5753
+decline,0.5,GYR_chest,1,True,clean,classic+TDA,C,0.7638,10.1715
+decline,0.5,EEG1 EEG2,2,False,dropout,classic+TDA,A,0.6935,9.6541
+decline,0.5,EEG1 EEG2,2,False,dropout,classic+TDA,B,0.7085,10.0958
+decline,0.5,EEG1 EEG2,2,False,dropout,classic+TDA,C,0.6935,9.6541
+decline,0.5,EEG1 EEG2,2,False,dropout,classic,A,0.6482,8.2659
+decline,0.5,EEG1 EEG2,2,False,dropout,classic,B,0.6633,9.061
+decline,0.5,EEG1 EEG2,2,False,dropout,classic,C,0.6482,8.2659
+decline,0.5,EEG1 EEG2,2,False,clean,classic+TDA,A,0.6734,9.6793
+decline,0.5,EEG1 EEG2,2,False,clean,classic+TDA,B,0.6633,10.1462
+decline,0.5,EEG1 EEG2,2,False,clean,classic+TDA,C,0.6734,9.6793
+decline,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,A,0.7186,9.2502
+decline,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,B,0.7286,9.8939
+decline,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,C,0.7186,9.2502
+decline,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,A,0.598,6.9282
+decline,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,B,0.6432,8.4552
+decline,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,C,0.598,6.9282
+decline,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,A,0.6985,9.3764
+decline,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,B,0.7136,10.2598
+decline,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,C,0.6985,9.3764
+decline,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.6583,7.1049
+decline,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.6985,8.329
+decline,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.6583,7.1049
+decline,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,A,0.603,6.5496
+decline,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,B,0.6432,8.5435
+decline,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,C,0.603,6.5496
+decline,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.6181,7.0923
+decline,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.6482,8.5183
+decline,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.6181,7.0923
+decline,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,A,0.6432,6.9787
+decline,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,B,0.6734,7.8242
+decline,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,C,0.6432,6.9787
+decline,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,A,0.5427,5.376
+decline,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,B,0.5829,7.0039
+decline,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,C,0.5427,5.376
+decline,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,A,0.6281,6.7515
+decline,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,B,0.6734,7.7864
+decline,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,C,0.6281,6.7515
+decline,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,A,0.593,5.376
+decline,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,B,0.6231,6.5749
+decline,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,C,0.593,5.376
+decline,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,A,0.4724,4.7955
+decline,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,B,0.5327,6.5496
+decline,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,C,0.4724,4.7955
+decline,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,A,0.5276,5.3003
+decline,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,B,0.5779,7.3573
+decline,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,C,0.5276,5.3003
+decline,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,A,0.608,5.5779
+decline,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,B,0.6533,6.8399
+decline,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,C,0.608,5.5779
+decline,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,A,0.4975,5.0226
+decline,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,B,0.5427,6.7894
+decline,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,C,0.4975,5.0226
+decline,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,A,0.5528,5.5527
+decline,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,B,0.6131,7.4709
+decline,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,C,0.5528,5.5527
+decline,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,A,0.6884,9.3386
+decline,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,B,0.7136,10.4617
+decline,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,C,0.6884,9.3386
+decline,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,A,0.598,6.5118
+decline,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,B,0.6533,8.4426
+decline,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,C,0.598,6.5118
+decline,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,A,0.6884,8.9979
+decline,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,B,0.6683,9.7424
+decline,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,C,0.6884,8.9979
+decline,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.6935,8.064
+decline,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.7588,8.8464
+decline,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.6935,8.064
+decline,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,A,0.6985,9.1998
+decline,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,B,0.7286,9.8055
+decline,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,C,0.6985,9.1998
+decline,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.7085,8.5183
+decline,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.7487,10.0453
+decline,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.7085,8.5183
+decline,1.0,EEG1,1,True,dropout,classic+TDA,A,0.7387,11.4208
+decline,1.0,EEG1,1,True,dropout,classic+TDA,B,0.7789,10.5879
+decline,1.0,EEG1,1,True,dropout,classic+TDA,C,0.7688,10.3355
+decline,1.0,EEG1,1,True,dropout,classic,A,0.6633,9.1745
+decline,1.0,EEG1,1,True,dropout,classic,B,0.7236,10.6132
+decline,1.0,EEG1,1,True,dropout,classic,C,0.7186,10.4617
+decline,1.0,EEG1,1,True,clean,classic+TDA,A,0.7136,12.014
+decline,1.0,EEG1,1,True,clean,classic+TDA,B,0.7186,10.5375
+decline,1.0,EEG1,1,True,clean,classic+TDA,C,0.7186,10.2724
+decline,1.0,EEG2,1,True,dropout,classic+TDA,A,0.6734,10.5501
+decline,1.0,EEG2,1,True,dropout,classic+TDA,B,0.7387,9.8308
+decline,1.0,EEG2,1,True,dropout,classic+TDA,C,0.7186,9.5405
+decline,1.0,EEG2,1,True,dropout,classic,A,0.593,8.329
+decline,1.0,EEG2,1,True,dropout,classic,B,0.7085,9.8686
+decline,1.0,EEG2,1,True,dropout,classic,C,0.7035,9.8812
+decline,1.0,EEG2,1,True,clean,classic+TDA,A,0.6131,10.2851
+decline,1.0,EEG2,1,True,clean,classic+TDA,B,0.6734,11.0549
+decline,1.0,EEG2,1,True,clean,classic+TDA,C,0.6482,10.5627
+decline,1.0,ECG,1,True,dropout,classic+TDA,A,0.6935,8.5309
+decline,1.0,ECG,1,True,dropout,classic+TDA,B,0.7789,10.1336
+decline,1.0,ECG,1,True,dropout,classic+TDA,C,0.7638,9.856
+decline,1.0,ECG,1,True,dropout,classic,A,0.7286,10.8908
+decline,1.0,ECG,1,True,dropout,classic,B,0.7437,10.3355
+decline,1.0,ECG,1,True,dropout,classic,C,0.7236,9.8434
+decline,1.0,ECG,1,True,clean,classic+TDA,A,0.6834,9.2502
+decline,1.0,ECG,1,True,clean,classic+TDA,B,0.7487,9.8434
+decline,1.0,ECG,1,True,clean,classic+TDA,C,0.7286,9.8939
+decline,1.0,EMG,1,True,dropout,classic+TDA,A,0.7236,7.6097
+decline,1.0,EMG,1,True,dropout,classic+TDA,B,0.7889,9.7803
+decline,1.0,EMG,1,True,dropout,classic+TDA,C,0.7889,9.9948
+decline,1.0,EMG,1,True,dropout,classic,A,0.6884,8.695
+decline,1.0,EMG,1,True,dropout,classic,B,0.7286,10.2851
+decline,1.0,EMG,1,True,dropout,classic,C,0.7387,10.222
+decline,1.0,EMG,1,True,clean,classic+TDA,A,0.7387,8.064
+decline,1.0,EMG,1,True,clean,classic+TDA,B,0.7487,9.9822
+decline,1.0,EMG,1,True,clean,classic+TDA,C,0.7286,10.4744
+decline,1.0,ACC_neck,1,True,dropout,classic+TDA,A,0.6734,7.4835
+decline,1.0,ACC_neck,1,True,dropout,classic+TDA,B,0.7387,9.6162
+decline,1.0,ACC_neck,1,True,dropout,classic+TDA,C,0.7337,9.8308
+decline,1.0,ACC_neck,1,True,dropout,classic,A,0.5226,6.5244
+decline,1.0,ACC_neck,1,True,dropout,classic,B,0.6482,9.3638
+decline,1.0,ACC_neck,1,True,dropout,classic,C,0.6482,9.8812
+decline,1.0,ACC_neck,1,True,clean,classic+TDA,A,0.6382,7.0292
+decline,1.0,ACC_neck,1,True,clean,classic+TDA,B,0.7136,9.3638
+decline,1.0,ACC_neck,1,True,clean,classic+TDA,C,0.7085,9.755
+decline,1.0,ACC_chest,1,True,dropout,classic+TDA,A,0.7588,10.6384
+decline,1.0,ACC_chest,1,True,dropout,classic+TDA,B,0.7688,10.8782
+decline,1.0,ACC_chest,1,True,dropout,classic+TDA,C,0.7638,10.5627
+decline,1.0,ACC_chest,1,True,dropout,classic,A,0.7186,10.7772
+decline,1.0,ACC_chest,1,True,dropout,classic,B,0.7437,11.1306
+decline,1.0,ACC_chest,1,True,dropout,classic,C,0.7286,10.7141
+decline,1.0,ACC_chest,1,True,clean,classic+TDA,A,0.7487,11.0675
+decline,1.0,ACC_chest,1,True,clean,classic+TDA,B,0.7739,10.8656
+decline,1.0,ACC_chest,1,True,clean,classic+TDA,C,0.7387,10.5753
+decline,1.0,GYR_neck,1,True,dropout,classic+TDA,A,0.7839,11.6732
+decline,1.0,GYR_neck,1,True,dropout,classic+TDA,B,0.804,11.2315
+decline,1.0,GYR_neck,1,True,dropout,classic+TDA,C,0.804,10.5753
+decline,1.0,GYR_neck,1,True,dropout,classic,A,0.7286,10.4617
+decline,1.0,GYR_neck,1,True,dropout,classic,B,0.7538,10.8277
+decline,1.0,GYR_neck,1,True,dropout,classic,C,0.7487,10.6763
+decline,1.0,GYR_neck,1,True,clean,classic+TDA,A,0.7889,11.3956
+decline,1.0,GYR_neck,1,True,clean,classic+TDA,B,0.794,10.6132
+decline,1.0,GYR_neck,1,True,clean,classic+TDA,C,0.799,10.5122
+decline,1.0,GYR_chest,1,True,dropout,classic+TDA,A,0.7889,10.4113
+decline,1.0,GYR_chest,1,True,dropout,classic+TDA,B,0.804,10.5501
+decline,1.0,GYR_chest,1,True,dropout,classic+TDA,C,0.7839,10.1715
+decline,1.0,GYR_chest,1,True,dropout,classic,A,0.7487,10.6258
+decline,1.0,GYR_chest,1,True,dropout,classic,B,0.7638,11.1053
+decline,1.0,GYR_chest,1,True,dropout,classic,C,0.7487,10.5501
+decline,1.0,GYR_chest,1,True,clean,classic+TDA,A,0.7839,10.2598
+decline,1.0,GYR_chest,1,True,clean,classic+TDA,B,0.809,10.6889
+decline,1.0,GYR_chest,1,True,clean,classic+TDA,C,0.794,10.4617
+decline,1.0,EEG1 EEG2,2,False,dropout,classic+TDA,A,0.608,10.7141
+decline,1.0,EEG1 EEG2,2,False,dropout,classic+TDA,B,0.6834,10.5879
+decline,1.0,EEG1 EEG2,2,False,dropout,classic+TDA,C,0.6683,10.3986
+decline,1.0,EEG1 EEG2,2,False,dropout,classic,A,0.5276,8.859
+decline,1.0,EEG1 EEG2,2,False,dropout,classic,B,0.6683,10.1841
+decline,1.0,EEG1 EEG2,2,False,dropout,classic,C,0.6784,10.0705
+decline,1.0,EEG1 EEG2,2,False,clean,classic+TDA,A,0.5678,11.1053
+decline,1.0,EEG1 EEG2,2,False,clean,classic+TDA,B,0.5427,10.0958
+decline,1.0,EEG1 EEG2,2,False,clean,classic+TDA,C,0.5126,9.1872
+decline,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,A,0.7186,9.4017
+decline,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,B,0.7588,10.2472
+decline,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,C,0.7688,10.2851
+decline,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,A,0.5779,6.9408
+decline,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,B,0.6633,8.9095
+decline,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,C,0.6935,9.856
+decline,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,A,0.6784,9.2881
+decline,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,B,0.7236,10.1841
+decline,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,C,0.7136,9.9065
+decline,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.5628,7.9126
+decline,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.7136,10.0579
+decline,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7136,9.6036
+decline,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,A,0.4925,6.7515
+decline,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,B,0.598,9.8686
+decline,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,C,0.6231,9.6793
+decline,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.5678,7.6349
+decline,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.6884,9.6919
+decline,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.6884,9.6541
+decline,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,A,0.5477,6.7389
+decline,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,B,0.6683,9.49
+decline,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,C,0.7337,9.8812
+decline,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,A,0.4372,5.2498
+decline,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,B,0.5628,8.3542
+decline,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,C,0.6482,9.2124
+decline,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,A,0.5578,7.0797
+decline,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,B,0.6382,8.859
+decline,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,C,0.6683,9.5405
+decline,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,A,0.4372,6.1837
+decline,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,B,0.6281,9.1493
+decline,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,C,0.6633,10.0327
+decline,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,A,0.3417,5.4012
+decline,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,B,0.5025,8.1523
+decline,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,C,0.5477,8.9979
+decline,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,A,0.4121,6.1963
+decline,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,B,0.5528,8.329
+decline,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,C,0.5427,8.7959
+decline,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,A,0.4121,6.0448
+decline,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,B,0.598,8.6697
+decline,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,C,0.6583,9.1745
+decline,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,A,0.3518,5.477
+decline,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,B,0.4874,8.064
+decline,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,C,0.5578,8.8717
+decline,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,A,0.397,6.8904
+decline,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,B,0.5628,9.3764
+decline,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,C,0.5528,9.4395
+decline,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,A,0.6533,10.651
+decline,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,B,0.7538,11.3451
+decline,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,C,0.7588,10.9034
+decline,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,A,0.4925,5.906
+decline,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,B,0.6533,9.591
+decline,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,C,0.6884,9.9948
+decline,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,A,0.6784,10.0705
+decline,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,B,0.6985,10.386
+decline,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,C,0.7236,10.2472
+decline,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.6332,8.1271
+decline,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.7638,10.0074
+decline,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7538,9.957
+decline,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,A,0.6432,8.859
+decline,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,B,0.6935,9.9696
+decline,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,C,0.6985,9.8308
+decline,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.6482,9.7424
+decline,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.6884,9.6162
+decline,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.6633,9.1241
+dropout,0.5,EEG1,1,True,dropout,classic+TDA,A,0.6683,7.3699
+dropout,0.5,EEG1,1,True,dropout,classic+TDA,B,0.7035,8.4173
+dropout,0.5,EEG1,1,True,dropout,classic+TDA,C,0.6683,7.3699
+dropout,0.5,EEG1,1,True,dropout,classic,A,0.7085,10.3482
+dropout,0.5,EEG1,1,True,dropout,classic,B,0.7437,10.8908
+dropout,0.5,EEG1,1,True,dropout,classic,C,0.7085,10.3482
+dropout,0.5,EEG1,1,True,clean,classic+TDA,A,0.6734,7.7233
+dropout,0.5,EEG1,1,True,clean,classic+TDA,B,0.7035,8.6697
+dropout,0.5,EEG1,1,True,clean,classic+TDA,C,0.6734,7.7233
+dropout,0.5,EEG2,1,True,dropout,classic+TDA,A,0.5578,7.2563
+dropout,0.5,EEG2,1,True,dropout,classic+TDA,B,0.6131,8.1902
+dropout,0.5,EEG2,1,True,dropout,classic+TDA,C,0.5578,7.2563
+dropout,0.5,EEG2,1,True,dropout,classic,A,0.6834,12.3799
+dropout,0.5,EEG2,1,True,dropout,classic,B,0.6985,12.544
+dropout,0.5,EEG2,1,True,dropout,classic,C,0.6834,12.3799
+dropout,0.5,EEG2,1,True,clean,classic+TDA,A,0.5678,7.5213
+dropout,0.5,EEG2,1,True,clean,classic+TDA,B,0.603,8.6193
+dropout,0.5,EEG2,1,True,clean,classic+TDA,C,0.5678,7.5213
+dropout,0.5,ECG,1,True,dropout,classic+TDA,A,0.7538,9.5153
+dropout,0.5,ECG,1,True,dropout,classic+TDA,B,0.7739,10.0831
+dropout,0.5,ECG,1,True,dropout,classic+TDA,C,0.7538,9.5153
+dropout,0.5,ECG,1,True,dropout,classic,A,0.7337,10.487
+dropout,0.5,ECG,1,True,dropout,classic,B,0.7387,11.017
+dropout,0.5,ECG,1,True,dropout,classic,C,0.7337,10.487
+dropout,0.5,ECG,1,True,clean,classic+TDA,A,0.7236,9.6793
+dropout,0.5,ECG,1,True,clean,classic+TDA,B,0.7487,9.9317
+dropout,0.5,ECG,1,True,clean,classic+TDA,C,0.7236,9.6793
+dropout,0.5,EMG,1,True,dropout,classic+TDA,A,0.7387,9.1367
+dropout,0.5,EMG,1,True,dropout,classic+TDA,B,0.7839,10.0453
+dropout,0.5,EMG,1,True,dropout,classic+TDA,C,0.7387,9.1367
+dropout,0.5,EMG,1,True,dropout,classic,A,0.6884,9.3007
+dropout,0.5,EMG,1,True,dropout,classic,B,0.7186,9.8686
+dropout,0.5,EMG,1,True,dropout,classic,C,0.6884,9.3007
+dropout,0.5,EMG,1,True,clean,classic+TDA,A,0.7487,9.2629
+dropout,0.5,EMG,1,True,clean,classic+TDA,B,0.7789,9.8181
+dropout,0.5,EMG,1,True,clean,classic+TDA,C,0.7487,9.2629
+dropout,0.5,ACC_neck,1,True,dropout,classic+TDA,A,0.5276,5.5905
+dropout,0.5,ACC_neck,1,True,dropout,classic+TDA,B,0.6382,6.9661
+dropout,0.5,ACC_neck,1,True,dropout,classic+TDA,C,0.5276,5.5905
+dropout,0.5,ACC_neck,1,True,dropout,classic,A,0.5226,5.7293
+dropout,0.5,ACC_neck,1,True,dropout,classic,B,0.6281,6.802
+dropout,0.5,ACC_neck,1,True,dropout,classic,C,0.5226,5.7293
+dropout,0.5,ACC_neck,1,True,clean,classic+TDA,A,0.5477,5.5401
+dropout,0.5,ACC_neck,1,True,clean,classic+TDA,B,0.6281,6.7389
+dropout,0.5,ACC_neck,1,True,clean,classic+TDA,C,0.5477,5.5401
+dropout,0.5,ACC_chest,1,True,dropout,classic+TDA,A,0.7638,11.3325
+dropout,0.5,ACC_chest,1,True,dropout,classic+TDA,B,0.7789,11.7111
+dropout,0.5,ACC_chest,1,True,dropout,classic+TDA,C,0.7638,11.3325
+dropout,0.5,ACC_chest,1,True,dropout,classic,A,0.7085,10.8025
+dropout,0.5,ACC_chest,1,True,dropout,classic,B,0.7387,11.5849
+dropout,0.5,ACC_chest,1,True,dropout,classic,C,0.7085,10.8025
+dropout,0.5,ACC_chest,1,True,clean,classic+TDA,A,0.7839,13.4652
+dropout,0.5,ACC_chest,1,True,clean,classic+TDA,B,0.7839,13.4905
+dropout,0.5,ACC_chest,1,True,clean,classic+TDA,C,0.7839,13.4652
+dropout,0.5,GYR_neck,1,True,dropout,classic+TDA,A,0.7688,10.4239
+dropout,0.5,GYR_neck,1,True,dropout,classic+TDA,B,0.794,10.853
+dropout,0.5,GYR_neck,1,True,dropout,classic+TDA,C,0.7688,10.4239
+dropout,0.5,GYR_neck,1,True,dropout,classic,A,0.7638,10.8025
+dropout,0.5,GYR_neck,1,True,dropout,classic,B,0.7688,11.2568
+dropout,0.5,GYR_neck,1,True,dropout,classic,C,0.7638,10.8025
+dropout,0.5,GYR_neck,1,True,clean,classic+TDA,A,0.7789,10.3482
+dropout,0.5,GYR_neck,1,True,clean,classic+TDA,B,0.7789,10.3986
+dropout,0.5,GYR_neck,1,True,clean,classic+TDA,C,0.7789,10.3482
+dropout,0.5,GYR_chest,1,True,dropout,classic+TDA,A,0.7789,10.3355
+dropout,0.5,GYR_chest,1,True,dropout,classic+TDA,B,0.794,10.8656
+dropout,0.5,GYR_chest,1,True,dropout,classic+TDA,C,0.7789,10.3355
+dropout,0.5,GYR_chest,1,True,dropout,classic,A,0.7337,10.4744
+dropout,0.5,GYR_chest,1,True,dropout,classic,B,0.7437,10.9161
+dropout,0.5,GYR_chest,1,True,dropout,classic,C,0.7337,10.4744
+dropout,0.5,GYR_chest,1,True,clean,classic+TDA,A,0.7739,10.9287
+dropout,0.5,GYR_chest,1,True,clean,classic+TDA,B,0.794,11.0549
+dropout,0.5,GYR_chest,1,True,clean,classic+TDA,C,0.7739,10.9287
+dropout,0.5,EEG1 EEG2,2,False,dropout,classic+TDA,A,0.4472,6.007
+dropout,0.5,EEG1 EEG2,2,False,dropout,classic+TDA,B,0.4925,6.9535
+dropout,0.5,EEG1 EEG2,2,False,dropout,classic+TDA,C,0.4472,6.007
+dropout,0.5,EEG1 EEG2,2,False,dropout,classic,A,0.6533,12.5692
+dropout,0.5,EEG1 EEG2,2,False,dropout,classic,B,0.6482,13.1371
+dropout,0.5,EEG1 EEG2,2,False,dropout,classic,C,0.6533,12.5692
+dropout,0.5,EEG1 EEG2,2,False,clean,classic+TDA,A,0.4322,6.1584
+dropout,0.5,EEG1 EEG2,2,False,clean,classic+TDA,B,0.4925,7.5971
+dropout,0.5,EEG1 EEG2,2,False,clean,classic+TDA,C,0.4322,6.1584
+dropout,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,A,0.5276,6.0196
+dropout,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,B,0.6181,7.5213
+dropout,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,C,0.5276,6.0196
+dropout,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,A,0.5327,6.7389
+dropout,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,B,0.6231,7.8242
+dropout,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,C,0.5327,6.7389
+dropout,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,A,0.5628,7.269
+dropout,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,B,0.6583,8.2659
+dropout,0.5,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,C,0.5628,7.269
+dropout,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.3769,4.7955
+dropout,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.5025,6.0322
+dropout,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.3769,4.7955
+dropout,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,A,0.4673,6.2468
+dropout,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,B,0.5578,7.4961
+dropout,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,C,0.4673,6.2468
+dropout,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.3819,5.3129
+dropout,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.5377,6.4739
+dropout,0.5,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.3819,5.3129
+dropout,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,A,0.3668,4.4295
+dropout,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,B,0.4774,5.5274
+dropout,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,C,0.3668,4.4295
+dropout,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,A,0.4422,5.4517
+dropout,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,B,0.5477,6.638
+dropout,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,C,0.4422,5.4517
+dropout,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,A,0.3467,4.4926
+dropout,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,B,0.4673,5.906
+dropout,0.5,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,C,0.3467,4.4926
+dropout,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,A,0.3216,4.2781
+dropout,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,B,0.4221,5.3255
+dropout,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,C,0.3216,4.2781
+dropout,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,A,0.407,6.171
+dropout,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,B,0.5276,7.7106
+dropout,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,C,0.407,6.171
+dropout,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,A,0.3467,4.5683
+dropout,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,B,0.4623,5.6915
+dropout,0.5,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,C,0.3467,4.5683
+dropout,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,A,0.3166,4.2528
+dropout,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,B,0.4121,5.3255
+dropout,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,C,0.3166,4.2528
+dropout,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,A,0.4221,6.3351
+dropout,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,B,0.5276,8.1902
+dropout,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,C,0.4221,6.3351
+dropout,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,A,0.3618,5.1741
+dropout,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,B,0.4573,6.4234
+dropout,0.5,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,C,0.3618,5.1741
+dropout,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,A,0.4171,4.6567
+dropout,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,B,0.5075,6.1584
+dropout,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,C,0.4171,4.6567
+dropout,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,A,0.4824,6.3351
+dropout,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,B,0.603,7.9126
+dropout,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,C,0.4824,6.3351
+dropout,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,A,0.4372,5.376
+dropout,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,B,0.5477,6.4739
+dropout,0.5,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,C,0.4372,5.376
+dropout,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.5779,7.168
+dropout,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.6734,8.6193
+dropout,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.5779,7.168
+dropout,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,A,0.6382,9.3133
+dropout,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,B,0.6834,10.5627
+dropout,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,C,0.6382,9.3133
+dropout,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.6382,9.6288
+dropout,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.6935,10.6006
+dropout,0.5,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.6382,9.6288
+dropout,1.0,EEG1,1,True,dropout,classic+TDA,A,0.3869,4.1266
+dropout,1.0,EEG1,1,True,dropout,classic+TDA,B,0.7839,10.8151
+dropout,1.0,EEG1,1,True,dropout,classic+TDA,C,0.7638,10.4996
+dropout,1.0,EEG1,1,True,dropout,classic,A,0.3618,4.0509
+dropout,1.0,EEG1,1,True,dropout,classic,B,0.7437,10.8277
+dropout,1.0,EEG1,1,True,dropout,classic,C,0.7236,10.4113
+dropout,1.0,EEG1,1,True,clean,classic+TDA,A,0.4724,4.846
+dropout,1.0,EEG1,1,True,clean,classic+TDA,B,0.7538,10.752
+dropout,1.0,EEG1,1,True,clean,classic+TDA,C,0.7286,10.4996
+dropout,1.0,EEG2,1,True,dropout,classic+TDA,A,0.2462,3.8364
+dropout,1.0,EEG2,1,True,dropout,classic+TDA,B,0.7437,10.3734
+dropout,1.0,EEG2,1,True,dropout,classic+TDA,C,0.7337,9.9696
+dropout,1.0,EEG2,1,True,dropout,classic,A,0.2161,3.6345
+dropout,1.0,EEG2,1,True,dropout,classic,B,0.7035,10.7268
+dropout,1.0,EEG2,1,True,dropout,classic,C,0.7035,10.5248
+dropout,1.0,EEG2,1,True,clean,classic+TDA,A,0.2362,3.9752
+dropout,1.0,EEG2,1,True,clean,classic+TDA,B,0.6834,11.7111
+dropout,1.0,EEG2,1,True,clean,classic+TDA,C,0.6633,11.1432
+dropout,1.0,ECG,1,True,dropout,classic+TDA,A,0.6432,6.2846
+dropout,1.0,ECG,1,True,dropout,classic+TDA,B,0.7889,10.5753
+dropout,1.0,ECG,1,True,dropout,classic+TDA,C,0.7789,10.4239
+dropout,1.0,ECG,1,True,dropout,classic,A,0.7739,13.7302
+dropout,1.0,ECG,1,True,dropout,classic,B,0.7286,10.4365
+dropout,1.0,ECG,1,True,dropout,classic,C,0.7136,10.0074
+dropout,1.0,ECG,1,True,clean,classic+TDA,A,0.5276,5.1488
+dropout,1.0,ECG,1,True,clean,classic+TDA,B,0.7487,10.222
+dropout,1.0,ECG,1,True,clean,classic+TDA,C,0.7236,10.0831
+dropout,1.0,EMG,1,True,dropout,classic+TDA,A,0.6533,6.8146
+dropout,1.0,EMG,1,True,dropout,classic+TDA,B,0.8141,10.7646
+dropout,1.0,EMG,1,True,dropout,classic+TDA,C,0.799,10.3103
+dropout,1.0,EMG,1,True,dropout,classic,A,0.598,6.171
+dropout,1.0,EMG,1,True,dropout,classic,B,0.7739,11.017
+dropout,1.0,EMG,1,True,dropout,classic,C,0.7538,10.6132
+dropout,1.0,EMG,1,True,clean,classic+TDA,A,0.6834,7.2185
+dropout,1.0,EMG,1,True,clean,classic+TDA,B,0.7437,10.9161
+dropout,1.0,EMG,1,True,clean,classic+TDA,C,0.7337,10.8025
+dropout,1.0,ACC_neck,1,True,dropout,classic+TDA,A,0.4824,5.1993
+dropout,1.0,ACC_neck,1,True,dropout,classic+TDA,B,0.794,10.7646
+dropout,1.0,ACC_neck,1,True,dropout,classic+TDA,C,0.7789,10.3482
+dropout,1.0,ACC_neck,1,True,dropout,classic,A,0.4372,4.9469
+dropout,1.0,ACC_neck,1,True,dropout,classic,B,0.7538,10.9287
+dropout,1.0,ACC_neck,1,True,dropout,classic,C,0.7286,10.4744
+dropout,1.0,ACC_neck,1,True,clean,classic+TDA,A,0.5678,6.0448
+dropout,1.0,ACC_neck,1,True,clean,classic+TDA,B,0.7789,10.7899
+dropout,1.0,ACC_neck,1,True,clean,classic+TDA,C,0.7688,10.6006
+dropout,1.0,ACC_chest,1,True,dropout,classic+TDA,A,0.7236,7.0797
+dropout,1.0,ACC_chest,1,True,dropout,classic+TDA,B,0.7789,10.8782
+dropout,1.0,ACC_chest,1,True,dropout,classic+TDA,C,0.7638,10.4996
+dropout,1.0,ACC_chest,1,True,dropout,classic,A,0.6482,8.0892
+dropout,1.0,ACC_chest,1,True,dropout,classic,B,0.7437,11.1684
+dropout,1.0,ACC_chest,1,True,dropout,classic,C,0.7236,10.651
+dropout,1.0,ACC_chest,1,True,clean,classic+TDA,A,0.7236,9.4017
+dropout,1.0,ACC_chest,1,True,clean,classic+TDA,B,0.7789,10.9918
+dropout,1.0,ACC_chest,1,True,clean,classic+TDA,C,0.7588,10.6006
+dropout,1.0,GYR_neck,1,True,dropout,classic+TDA,A,0.6181,6.5118
+dropout,1.0,GYR_neck,1,True,dropout,classic+TDA,B,0.794,10.7015
+dropout,1.0,GYR_neck,1,True,dropout,classic+TDA,C,0.7889,10.3229
+dropout,1.0,GYR_neck,1,True,dropout,classic,A,0.603,7.2185
+dropout,1.0,GYR_neck,1,True,dropout,classic,B,0.7638,10.9161
+dropout,1.0,GYR_neck,1,True,dropout,classic,C,0.7487,10.6384
+dropout,1.0,GYR_neck,1,True,clean,classic+TDA,A,0.6834,7.2942
+dropout,1.0,GYR_neck,1,True,clean,classic+TDA,B,0.7889,10.3482
+dropout,1.0,GYR_neck,1,True,clean,classic+TDA,C,0.7839,10.1967
+dropout,1.0,GYR_chest,1,True,dropout,classic+TDA,A,0.6583,6.1837
+dropout,1.0,GYR_chest,1,True,dropout,classic+TDA,B,0.804,10.7772
+dropout,1.0,GYR_chest,1,True,dropout,classic+TDA,C,0.7789,10.3355
+dropout,1.0,GYR_chest,1,True,dropout,classic,A,0.5477,6.2215
+dropout,1.0,GYR_chest,1,True,dropout,classic,B,0.7538,11.0549
+dropout,1.0,GYR_chest,1,True,dropout,classic,C,0.7387,10.6763
+dropout,1.0,GYR_chest,1,True,clean,classic+TDA,A,0.6432,7.6223
+dropout,1.0,GYR_chest,1,True,clean,classic+TDA,B,0.794,10.8277
+dropout,1.0,GYR_chest,1,True,clean,classic+TDA,C,0.7789,10.6763
+dropout,1.0,EEG1 EEG2,2,False,dropout,classic+TDA,A,0.2261,3.6723
+dropout,1.0,EEG1 EEG2,2,False,dropout,classic+TDA,B,0.7035,10.8908
+dropout,1.0,EEG1 EEG2,2,False,dropout,classic+TDA,C,0.6834,10.651
+dropout,1.0,EEG1 EEG2,2,False,dropout,classic,A,0.2161,3.4704
+dropout,1.0,EEG1 EEG2,2,False,dropout,classic,B,0.7136,10.7899
+dropout,1.0,EEG1 EEG2,2,False,dropout,classic,C,0.7035,10.3608
+dropout,1.0,EEG1 EEG2,2,False,clean,classic+TDA,A,0.2261,3.7102
+dropout,1.0,EEG1 EEG2,2,False,clean,classic+TDA,B,0.4774,9.6162
+dropout,1.0,EEG1 EEG2,2,False,clean,classic+TDA,C,0.4573,9.1619
+dropout,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,A,0.2764,3.8238
+dropout,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,B,0.799,11.0422
+dropout,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic+TDA,C,0.794,10.7646
+dropout,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,A,0.2814,3.5966
+dropout,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,B,0.7688,10.8025
+dropout,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,dropout,classic,C,0.7538,10.5627
+dropout,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,A,0.3015,3.95
+dropout,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,B,0.7688,10.2977
+dropout,1.0,ACC_neck ACC_chest GYR_neck GYR_chest,4,True,clean,classic+TDA,C,0.7588,10.3482
+dropout,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.2261,3.685
+dropout,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.7889,10.7899
+dropout,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7688,10.6006
+dropout,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,A,0.2161,3.4452
+dropout,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,B,0.7236,11.0296
+dropout,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,dropout,classic,C,0.6985,10.6006
+dropout,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.2312,3.6597
+dropout,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.7236,10.5248
+dropout,1.0,EEG1 ECG ACC_neck ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.7286,10.6384
+dropout,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,A,0.2261,3.6597
+dropout,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,B,0.794,10.6637
+dropout,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic+TDA,C,0.7839,10.5753
+dropout,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,A,0.2111,3.4073
+dropout,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,B,0.7538,10.5122
+dropout,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,dropout,classic,C,0.7387,10.3986
+dropout,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,A,0.2261,3.6471
+dropout,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,B,0.7186,10.4491
+dropout,1.0,EEG1 ECG EMG ACC_neck GYR_neck,5,True,clean,classic+TDA,C,0.6985,10.4239
+dropout,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,A,0.2261,3.6597
+dropout,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,B,0.7085,11.4713
+dropout,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic+TDA,C,0.6935,11.2442
+dropout,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,A,0.206,3.4073
+dropout,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,B,0.6131,10.7394
+dropout,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,dropout,classic,C,0.593,10.4239
+dropout,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,A,0.2211,3.6471
+dropout,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,B,0.5779,9.755
+dropout,1.0,EEG2 ECG EMG ACC_neck GYR_chest,5,True,clean,classic+TDA,C,0.5779,9.7929
+dropout,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,A,0.2261,3.6976
+dropout,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,B,0.6935,10.6384
+dropout,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic+TDA,C,0.6834,10.5879
+dropout,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,A,0.206,3.4073
+dropout,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,B,0.608,10.4617
+dropout,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,dropout,classic,C,0.5779,10.2598
+dropout,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,A,0.2211,3.6597
+dropout,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,B,0.6382,11.0044
+dropout,1.0,EEG2 ECG EMG ACC_neck ACC_chest,5,True,clean,classic+TDA,C,0.6181,10.8403
+dropout,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,A,0.2261,3.6597
+dropout,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,B,0.794,11.3451
+dropout,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic+TDA,C,0.7839,11.017
+dropout,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,A,0.2161,3.4326
+dropout,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,B,0.7739,10.9413
+dropout,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,dropout,classic,C,0.7588,10.6384
+dropout,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,A,0.2261,3.6597
+dropout,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,B,0.7437,10.5627
+dropout,1.0,EEG1 ACC_neck ACC_chest GYR_neck GYR_chest,5,True,clean,classic+TDA,C,0.7337,10.7015
+dropout,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,A,0.2261,3.6976
+dropout,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,B,0.8141,10.5375
+dropout,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic+TDA,C,0.7839,10.2977
+dropout,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,A,0.2261,3.4578
+dropout,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,B,0.7487,10.8025
+dropout,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,dropout,classic,C,0.7236,10.3608
+dropout,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,A,0.2362,3.7102
+dropout,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,B,0.6683,9.6288
+dropout,1.0,EEG1 ECG EMG ACC_chest GYR_chest,5,True,clean,classic+TDA,C,0.6633,9.6919
