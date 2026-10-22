@@ -326,6 +326,32 @@ def fig_fault_curves(r, sel, title, name, target=False):
     save(fig, name)
 
 
+def fig_window_labels(old, new):
+    """Classic + TDA with the health check, faults on 5 of 8 sensors: severity labels vs window labels."""
+    fig, axes = plt.subplots(1, 3, figsize=(13, 4.6), sharey=True)
+    clean = CLEAN_SENS[("dropout", "classic+TDA")]
+    for ax, fault in zip(axes, ("pop", "decline", "dropout")):
+        for r, style, label in ((old, ":", "health check, severity labels (before)"),
+                                (new, "-", "health check, window labels (fix D)")):
+            g = r[(r.n_sensors == 5) & r.eeg_alive & (r.fault == fault) & (r.training == "dropout")
+                  & (r.model == "classic+TDA") & (r["mode"] == "B")].groupby("severity").sensitivity.mean()
+            ax.plot([0.0] + list(g.index), [clean] + list(g.values), ls=style, color=MODELS["classic+TDA"][1],
+                    marker="o", ms=5, label=f"Classic + TDA, {label}")
+        ax.axhline(clean - 0.15, color=MUTED, lw=1, ls="--")
+        ax.set_title(FAULT_NAMES[fault], fontsize=11)
+        ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0], ["0%", "25%", "50%", "75%", "100%"])
+        ax.set_xlabel("Fault severity")
+        ax.set_ylim(0, 1)
+        ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
+    axes[0].set_ylabel("Seizures caught")
+    axes[0].text(0.02, clean - 0.15 + 0.015, "target line", fontsize=8, color=INK2)
+    axes[0].legend(loc="lower left", fontsize=8)
+    fig.suptitle("Fix D: labelling each window by its own damage (faults on 5 of 8 sensors)",
+                 x=0.01, ha="left", fontsize=13, fontweight="bold")
+    fig.tight_layout()
+    save(fig, "13_window_labels_before_after")
+
+
 def main():
     p = pd.read_parquet(CACHE.parent / "predictions" / "clean_oof.parquet")
     summary = pd.read_csv(TABLES / "model_clean_summary.csv")
@@ -357,6 +383,9 @@ def main():
                          "Injected faults on 5 of 8 sensors (at least one EEG fault-free)", "11_faults_5of8", target=True)
         fig_fault_curves(f, f.n_sensors == 1, "Injected fault on a single sensor (average over the 8 sensors)",
                          "12_faults_single")
+        before = TABLES / "faults_eval_severity_labels.csv"
+        if before.exists():
+            fig_window_labels(pd.read_csv(before), f)
     print("written to", FIGS)
 
 

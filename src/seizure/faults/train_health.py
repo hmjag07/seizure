@@ -3,8 +3,9 @@
     python -m seizure.faults.train_health
 
 Training data: the clean quality features (healthy) and the fault-injected ones (faults/build_faulty.py),
-labelled from the effective fault severity at each second: healthy (0), degraded (below 0.6),
-failed (0.6 or more). A faulty sensor's series is the clean seconds before the fault onset followed
+labelled by what the fault did inside each window (faults/window_labels.py): healthy, degraded or failed.
+The first version labelled every second by the fault's overall severity (results kept with the suffix
+_severity_labels); those labels are still stored as y_severity. A faulty sensor's series is the clean seconds before the fault onset followed
 by the faulty seconds, so the context features see the change.
 
 Inputs: the five quality features, their context (health.add_context: 10 s mean, change against the
@@ -77,7 +78,12 @@ def patient_rows(sub):
     rows = add_context(rows, "sid")
     # Keep clean series whole, and faulty series from the onset on (their clean lead-in only fed the context).
     rows = rows[(rows.fault == "none") | (rows.t > rows.onset)].reset_index(drop=True)
-    rows["y"] = health_class(rows.eff.to_numpy())
+    # Window-level labels (window_labels.py): what the fault did inside each window. Clean rows are healthy.
+    wl = pd.read_parquet(OUT / f"{sub}_wlabels.parquet").drop_duplicates(["run", "t", "fault", "severity", "sensor"])
+    keys = ["run", "t", "fault", "severity", "sensor"]
+    rows = rows.merge(wl, on=keys, how="left")
+    rows["y"] = np.where(rows.fault == "none", 0, rows.wclass.fillna(0)).astype("int8")
+    rows["y_severity"] = health_class(rows.eff.to_numpy())  # the first labels, kept for comparison
     return rows
 
 

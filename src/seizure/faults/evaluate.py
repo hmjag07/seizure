@@ -9,7 +9,7 @@ given context features as in train.py. The saved fold models (robustness.py) are
 A  no health check   faulty features go in as they are; the fold's fixed clean threshold
 B  health check      sensors the health check calls failed are blanked for that second, and the
                      threshold is the sensor-aware one for the sensors it believes are working
-C  perfect check     as B, but using the true fault labels (failed = effective severity >= 0.6)
+C  perfect check     as B, but using the true window-level labels (faults/window_labels.py)
 
 All scoring: 5-of-10 alarm, any-overlap sensitivity, false alarms per hour, patient-grouped folds.
 Writes results/tables/faults_eval.csv.
@@ -169,6 +169,11 @@ def main():
                                        filters=[("fault", "==", fault), ("severity", "==", sev)])
                        for s in data.df.subject.unique()], ignore_index=True)
         f = f.drop_duplicates(["subject", "run", "t", "sensor"])
+        wl = pd.concat([pd.read_parquet(OUT / f"{s}_wlabels.parquet",
+                                        filters=[("fault", "==", fault), ("severity", "==", sev)]).assign(subject=s)
+                        for s in data.df.subject.unique()], ignore_index=True)
+        wl = wl.drop_duplicates(["subject", "run", "t", "sensor"])
+        f = f.merge(wl[["subject", "run", "t", "sensor", "wclass"]], on=["subject", "run", "t", "sensor"], how="left")
         f["pos"] = data.pos.reindex(pd.MultiIndex.from_frame(f[["subject", "run", "t"]])).to_numpy()
         f = f.dropna(subset=["pos"])
         f["pos"] = f.pos.astype(int)
@@ -186,7 +191,7 @@ def main():
                 vals = (fs_[cols].to_numpy(dtype="float64") - data.med.loc[subj, spec].to_numpy()) / \
                     data.mad.loc[subj, spec].to_numpy()
                 X.loc[fs_.pos.to_numpy(), spec] = vals.astype("float32")
-                truly_failed[s][fs_.pos.to_numpy()] = fs_.eff.to_numpy() >= FAILED
+                truly_failed[s][fs_.pos.to_numpy()] = fs_.wclass.to_numpy() == 2  # window-level truth
             touched = [c for c in data.ctx_cols if any(c.removeprefix("TDA_").startswith(s + "_") for s in sset)]
             if touched:
                 X[[f"{c}_{w}" for w in ("m10", "d60") for c in touched]] = data.context(X, touched).to_numpy()
