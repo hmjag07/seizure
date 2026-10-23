@@ -1,0 +1,4 @@
+training,model,threshold,auroc,aupr,seizures,detected,sensitivity,false_alarms,fa_per_h,fa_per_24h,median_delay_s
+dropout,classic+TDA,0.4,0.8799,0.4653,152,124,0.8158,797,13.8143,331.5429,6.0
+dropout,classic,0.475,0.8711,0.437,152,124,0.8158,729,12.6357,303.2557,6.0
+clean,classic+TDA,0.325,0.875,0.467,152,123,0.8092,756,13.1036,314.4874,6.0

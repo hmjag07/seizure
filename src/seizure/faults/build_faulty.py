@@ -29,9 +29,9 @@ from seizure.data.windows import WINDOW_S, fits, label, window_ends
 from seizure.faults.health import quality_features, raw_signal
 from seizure.faults.inject import FAULTS, SEVERITIES, inject, spread
 from seizure.features import classic
-from seizure.features.build import CACHE, load_params, load_plan, patient_setup, sensor_features, stream
+from seizure.features.build import CACHE, HELDOUT, load_params, load_plan, patient_setup, sensor_features, stream
 
-OUT = CACHE.parent / "faults"
+OUT = CACHE.parent / ("faults_heldout" if HELDOUT else "faults")
 ONSET_RANGE = (0.2, 0.6)
 MOTION_POP_FLOOR = 0.05  # motion pops are at least 5% of gravity, since a still axis barely varies
 WORKERS = 6

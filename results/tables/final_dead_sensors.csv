@@ -1,0 +1,613 @@
+training,model,rule,dead,sensors_dead,eeg_alive,threshold,sensitivity,fa_per_h
+dropout,classic+TDA,fixed,0,none,True,0.4,0.8158,13.8143
+dropout,classic+TDA,sensor-aware,0,none,True,0.4,0.8158,13.8143
+dropout,classic+TDA,fixed,1,EEG1,True,0.4,0.8224,17.0209
+dropout,classic+TDA,sensor-aware,1,EEG1,True,0.5,0.7961,12.861
+dropout,classic+TDA,fixed,1,EEG2,True,0.4,0.8487,17.8702
+dropout,classic+TDA,sensor-aware,1,EEG2,True,0.6,0.7697,11.5957
+dropout,classic+TDA,fixed,1,ECG,True,0.4,0.8421,20.4354
+dropout,classic+TDA,sensor-aware,1,ECG,True,0.525,0.8224,13.8836
+dropout,classic+TDA,fixed,1,EMG,True,0.4,0.8355,15.7729
+dropout,classic+TDA,sensor-aware,1,EMG,True,0.45,0.8092,14.2476
+dropout,classic+TDA,fixed,1,ACC_neck,True,0.4,0.8421,15.2529
+dropout,classic+TDA,sensor-aware,1,ACC_neck,True,0.45,0.8026,13.4503
+dropout,classic+TDA,fixed,1,ACC_chest,True,0.4,0.8553,15.9289
+dropout,classic+TDA,sensor-aware,1,ACC_chest,True,0.45,0.8289,13.745
+dropout,classic+TDA,fixed,1,GYR_neck,True,0.4,0.8355,14.8889
+dropout,classic+TDA,sensor-aware,1,GYR_neck,True,0.425,0.8289,13.901
+dropout,classic+TDA,fixed,1,GYR_chest,True,0.4,0.8289,15.2876
+dropout,classic+TDA,sensor-aware,1,GYR_chest,True,0.425,0.8158,14.2476
+dropout,classic+TDA,fixed,2,EMG GYR_chest,True,0.4,0.8553,17.2289
+dropout,classic+TDA,sensor-aware,2,EMG GYR_chest,True,0.475,0.8289,14.6289
+dropout,classic+TDA,fixed,2,EEG1 ACC_chest,True,0.4,0.8618,19.6208
+dropout,classic+TDA,sensor-aware,2,EEG1 ACC_chest,True,0.525,0.8092,13.433
+dropout,classic+TDA,fixed,2,EEG1 ECG,True,0.4,0.8618,24.0753
+dropout,classic+TDA,sensor-aware,2,EEG1 ECG,True,0.625,0.75,11.717
+dropout,classic+TDA,fixed,2,ACC_neck GYR_chest,True,0.4,0.8684,16.3102
+dropout,classic+TDA,sensor-aware,2,ACC_neck GYR_chest,True,0.475,0.8355,13.537
+dropout,classic+TDA,fixed,2,EEG2 ACC_neck,True,0.4,0.8816,19.1355
+dropout,classic+TDA,sensor-aware,2,EEG2 ACC_neck,True,0.6,0.7697,12.705
+dropout,classic+TDA,fixed,2,EEG2 EMG,True,0.4,0.875,20.3661
+dropout,classic+TDA,sensor-aware,2,EEG2 EMG,True,0.625,0.7829,11.8903
+dropout,classic+TDA,fixed,2,ACC_neck ACC_chest,True,0.4,0.8684,16.4489
+dropout,classic+TDA,sensor-aware,2,ACC_neck ACC_chest,True,0.475,0.8355,13.7103
+dropout,classic+TDA,fixed,2,EEG1 GYR_neck,True,0.4,0.8289,17.8182
+dropout,classic+TDA,sensor-aware,2,EEG1 GYR_neck,True,0.5,0.8092,13.485
+dropout,classic+TDA,fixed,2,ACC_chest GYR_chest,True,0.4,0.875,16.6395
+dropout,classic+TDA,sensor-aware,2,ACC_chest GYR_chest,True,0.475,0.8289,14.0916
+dropout,classic+TDA,fixed,2,EMG ACC_neck,True,0.4,0.8618,17.0555
+dropout,classic+TDA,sensor-aware,2,EMG ACC_neck,True,0.5,0.8092,13.485
+dropout,classic+TDA,fixed,2,EEG1 ACC_neck,True,0.4,0.8355,18.0608
+dropout,classic+TDA,sensor-aware,2,EEG1 ACC_neck,True,0.525,0.8092,12.6183
+dropout,classic+TDA,fixed,2,ECG ACC_neck,True,0.4,0.8553,21.4754
+dropout,classic+TDA,sensor-aware,2,ECG ACC_neck,True,0.575,0.7895,13.225
+dropout,classic+TDA,fixed,2,EEG1 EEG2,False,0.4,0.8421,26.034
+dropout,classic+TDA,sensor-aware,2,EEG1 EEG2,False,0.625,0.75,12.237
+dropout,classic+TDA,fixed,3,EEG1 ECG ACC_neck,True,0.4,0.8553,25.0113
+dropout,classic+TDA,sensor-aware,3,EEG1 ECG ACC_neck,True,0.65,0.7434,11.5957
+dropout,classic+TDA,fixed,3,EEG1 EMG ACC_neck,True,0.4,0.8421,20.4701
+dropout,classic+TDA,sensor-aware,3,EEG1 EMG ACC_neck,True,0.6,0.7829,11.3877
+dropout,classic+TDA,fixed,3,EEG1 ACC_chest GYR_chest,True,0.4,0.8684,20.8514
+dropout,classic+TDA,sensor-aware,3,EEG1 ACC_chest GYR_chest,True,0.55,0.8026,13.9703
+dropout,classic+TDA,fixed,3,EEG1 GYR_neck GYR_chest,True,0.4,0.8553,18.6328
+dropout,classic+TDA,sensor-aware,3,EEG1 GYR_neck GYR_chest,True,0.525,0.8026,13.6583
+dropout,classic+TDA,fixed,3,ECG EMG GYR_neck,True,0.4,0.8553,21.1634
+dropout,classic+TDA,sensor-aware,3,ECG EMG GYR_neck,True,0.6,0.7763,12.9476
+dropout,classic+TDA,fixed,3,ECG ACC_chest GYR_chest,True,0.4,0.8947,23.486
+dropout,classic+TDA,sensor-aware,3,ECG ACC_chest GYR_chest,True,0.6,0.8158,13.589
+dropout,classic+TDA,fixed,3,ACC_chest GYR_neck GYR_chest,True,0.4,0.875,17.0035
+dropout,classic+TDA,sensor-aware,3,ACC_chest GYR_neck GYR_chest,True,0.5,0.8421,14.1263
+dropout,classic+TDA,fixed,3,ECG ACC_neck GYR_neck,True,0.4,0.8553,21.6487
+dropout,classic+TDA,sensor-aware,3,ECG ACC_neck GYR_neck,True,0.6,0.7895,12.9823
+dropout,classic+TDA,fixed,3,EEG1 ACC_chest GYR_neck,True,0.4,0.8421,19.2741
+dropout,classic+TDA,sensor-aware,3,EEG1 ACC_chest GYR_neck,True,0.55,0.8026,12.7397
+dropout,classic+TDA,fixed,3,ECG ACC_neck ACC_chest,True,0.4,0.8947,23.642
+dropout,classic+TDA,sensor-aware,3,ECG ACC_neck ACC_chest,True,0.6,0.7961,13.6583
+dropout,classic+TDA,fixed,3,EEG2 ACC_neck GYR_chest,True,0.4,0.8684,20.2101
+dropout,classic+TDA,sensor-aware,3,EEG2 ACC_neck GYR_chest,True,0.625,0.7895,11.925
+dropout,classic+TDA,fixed,3,ACC_neck ACC_chest GYR_neck,True,0.4,0.8684,16.9689
+dropout,classic+TDA,sensor-aware,3,ACC_neck ACC_chest GYR_neck,True,0.525,0.8289,13.0863
+dropout,classic+TDA,fixed,3,EEG1 EEG2 ACC_chest,False,0.4,0.9013,29.3619
+dropout,classic+TDA,sensor-aware,3,EEG1 EEG2 ACC_chest,False,0.65,0.7632,13.2423
+dropout,classic+TDA,fixed,3,EEG1 EEG2 GYR_neck,False,0.4,0.8487,27.6806
+dropout,classic+TDA,sensor-aware,3,EEG1 EEG2 GYR_neck,False,0.625,0.7632,12.913
+dropout,classic+TDA,fixed,3,EEG1 EEG2 ACC_neck,False,0.4,0.8618,26.9353
+dropout,classic+TDA,sensor-aware,3,EEG1 EEG2 ACC_neck,False,0.675,0.7105,10.989
+dropout,classic+TDA,fixed,3,EEG1 EEG2 ECG,False,0.4,0.8947,29.3445
+dropout,classic+TDA,sensor-aware,3,EEG1 EEG2 ECG,False,0.725,0.5,8.2331
+dropout,classic+TDA,fixed,3,EEG1 EEG2 GYR_chest,False,0.4,0.8553,26.9353
+dropout,classic+TDA,sensor-aware,3,EEG1 EEG2 GYR_chest,False,0.625,0.7566,12.8956
+dropout,classic+TDA,fixed,3,EEG1 EEG2 EMG,False,0.4,0.8882,29.9685
+dropout,classic+TDA,sensor-aware,3,EEG1 EEG2 EMG,False,0.675,0.75,11.6997
+dropout,classic+TDA,fixed,4,EEG2 ECG EMG ACC_chest,True,0.4,0.9211,28.7379
+dropout,classic+TDA,sensor-aware,4,EEG2 ECG EMG ACC_chest,True,0.75,0.6645,9.0131
+dropout,classic+TDA,fixed,4,EEG1 ACC_neck ACC_chest GYR_chest,True,0.4,0.8684,22.3594
+dropout,classic+TDA,sensor-aware,4,EEG1 ACC_neck ACC_chest GYR_chest,True,0.6,0.8158,12.4623
+dropout,classic+TDA,fixed,4,EEG1 ECG GYR_neck GYR_chest,True,0.4,0.8487,25.0633
+dropout,classic+TDA,sensor-aware,4,EEG1 ECG GYR_neck GYR_chest,True,0.625,0.7632,13.381
+dropout,classic+TDA,fixed,4,EEG1 EMG ACC_chest GYR_neck,True,0.4,0.8618,21.8221
+dropout,classic+TDA,sensor-aware,4,EEG1 EMG ACC_chest GYR_neck,True,0.575,0.8026,13.069
+dropout,classic+TDA,fixed,4,ECG ACC_neck GYR_neck GYR_chest,True,0.4,0.8553,23.018
+dropout,classic+TDA,sensor-aware,4,ECG ACC_neck GYR_neck GYR_chest,True,0.65,0.7829,11.8037
+dropout,classic+TDA,fixed,4,ACC_neck ACC_chest GYR_neck GYR_chest,True,0.4,0.8882,18.1475
+dropout,classic+TDA,sensor-aware,4,ACC_neck ACC_chest GYR_neck GYR_chest,True,0.55,0.8618,12.9996
+dropout,classic+TDA,fixed,4,EEG1 ECG ACC_neck GYR_chest,True,0.4,0.8487,26.5713
+dropout,classic+TDA,sensor-aware,4,EEG1 ECG ACC_neck GYR_chest,True,0.65,0.75,12.081
+dropout,classic+TDA,fixed,4,EEG1 ECG ACC_neck GYR_neck,True,0.4,0.8487,23.8327
+dropout,classic+TDA,sensor-aware,4,EEG1 ECG ACC_neck GYR_neck,True,0.65,0.7566,11.925
+dropout,classic+TDA,fixed,4,EEG2 ECG ACC_neck ACC_chest,True,0.4,0.9145,27.1433
+dropout,classic+TDA,sensor-aware,4,EEG2 ECG ACC_neck ACC_chest,True,0.725,0.6513,9.7064
+dropout,classic+TDA,fixed,4,EMG ACC_neck ACC_chest GYR_neck,True,0.4,0.8816,18.9101
+dropout,classic+TDA,sensor-aware,4,EMG ACC_neck ACC_chest GYR_neck,True,0.575,0.8355,12.6877
+dropout,classic+TDA,fixed,4,EEG2 ECG EMG GYR_neck,True,0.4,0.8684,26.9873
+dropout,classic+TDA,sensor-aware,4,EEG2 ECG EMG GYR_neck,True,0.725,0.7171,10.365
+dropout,classic+TDA,fixed,4,ECG EMG ACC_chest GYR_chest,True,0.4,0.8947,26.2073
+dropout,classic+TDA,sensor-aware,4,ECG EMG ACC_chest GYR_chest,True,0.65,0.7961,13.3636
+dropout,classic+TDA,fixed,4,EEG1 EEG2 ACC_neck ACC_chest,False,0.4,0.9079,30.5578
+dropout,classic+TDA,sensor-aware,4,EEG1 EEG2 ACC_neck ACC_chest,False,0.675,0.7303,12.0463
+dropout,classic+TDA,fixed,4,EEG1 EEG2 ECG GYR_chest,False,0.4,0.9013,30.6445
+dropout,classic+TDA,sensor-aware,4,EEG1 EEG2 ECG GYR_chest,False,0.7,0.5132,8.4064
+dropout,classic+TDA,fixed,4,EEG1 EEG2 ACC_chest GYR_neck,False,0.4,0.9079,30.9045
+dropout,classic+TDA,sensor-aware,4,EEG1 EEG2 ACC_chest GYR_neck,False,0.65,0.7566,12.3757
+dropout,classic+TDA,fixed,4,EEG1 EEG2 ECG EMG,False,0.4,0.9079,29.1885
+dropout,classic+TDA,sensor-aware,4,EEG1 EEG2 ECG EMG,False,0.725,0.5132,8.8224
+dropout,classic+TDA,fixed,4,EEG1 EEG2 EMG GYR_neck,False,0.4,0.8816,32.4298
+dropout,classic+TDA,sensor-aware,4,EEG1 EEG2 EMG GYR_neck,False,0.675,0.75,11.977
+dropout,classic+TDA,fixed,4,EEG1 EEG2 EMG GYR_chest,False,0.4,0.8882,30.8525
+dropout,classic+TDA,sensor-aware,4,EEG1 EEG2 EMG GYR_chest,False,0.675,0.75,12.0983
+dropout,classic+TDA,fixed,5,EEG1 ECG ACC_neck ACC_chest GYR_chest,True,0.4,0.9013,30.3672
+dropout,classic+TDA,sensor-aware,5,EEG1 ECG ACC_neck ACC_chest GYR_chest,True,0.675,0.7368,12.8436
+dropout,classic+TDA,fixed,5,EEG2 ECG ACC_chest GYR_neck GYR_chest,True,0.4,0.9342,28.0446
+dropout,classic+TDA,sensor-aware,5,EEG2 ECG ACC_chest GYR_neck GYR_chest,True,0.7,0.6908,10.0011
+dropout,classic+TDA,fixed,5,EEG1 ECG EMG GYR_neck GYR_chest,True,0.4,0.8421,27.8886
+dropout,classic+TDA,sensor-aware,5,EEG1 ECG EMG GYR_neck GYR_chest,True,0.675,0.7368,11.301
+dropout,classic+TDA,fixed,5,EEG2 ECG EMG ACC_chest GYR_neck,True,0.4,0.9211,28.5819
+dropout,classic+TDA,sensor-aware,5,EEG2 ECG EMG ACC_chest GYR_neck,True,0.725,0.7237,9.8624
+dropout,classic+TDA,fixed,5,EEG2 ECG ACC_neck GYR_neck GYR_chest,True,0.4,0.9013,25.9126
+dropout,classic+TDA,sensor-aware,5,EEG2 ECG ACC_neck GYR_neck GYR_chest,True,0.725,0.6974,10.7464
+dropout,classic+TDA,fixed,5,ECG EMG ACC_neck GYR_neck GYR_chest,True,0.4,0.8618,24.7687
+dropout,classic+TDA,sensor-aware,5,ECG EMG ACC_neck GYR_neck GYR_chest,True,0.675,0.7763,12.1503
+dropout,classic+TDA,fixed,5,EEG1 ECG ACC_neck ACC_chest GYR_neck,True,0.4,0.8618,25.566
+dropout,classic+TDA,sensor-aware,5,EEG1 ECG ACC_neck ACC_chest GYR_neck,True,0.65,0.7632,12.757
+dropout,classic+TDA,fixed,5,EEG2 ECG ACC_neck ACC_chest GYR_chest,True,0.4,0.9276,29.7605
+dropout,classic+TDA,sensor-aware,5,EEG2 ECG ACC_neck ACC_chest GYR_chest,True,0.725,0.625,9.4291
+dropout,classic+TDA,fixed,5,EEG1 ECG EMG ACC_neck GYR_chest,True,0.4,0.8618,29.7085
+dropout,classic+TDA,sensor-aware,5,EEG1 ECG EMG ACC_neck GYR_chest,True,0.7,0.7105,10.8504
+dropout,classic+TDA,fixed,5,EEG1 ECG EMG ACC_neck GYR_neck,True,0.4,0.8487,25.41
+dropout,classic+TDA,sensor-aware,5,EEG1 ECG EMG ACC_neck GYR_neck,True,0.7,0.7105,10.1917
+dropout,classic+TDA,fixed,5,EEG2 ECG ACC_neck ACC_chest GYR_neck,True,0.4,0.9408,26.2593
+dropout,classic+TDA,sensor-aware,5,EEG2 ECG ACC_neck ACC_chest GYR_neck,True,0.7,0.6842,11.197
+dropout,classic+TDA,fixed,5,EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.4,0.8816,20.4354
+dropout,classic+TDA,sensor-aware,5,EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.6,0.8421,12.8436
+dropout,classic+TDA,fixed,5,EEG1 EEG2 ECG GYR_neck GYR_chest,False,0.4,0.9342,33.0018
+dropout,classic+TDA,sensor-aware,5,EEG1 EEG2 ECG GYR_neck GYR_chest,False,0.675,0.5789,11.041
+dropout,classic+TDA,fixed,5,EEG1 EEG2 ECG EMG GYR_neck,False,0.4,0.9276,32.2738
+dropout,classic+TDA,sensor-aware,5,EEG1 EEG2 ECG EMG GYR_neck,False,0.7,0.5526,10.5037
+dropout,classic+TDA,fixed,5,EEG1 EEG2 ECG ACC_chest GYR_neck,False,0.4,0.9474,33.2964
+dropout,classic+TDA,sensor-aware,5,EEG1 EEG2 ECG ACC_chest GYR_neck,False,0.675,0.4539,8.2851
+dropout,classic+TDA,fixed,5,EEG1 EEG2 ECG EMG GYR_chest,False,0.4,0.9145,27.0393
+dropout,classic+TDA,sensor-aware,5,EEG1 EEG2 ECG EMG GYR_chest,False,0.7,0.5132,9.8451
+dropout,classic+TDA,fixed,5,EEG1 EEG2 EMG ACC_neck GYR_chest,False,0.4,0.875,31.7018
+dropout,classic+TDA,sensor-aware,5,EEG1 EEG2 EMG ACC_neck GYR_chest,False,0.7,0.75,11.145
+dropout,classic+TDA,fixed,5,EEG1 EEG2 ECG ACC_neck ACC_chest,False,0.4,0.9408,28.3739
+dropout,classic+TDA,sensor-aware,5,EEG1 EEG2 ECG ACC_neck ACC_chest,False,0.725,0.375,6.6385
+dropout,classic+TDA,fixed,6,EEG2 ECG EMG ACC_neck ACC_chest GYR_chest,True,0.4,0.9276,31.2511
+dropout,classic+TDA,sensor-aware,6,EEG2 ECG EMG ACC_neck ACC_chest GYR_chest,True,0.75,0.6316,9.3944
+dropout,classic+TDA,fixed,6,EEG2 ECG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.4,0.9474,28.9632
+dropout,classic+TDA,sensor-aware,6,EEG2 ECG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.725,0.625,9.1171
+dropout,classic+TDA,fixed,6,EEG1 EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.4,0.875,23.902
+dropout,classic+TDA,sensor-aware,6,EEG1 EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.625,0.8092,12.029
+dropout,classic+TDA,fixed,6,EEG1 ECG EMG ACC_neck GYR_neck GYR_chest,True,0.4,0.8553,28.3912
+dropout,classic+TDA,sensor-aware,6,EEG1 ECG EMG ACC_neck GYR_neck GYR_chest,True,0.7,0.7039,10.4864
+dropout,classic+TDA,fixed,6,EEG2 EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.4,0.9013,24.11
+dropout,classic+TDA,sensor-aware,6,EEG2 EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.7,0.8026,12.3237
+dropout,classic+TDA,fixed,6,EEG2 ECG EMG ACC_neck GYR_neck GYR_chest,True,0.4,0.8947,28.7205
+dropout,classic+TDA,sensor-aware,6,EEG2 ECG EMG ACC_neck GYR_neck GYR_chest,True,0.725,0.7434,11.249
+dropout,classic+TDA,fixed,6,EEG1 ECG EMG ACC_neck ACC_chest GYR_chest,True,0.4,0.8882,34.1284
+dropout,classic+TDA,sensor-aware,6,EEG1 ECG EMG ACC_neck ACC_chest GYR_chest,True,0.7,0.7171,12.3583
+dropout,classic+TDA,fixed,6,ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.4,0.8882,27.2473
+dropout,classic+TDA,sensor-aware,6,ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.675,0.7632,12.601
+dropout,classic+TDA,fixed,6,EEG2 ECG EMG ACC_chest GYR_neck GYR_chest,True,0.4,0.9342,32.6551
+dropout,classic+TDA,sensor-aware,6,EEG2 ECG EMG ACC_chest GYR_neck GYR_chest,True,0.725,0.6776,9.2384
+dropout,classic+TDA,fixed,6,EEG1 ECG EMG ACC_neck ACC_chest GYR_neck,True,0.4,0.875,27.8539
+dropout,classic+TDA,sensor-aware,6,EEG1 ECG EMG ACC_neck ACC_chest GYR_neck,True,0.675,0.7237,11.4224
+dropout,classic+TDA,fixed,6,EEG1 ECG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.4,0.8684,28.4086
+dropout,classic+TDA,sensor-aware,6,EEG1 ECG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.675,0.7434,11.6997
+dropout,classic+TDA,fixed,6,EEG1 ECG EMG ACC_chest GYR_neck GYR_chest,True,0.4,0.8684,31.9618
+dropout,classic+TDA,sensor-aware,6,EEG1 ECG EMG ACC_chest GYR_neck GYR_chest,True,0.675,0.7368,12.237
+dropout,classic+TDA,fixed,6,EEG1 EEG2 ECG ACC_neck GYR_neck GYR_chest,False,0.4,0.9342,36.503
+dropout,classic+TDA,sensor-aware,6,EEG1 EEG2 ECG ACC_neck GYR_neck GYR_chest,False,0.65,0.5329,10.7637
+dropout,classic+TDA,fixed,6,EEG1 EEG2 EMG ACC_neck ACC_chest GYR_chest,False,0.4,0.9211,34.2497
+dropout,classic+TDA,sensor-aware,6,EEG1 EEG2 EMG ACC_neck ACC_chest GYR_chest,False,0.7,0.7303,12.809
+dropout,classic+TDA,fixed,6,EEG1 EEG2 ECG EMG ACC_chest GYR_neck,False,0.4,0.9605,29.1019
+dropout,classic+TDA,sensor-aware,6,EEG1 EEG2 ECG EMG ACC_chest GYR_neck,False,0.675,0.3947,5.4252
+dropout,classic+TDA,fixed,6,EEG1 EEG2 ECG EMG ACC_neck GYR_chest,False,0.4,0.9276,26.4673
+dropout,classic+TDA,sensor-aware,6,EEG1 EEG2 ECG EMG ACC_neck GYR_chest,False,0.7,0.3224,7.7651
+dropout,classic+TDA,fixed,6,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_chest,False,0.4,0.9539,28.6859
+dropout,classic+TDA,sensor-aware,6,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_chest,False,0.675,0.3421,9.2557
+dropout,classic+TDA,fixed,6,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_neck,False,0.4,0.9539,33.8511
+dropout,classic+TDA,sensor-aware,6,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_neck,False,0.65,0.4145,9.9317
+dropout,classic+TDA,fixed,7,EEG2 ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.4,0.9408,31.3551
+dropout,classic+TDA,sensor-aware,7,EEG2 ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.725,0.6711,10.0357
+dropout,classic+TDA,fixed,7,EEG1 ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.4,0.8684,33.6257
+dropout,classic+TDA,sensor-aware,7,EEG1 ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.675,0.7368,12.3063
+dropout,classic+TDA,fixed,7,EEG1 EEG2 EMG ACC_neck ACC_chest GYR_neck GYR_chest,False,0.4,0.9342,38.2536
+dropout,classic+TDA,sensor-aware,7,EEG1 EEG2 EMG ACC_neck ACC_chest GYR_neck GYR_chest,False,0.725,0.6842,10.625
+dropout,classic+TDA,fixed,7,EEG1 EEG2 ECG EMG ACC_neck GYR_neck GYR_chest,False,0.4,0.9539,23.1047
+dropout,classic+TDA,sensor-aware,7,EEG1 EEG2 ECG EMG ACC_neck GYR_neck GYR_chest,False,0.65,0.4276,8.5798
+dropout,classic+TDA,fixed,7,EEG1 EEG2 ECG EMG ACC_neck ACC_chest GYR_neck,False,0.4,0.9868,31.4245
+dropout,classic+TDA,sensor-aware,7,EEG1 EEG2 ECG EMG ACC_neck ACC_chest GYR_neck,False,0.65,0.25,2.3746
+dropout,classic+TDA,fixed,7,EEG1 EEG2 ECG EMG ACC_chest GYR_neck GYR_chest,False,0.4,0.9671,16.0502
+dropout,classic+TDA,sensor-aware,7,EEG1 EEG2 ECG EMG ACC_chest GYR_neck GYR_chest,False,0.625,0.2303,2.3053
+dropout,classic+TDA,fixed,7,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_neck GYR_chest,False,0.4,0.9737,21.1114
+dropout,classic+TDA,sensor-aware,7,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_neck GYR_chest,False,0.6,0.2105,6.7945
+dropout,classic+TDA,fixed,7,EEG1 EEG2 ECG EMG ACC_neck ACC_chest GYR_chest,False,0.4,0.9737,21.6661
+dropout,classic+TDA,sensor-aware,7,EEG1 EEG2 ECG EMG ACC_neck ACC_chest GYR_chest,False,0.7,0.1382,4.3679
+dropout,classic,fixed,0,none,True,0.475,0.8158,12.6357
+dropout,classic,sensor-aware,0,none,True,0.475,0.8158,12.6357
+dropout,classic,fixed,1,EEG1,True,0.475,0.8224,15.9116
+dropout,classic,sensor-aware,1,EEG1,True,0.55,0.7829,12.5143
+dropout,classic,fixed,1,EEG2,True,0.475,0.8487,18.3382
+dropout,classic,sensor-aware,1,EEG2,True,0.625,0.7895,12.0463
+dropout,classic,fixed,1,ECG,True,0.475,0.8224,19.6555
+dropout,classic,sensor-aware,1,ECG,True,0.6,0.7763,13.9876
+dropout,classic,fixed,1,EMG,True,0.475,0.8158,14.7849
+dropout,classic,sensor-aware,1,EMG,True,0.525,0.8026,12.133
+dropout,classic,fixed,1,ACC_neck,True,0.475,0.8224,14.2476
+dropout,classic,sensor-aware,1,ACC_neck,True,0.525,0.8158,12.1503
+dropout,classic,fixed,1,ACC_chest,True,0.475,0.8289,14.9756
+dropout,classic,sensor-aware,1,ACC_chest,True,0.525,0.8026,12.3583
+dropout,classic,fixed,1,GYR_neck,True,0.475,0.8092,13.4156
+dropout,classic,sensor-aware,1,GYR_neck,True,0.5,0.8026,12.861
+dropout,classic,fixed,1,GYR_chest,True,0.475,0.8224,14.0916
+dropout,classic,sensor-aware,1,GYR_chest,True,0.5,0.8092,13.2076
+dropout,classic,fixed,2,EMG GYR_chest,True,0.475,0.8487,15.6516
+dropout,classic,sensor-aware,2,EMG GYR_chest,True,0.575,0.7829,11.5264
+dropout,classic,fixed,2,EEG1 ACC_chest,True,0.475,0.8421,18.4248
+dropout,classic,sensor-aware,2,EEG1 ACC_chest,True,0.6,0.7697,12.289
+dropout,classic,fixed,2,EEG1 ECG,True,0.475,0.8355,22.602
+dropout,classic,sensor-aware,2,EEG1 ECG,True,0.65,0.7434,12.9996
+dropout,classic,fixed,2,ACC_neck GYR_chest,True,0.475,0.8421,15.5476
+dropout,classic,sensor-aware,2,ACC_neck GYR_chest,True,0.55,0.8355,12.8263
+dropout,classic,fixed,2,EEG2 ACC_neck,True,0.475,0.8618,20.2274
+dropout,classic,sensor-aware,2,EEG2 ACC_neck,True,0.65,0.8092,11.873
+dropout,classic,fixed,2,EEG2 EMG,True,0.475,0.8553,20.1061
+dropout,classic,sensor-aware,2,EEG2 EMG,True,0.675,0.7895,11.9943
+dropout,classic,fixed,2,ACC_neck ACC_chest,True,0.475,0.8618,15.9636
+dropout,classic,sensor-aware,2,ACC_neck ACC_chest,True,0.55,0.8224,13.0863
+dropout,classic,fixed,2,EEG1 GYR_neck,True,0.475,0.8289,16.3276
+dropout,classic,sensor-aware,2,EEG1 GYR_neck,True,0.575,0.7829,12.237
+dropout,classic,fixed,2,ACC_chest GYR_chest,True,0.475,0.8487,16.4662
+dropout,classic,sensor-aware,2,ACC_chest GYR_chest,True,0.55,0.8224,12.8436
+dropout,classic,fixed,2,EMG ACC_neck,True,0.475,0.8289,15.5822
+dropout,classic,sensor-aware,2,EMG ACC_neck,True,0.575,0.8026,11.7863
+dropout,classic,fixed,2,EEG1 ACC_neck,True,0.475,0.8289,16.9169
+dropout,classic,sensor-aware,2,EEG1 ACC_neck,True,0.6,0.7763,11.4397
+dropout,classic,fixed,2,ECG ACC_neck,True,0.475,0.8289,20.3488
+dropout,classic,sensor-aware,2,ECG ACC_neck,True,0.65,0.7434,12.9996
+dropout,classic,fixed,2,EEG1 EEG2,False,0.475,0.8487,24.0927
+dropout,classic,sensor-aware,2,EEG1 EEG2,False,0.65,0.7763,13.0863
+dropout,classic,fixed,3,EEG1 ECG ACC_neck,True,0.475,0.8355,22.7754
+dropout,classic,sensor-aware,3,EEG1 ECG ACC_neck,True,0.7,0.6974,11.5264
+dropout,classic,fixed,3,EEG1 EMG ACC_neck,True,0.475,0.8487,18.4075
+dropout,classic,sensor-aware,3,EEG1 EMG ACC_neck,True,0.65,0.7566,9.7237
+dropout,classic,fixed,3,EEG1 ACC_chest GYR_chest,True,0.475,0.8553,19.6901
+dropout,classic,sensor-aware,3,EEG1 ACC_chest GYR_chest,True,0.625,0.7829,12.6703
+dropout,classic,fixed,3,EEG1 GYR_neck GYR_chest,True,0.475,0.8355,17.6968
+dropout,classic,sensor-aware,3,EEG1 GYR_neck GYR_chest,True,0.6,0.7895,12.601
+dropout,classic,fixed,3,ECG EMG GYR_neck,True,0.475,0.8026,20.0888
+dropout,classic,sensor-aware,3,ECG EMG GYR_neck,True,0.675,0.7303,11.6997
+dropout,classic,fixed,3,ECG ACC_chest GYR_chest,True,0.475,0.8684,22.0994
+dropout,classic,sensor-aware,3,ECG ACC_chest GYR_chest,True,0.65,0.7697,14.4209
+dropout,classic,fixed,3,ACC_chest GYR_neck GYR_chest,True,0.475,0.8553,16.4662
+dropout,classic,sensor-aware,3,ACC_chest GYR_neck GYR_chest,True,0.575,0.8224,12.4103
+dropout,classic,fixed,3,ECG ACC_neck GYR_neck,True,0.475,0.8289,19.5688
+dropout,classic,sensor-aware,3,ECG ACC_neck GYR_neck,True,0.65,0.7303,13.797
+dropout,classic,fixed,3,EEG1 ACC_chest GYR_neck,True,0.475,0.8487,18.4768
+dropout,classic,sensor-aware,3,EEG1 ACC_chest GYR_neck,True,0.6,0.7895,12.6703
+dropout,classic,fixed,3,ECG ACC_neck ACC_chest,True,0.475,0.8882,21.9261
+dropout,classic,sensor-aware,3,ECG ACC_neck ACC_chest,True,0.65,0.7632,13.7796
+dropout,classic,fixed,3,EEG2 ACC_neck GYR_chest,True,0.475,0.8553,20.7648
+dropout,classic,sensor-aware,3,EEG2 ACC_neck GYR_chest,True,0.675,0.8026,12.029
+dropout,classic,fixed,3,ACC_neck ACC_chest GYR_neck,True,0.475,0.8421,16.7955
+dropout,classic,sensor-aware,3,ACC_neck ACC_chest GYR_neck,True,0.575,0.8355,13.0343
+dropout,classic,fixed,3,EEG1 EEG2 ACC_chest,False,0.475,0.8947,26.5193
+dropout,classic,sensor-aware,3,EEG1 EEG2 ACC_chest,False,0.675,0.7829,13.4676
+dropout,classic,fixed,3,EEG1 EEG2 GYR_neck,False,0.475,0.8289,24.7513
+dropout,classic,sensor-aware,3,EEG1 EEG2 GYR_neck,False,0.675,0.75,11.9597
+dropout,classic,fixed,3,EEG1 EEG2 ACC_neck,False,0.475,0.875,23.6767
+dropout,classic,sensor-aware,3,EEG1 EEG2 ACC_neck,False,0.7,0.7368,11.0237
+dropout,classic,fixed,3,EEG1 EEG2 ECG,False,0.475,0.8882,29.0152
+dropout,classic,sensor-aware,3,EEG1 EEG2 ECG,False,0.725,0.6184,11.457
+dropout,classic,fixed,3,EEG1 EEG2 GYR_chest,False,0.475,0.8421,25.6353
+dropout,classic,sensor-aware,3,EEG1 EEG2 GYR_chest,False,0.675,0.7368,11.665
+dropout,classic,fixed,3,EEG1 EEG2 EMG,False,0.475,0.8684,27.5592
+dropout,classic,sensor-aware,3,EEG1 EEG2 EMG,False,0.7,0.75,11.5957
+dropout,classic,fixed,4,EEG2 ECG EMG ACC_chest,True,0.475,0.9079,26.0686
+dropout,classic,sensor-aware,4,EEG2 ECG EMG ACC_chest,True,0.775,0.7105,11.249
+dropout,classic,fixed,4,EEG1 ACC_neck ACC_chest GYR_chest,True,0.475,0.8618,21.6141
+dropout,classic,sensor-aware,4,EEG1 ACC_neck ACC_chest GYR_chest,True,0.65,0.8224,11.8383
+dropout,classic,fixed,4,EEG1 ECG GYR_neck GYR_chest,True,0.475,0.8092,22.2901
+dropout,classic,sensor-aware,4,EEG1 ECG GYR_neck GYR_chest,True,0.675,0.7303,13.2076
+dropout,classic,fixed,4,EEG1 EMG ACC_chest GYR_neck,True,0.475,0.8421,19.2915
+dropout,classic,sensor-aware,4,EEG1 EMG ACC_chest GYR_neck,True,0.625,0.7763,12.5663
+dropout,classic,fixed,4,ECG ACC_neck GYR_neck GYR_chest,True,0.475,0.8421,20.3661
+dropout,classic,sensor-aware,4,ECG ACC_neck GYR_neck GYR_chest,True,0.675,0.7303,13.6236
+dropout,classic,fixed,4,ACC_neck ACC_chest GYR_neck GYR_chest,True,0.475,0.8684,17.6448
+dropout,classic,sensor-aware,4,ACC_neck ACC_chest GYR_neck GYR_chest,True,0.6,0.8487,12.7916
+dropout,classic,fixed,4,EEG1 ECG ACC_neck GYR_chest,True,0.475,0.8224,24.1967
+dropout,classic,sensor-aware,4,EEG1 ECG ACC_neck GYR_chest,True,0.7,0.7303,12.8956
+dropout,classic,fixed,4,EEG1 ECG ACC_neck GYR_neck,True,0.475,0.8158,22.1687
+dropout,classic,sensor-aware,4,EEG1 ECG ACC_neck GYR_neck,True,0.7,0.7171,11.7863
+dropout,classic,fixed,4,EEG2 ECG ACC_neck ACC_chest,True,0.475,0.9145,25.6526
+dropout,classic,sensor-aware,4,EEG2 ECG ACC_neck ACC_chest,True,0.775,0.6645,10.417
+dropout,classic,fixed,4,EMG ACC_neck ACC_chest GYR_neck,True,0.475,0.875,17.6795
+dropout,classic,sensor-aware,4,EMG ACC_neck ACC_chest GYR_neck,True,0.625,0.8026,12.133
+dropout,classic,fixed,4,EEG2 ECG EMG GYR_neck,True,0.475,0.8553,24.7513
+dropout,classic,sensor-aware,4,EEG2 ECG EMG GYR_neck,True,0.775,0.6908,11.8903
+dropout,classic,fixed,4,ECG EMG ACC_chest GYR_chest,True,0.475,0.8684,23.9193
+dropout,classic,sensor-aware,4,ECG EMG ACC_chest GYR_chest,True,0.7,0.7368,13.017
+dropout,classic,fixed,4,EEG1 EEG2 ACC_neck ACC_chest,False,0.475,0.9013,26.6753
+dropout,classic,sensor-aware,4,EEG1 EEG2 ACC_neck ACC_chest,False,0.7,0.7105,11.821
+dropout,classic,fixed,4,EEG1 EEG2 ECG GYR_chest,False,0.475,0.8882,30.0032
+dropout,classic,sensor-aware,4,EEG1 EEG2 ECG GYR_chest,False,0.7,0.5461,11.4224
+dropout,classic,fixed,4,EEG1 EEG2 ACC_chest GYR_neck,False,0.475,0.875,26.2766
+dropout,classic,sensor-aware,4,EEG1 EEG2 ACC_chest GYR_neck,False,0.675,0.7566,11.977
+dropout,classic,fixed,4,EEG1 EEG2 ECG EMG,False,0.475,0.8947,29.1365
+dropout,classic,sensor-aware,4,EEG1 EEG2 ECG EMG,False,0.75,0.4737,8.9438
+dropout,classic,fixed,4,EEG1 EEG2 EMG GYR_neck,False,0.475,0.875,28.2006
+dropout,classic,sensor-aware,4,EEG1 EEG2 EMG GYR_neck,False,0.7,0.7434,11.3704
+dropout,classic,fixed,4,EEG1 EEG2 EMG GYR_chest,False,0.475,0.8618,29.8645
+dropout,classic,sensor-aware,4,EEG1 EEG2 EMG GYR_chest,False,0.7,0.7368,11.8037
+dropout,classic,fixed,5,EEG1 ECG ACC_neck ACC_chest GYR_chest,True,0.475,0.8487,26.9873
+dropout,classic,sensor-aware,5,EEG1 ECG ACC_neck ACC_chest GYR_chest,True,0.725,0.7237,12.4103
+dropout,classic,fixed,5,EEG2 ECG ACC_chest GYR_neck GYR_chest,True,0.475,0.9013,24.6127
+dropout,classic,sensor-aware,5,EEG2 ECG ACC_chest GYR_neck GYR_chest,True,0.75,0.6579,10.937
+dropout,classic,fixed,5,EEG1 ECG EMG GYR_neck GYR_chest,True,0.475,0.8224,24.214
+dropout,classic,sensor-aware,5,EEG1 ECG EMG GYR_neck GYR_chest,True,0.7,0.7237,12.861
+dropout,classic,fixed,5,EEG2 ECG EMG ACC_chest GYR_neck,True,0.475,0.8947,25.15
+dropout,classic,sensor-aware,5,EEG2 ECG EMG ACC_chest GYR_neck,True,0.775,0.6776,11.0584
+dropout,classic,fixed,5,EEG2 ECG ACC_neck GYR_neck GYR_chest,True,0.475,0.8618,24.1793
+dropout,classic,sensor-aware,5,EEG2 ECG ACC_neck GYR_neck GYR_chest,True,0.75,0.6776,12.7223
+dropout,classic,fixed,5,ECG EMG ACC_neck GYR_neck GYR_chest,True,0.475,0.8421,20.8341
+dropout,classic,sensor-aware,5,ECG EMG ACC_neck GYR_neck GYR_chest,True,0.725,0.7171,11.977
+dropout,classic,fixed,5,EEG1 ECG ACC_neck ACC_chest GYR_neck,True,0.475,0.8421,22.602
+dropout,classic,sensor-aware,5,EEG1 ECG ACC_neck ACC_chest GYR_neck,True,0.7,0.7237,12.5317
+dropout,classic,fixed,5,EEG2 ECG ACC_neck ACC_chest GYR_chest,True,0.475,0.9013,25.1846
+dropout,classic,sensor-aware,5,EEG2 ECG ACC_neck ACC_chest GYR_chest,True,0.775,0.6184,10.0704
+dropout,classic,fixed,5,EEG1 ECG EMG ACC_neck GYR_chest,True,0.475,0.8355,25.6526
+dropout,classic,sensor-aware,5,EEG1 ECG EMG ACC_neck GYR_chest,True,0.725,0.7171,12.3063
+dropout,classic,fixed,5,EEG1 ECG EMG ACC_neck GYR_neck,True,0.475,0.8289,22.5674
+dropout,classic,sensor-aware,5,EEG1 ECG EMG ACC_neck GYR_neck,True,0.725,0.7039,11.301
+dropout,classic,fixed,5,EEG2 ECG ACC_neck ACC_chest GYR_neck,True,0.475,0.9145,24.2313
+dropout,classic,sensor-aware,5,EEG2 ECG ACC_neck ACC_chest GYR_neck,True,0.75,0.6842,12.2717
+dropout,classic,fixed,5,EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.475,0.8882,18.8928
+dropout,classic,sensor-aware,5,EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.675,0.8224,11.197
+dropout,classic,fixed,5,EEG1 EEG2 ECG GYR_neck GYR_chest,False,0.475,0.8684,34.9604
+dropout,classic,sensor-aware,5,EEG1 EEG2 ECG GYR_neck GYR_chest,False,0.675,0.6053,12.3757
+dropout,classic,fixed,5,EEG1 EEG2 ECG EMG GYR_neck,False,0.475,0.8947,32.7418
+dropout,classic,sensor-aware,5,EEG1 EEG2 ECG EMG GYR_neck,False,0.725,0.5789,10.3304
+dropout,classic,fixed,5,EEG1 EEG2 ECG ACC_chest GYR_neck,False,0.475,0.9211,29.8992
+dropout,classic,sensor-aware,5,EEG1 EEG2 ECG ACC_chest GYR_neck,False,0.675,0.5987,13.4156
+dropout,classic,fixed,5,EEG1 EEG2 ECG EMG GYR_chest,False,0.475,0.8947,29.1885
+dropout,classic,sensor-aware,5,EEG1 EEG2 ECG EMG GYR_chest,False,0.7,0.5066,11.5264
+dropout,classic,fixed,5,EEG1 EEG2 EMG ACC_neck GYR_chest,False,0.475,0.875,29.2405
+dropout,classic,sensor-aware,5,EEG1 EEG2 EMG ACC_neck GYR_chest,False,0.725,0.6842,10.729
+dropout,classic,fixed,5,EEG1 EEG2 ECG ACC_neck ACC_chest,False,0.475,0.9539,24.734
+dropout,classic,sensor-aware,5,EEG1 EEG2 ECG ACC_neck ACC_chest,False,0.725,0.2763,7.7478
+dropout,classic,fixed,6,EEG2 ECG EMG ACC_neck ACC_chest GYR_chest,True,0.475,0.9145,26.9699
+dropout,classic,sensor-aware,6,EEG2 ECG EMG ACC_neck ACC_chest GYR_chest,True,0.775,0.6184,11.8383
+dropout,classic,fixed,6,EEG2 ECG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.475,0.9013,24.5433
+dropout,classic,sensor-aware,6,EEG2 ECG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.75,0.6645,11.561
+dropout,classic,fixed,6,EEG1 EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.475,0.875,21.5101
+dropout,classic,sensor-aware,6,EEG1 EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.675,0.8158,11.6997
+dropout,classic,fixed,6,EEG1 ECG EMG ACC_neck GYR_neck GYR_chest,True,0.475,0.8355,24.2313
+dropout,classic,sensor-aware,6,EEG1 ECG EMG ACC_neck GYR_neck GYR_chest,True,0.725,0.7171,12.3583
+dropout,classic,fixed,6,EEG2 EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.475,0.8882,23.0354
+dropout,classic,sensor-aware,6,EEG2 EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.725,0.8158,13.1556
+dropout,classic,fixed,6,EEG2 ECG EMG ACC_neck GYR_neck GYR_chest,True,0.475,0.8882,25.306
+dropout,classic,sensor-aware,6,EEG2 ECG EMG ACC_neck GYR_neck GYR_chest,True,0.775,0.6447,12.2023
+dropout,classic,fixed,6,EEG1 ECG EMG ACC_neck ACC_chest GYR_chest,True,0.475,0.8618,28.9979
+dropout,classic,sensor-aware,6,EEG1 ECG EMG ACC_neck ACC_chest GYR_chest,True,0.725,0.7171,12.9303
+dropout,classic,fixed,6,ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.475,0.8618,23.0007
+dropout,classic,sensor-aware,6,ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.725,0.7237,12.2023
+dropout,classic,fixed,6,EEG2 ECG EMG ACC_chest GYR_neck GYR_chest,True,0.475,0.9079,25.93
+dropout,classic,sensor-aware,6,EEG2 ECG EMG ACC_chest GYR_neck GYR_chest,True,0.775,0.6447,10.1571
+dropout,classic,fixed,6,EEG1 ECG EMG ACC_neck ACC_chest GYR_neck,True,0.475,0.8553,23.746
+dropout,classic,sensor-aware,6,EEG1 ECG EMG ACC_neck ACC_chest GYR_neck,True,0.7,0.7368,13.0863
+dropout,classic,fixed,6,EEG1 ECG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.475,0.8421,24.9593
+dropout,classic,sensor-aware,6,EEG1 ECG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.7,0.7434,13.433
+dropout,classic,fixed,6,EEG1 ECG EMG ACC_chest GYR_neck GYR_chest,True,0.475,0.8618,25.774
+dropout,classic,sensor-aware,6,EEG1 ECG EMG ACC_chest GYR_neck GYR_chest,True,0.725,0.7039,12.0117
+dropout,classic,fixed,6,EEG1 EEG2 ECG ACC_neck GYR_neck GYR_chest,False,0.475,0.8487,33.0538
+dropout,classic,sensor-aware,6,EEG1 EEG2 ECG ACC_neck GYR_neck GYR_chest,False,0.675,0.5197,9.7411
+dropout,classic,fixed,6,EEG1 EEG2 EMG ACC_neck ACC_chest GYR_chest,False,0.475,0.9145,35.0817
+dropout,classic,sensor-aware,6,EEG1 EEG2 EMG ACC_neck ACC_chest GYR_chest,False,0.725,0.6842,11.8557
+dropout,classic,fixed,6,EEG1 EEG2 ECG EMG ACC_chest GYR_neck,False,0.475,0.9474,30.0552
+dropout,classic,sensor-aware,6,EEG1 EEG2 ECG EMG ACC_chest GYR_neck,False,0.675,0.5263,10.6597
+dropout,classic,fixed,6,EEG1 EEG2 ECG EMG ACC_neck GYR_chest,False,0.475,0.9079,29.5699
+dropout,classic,sensor-aware,6,EEG1 EEG2 ECG EMG ACC_neck GYR_chest,False,0.7,0.3487,8.1464
+dropout,classic,fixed,6,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_chest,False,0.475,0.9211,27.9232
+dropout,classic,sensor-aware,6,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_chest,False,0.675,0.3026,10.469
+dropout,classic,fixed,6,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_neck,False,0.475,0.9276,27.5246
+dropout,classic,sensor-aware,6,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_neck,False,0.675,0.2895,7.5051
+dropout,classic,fixed,7,EEG2 ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.475,0.9013,27.0046
+dropout,classic,sensor-aware,7,EEG2 ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.775,0.6316,11.925
+dropout,classic,fixed,7,EEG1 ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.475,0.8487,26.2766
+dropout,classic,sensor-aware,7,EEG1 ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.725,0.7171,12.8783
+dropout,classic,fixed,7,EEG1 EEG2 EMG ACC_neck ACC_chest GYR_neck GYR_chest,False,0.475,0.9079,37.8723
+dropout,classic,sensor-aware,7,EEG1 EEG2 EMG ACC_neck ACC_chest GYR_neck GYR_chest,False,0.725,0.6711,11.6997
+dropout,classic,fixed,7,EEG1 EEG2 ECG EMG ACC_neck GYR_neck GYR_chest,False,0.475,0.8816,33.1058
+dropout,classic,sensor-aware,7,EEG1 EEG2 ECG EMG ACC_neck GYR_neck GYR_chest,False,0.675,0.4079,7.4011
+dropout,classic,fixed,7,EEG1 EEG2 ECG EMG ACC_neck ACC_chest GYR_neck,False,0.475,0.9474,28.2179
+dropout,classic,sensor-aware,7,EEG1 EEG2 ECG EMG ACC_neck ACC_chest GYR_neck,False,0.625,0.5921,13.7103
+dropout,classic,fixed,7,EEG1 EEG2 ECG EMG ACC_chest GYR_neck GYR_chest,False,0.475,0.9671,27.6632
+dropout,classic,sensor-aware,7,EEG1 EEG2 ECG EMG ACC_chest GYR_neck GYR_chest,False,0.625,0.2105,2.7039
+dropout,classic,fixed,7,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_neck GYR_chest,False,0.475,0.9145,36.1217
+dropout,classic,sensor-aware,7,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_neck GYR_chest,False,0.6,0.1645,5.4945
+dropout,classic,fixed,7,EEG1 EEG2 ECG EMG ACC_neck ACC_chest GYR_chest,False,0.475,0.9539,22.1687
+dropout,classic,sensor-aware,7,EEG1 EEG2 ECG EMG ACC_neck ACC_chest GYR_chest,False,0.65,0.2763,13.6236
+clean,classic+TDA,fixed,0,none,True,0.325,0.8092,13.1036
+clean,classic+TDA,sensor-aware,0,none,True,0.325,0.8092,13.1036
+clean,classic+TDA,fixed,1,EEG1,True,0.325,0.8421,20.1754
+clean,classic+TDA,sensor-aware,1,EEG1,True,0.5,0.7368,11.8903
+clean,classic+TDA,fixed,1,EEG2,True,0.325,0.9145,29.2925
+clean,classic+TDA,sensor-aware,1,EEG2,True,0.825,0.7697,13.4156
+clean,classic+TDA,fixed,1,ECG,True,0.325,0.5724,5.2345
+clean,classic+TDA,sensor-aware,1,ECG,True,0.15,0.7368,13.225
+clean,classic+TDA,fixed,1,EMG,True,0.325,0.7303,6.8638
+clean,classic+TDA,sensor-aware,1,EMG,True,0.15,0.8355,14.9583
+clean,classic+TDA,fixed,1,ACC_neck,True,0.325,0.8092,12.8783
+clean,classic+TDA,sensor-aware,1,ACC_neck,True,0.35,0.8026,12.081
+clean,classic+TDA,fixed,1,ACC_chest,True,0.325,0.8158,14.7329
+clean,classic+TDA,sensor-aware,1,ACC_chest,True,0.375,0.7763,12.7223
+clean,classic+TDA,fixed,1,GYR_neck,True,0.325,0.7829,8.9784
+clean,classic+TDA,sensor-aware,1,GYR_neck,True,0.2,0.8355,12.9823
+clean,classic+TDA,fixed,1,GYR_chest,True,0.325,0.6447,5.3385
+clean,classic+TDA,sensor-aware,1,GYR_chest,True,0.125,0.7829,13.2423
+clean,classic+TDA,fixed,2,EMG GYR_chest,True,0.325,0.5461,2.2879
+clean,classic+TDA,sensor-aware,2,EMG GYR_chest,True,0.05,0.8289,16.6742
+clean,classic+TDA,fixed,2,EEG1 ACC_chest,True,0.325,0.8289,19.2915
+clean,classic+TDA,sensor-aware,2,EEG1 ACC_chest,True,0.525,0.7368,11.5437
+clean,classic+TDA,fixed,2,EEG1 ECG,True,0.325,0.6776,12.445
+clean,classic+TDA,sensor-aware,2,EEG1 ECG,True,0.3,0.7039,14.0743
+clean,classic+TDA,fixed,2,ACC_neck GYR_chest,True,0.325,0.6513,4.7319
+clean,classic+TDA,sensor-aware,2,ACC_neck GYR_chest,True,0.125,0.7632,11.6823
+clean,classic+TDA,fixed,2,EEG2 ACC_neck,True,0.325,0.9211,29.6565
+clean,classic+TDA,sensor-aware,2,EEG2 ACC_neck,True,0.85,0.7895,13.9703
+clean,classic+TDA,fixed,2,EEG2 EMG,True,0.325,0.8421,21.5274
+clean,classic+TDA,sensor-aware,2,EEG2 EMG,True,0.45,0.8026,16.8822
+clean,classic+TDA,fixed,2,ACC_neck ACC_chest,True,0.325,0.8289,17.1942
+clean,classic+TDA,sensor-aware,2,ACC_neck ACC_chest,True,0.45,0.7566,12.0637
+clean,classic+TDA,fixed,2,EEG1 GYR_neck,True,0.325,0.7895,15.4262
+clean,classic+TDA,sensor-aware,2,EEG1 GYR_neck,True,0.375,0.7763,13.4156
+clean,classic+TDA,fixed,2,ACC_chest GYR_chest,True,0.325,0.6513,6.8638
+clean,classic+TDA,sensor-aware,2,ACC_chest GYR_chest,True,0.15,0.7895,14.8369
+clean,classic+TDA,fixed,2,EMG ACC_neck,True,0.325,0.6974,6.1012
+clean,classic+TDA,sensor-aware,2,EMG ACC_neck,True,0.15,0.8026,14.2823
+clean,classic+TDA,fixed,2,EEG1 ACC_neck,True,0.325,0.7829,15.9982
+clean,classic+TDA,sensor-aware,2,EEG1 ACC_neck,True,0.45,0.7368,11.7863
+clean,classic+TDA,fixed,2,ECG ACC_neck,True,0.325,0.5724,4.8705
+clean,classic+TDA,sensor-aware,2,ECG ACC_neck,True,0.15,0.7237,12.601
+clean,classic+TDA,fixed,2,EEG1 EEG2,False,0.325,0.9737,29.2059
+clean,classic+TDA,sensor-aware,2,EEG1 EEG2,False,0.95,0.2039,1.9239
+clean,classic+TDA,fixed,3,EEG1 ECG ACC_neck,True,0.325,0.6908,11.0237
+clean,classic+TDA,sensor-aware,3,EEG1 ECG ACC_neck,True,0.25,0.7171,13.4676
+clean,classic+TDA,fixed,3,EEG1 EMG ACC_neck,True,0.325,0.6776,6.5692
+clean,classic+TDA,sensor-aware,3,EEG1 EMG ACC_neck,True,0.125,0.8026,16.5529
+clean,classic+TDA,fixed,3,EEG1 ACC_chest GYR_chest,True,0.325,0.7171,9.9317
+clean,classic+TDA,sensor-aware,3,EEG1 ACC_chest GYR_chest,True,0.2,0.7566,15.1663
+clean,classic+TDA,fixed,3,EEG1 GYR_neck GYR_chest,True,0.325,0.625,6.0665
+clean,classic+TDA,sensor-aware,3,EEG1 GYR_neck GYR_chest,True,0.125,0.7895,13.641
+clean,classic+TDA,fixed,3,ECG EMG GYR_neck,True,0.325,0.2566,0.5547
+clean,classic+TDA,sensor-aware,3,ECG EMG GYR_neck,True,0.03,0.7368,15.0103
+clean,classic+TDA,fixed,3,ECG ACC_chest GYR_chest,True,0.325,0.3158,1.56
+clean,classic+TDA,sensor-aware,3,ECG ACC_chest GYR_chest,True,0.04,0.7632,16.6049
+clean,classic+TDA,fixed,3,ACC_chest GYR_neck GYR_chest,True,0.325,0.5197,2.3573
+clean,classic+TDA,sensor-aware,3,ACC_chest GYR_neck GYR_chest,True,0.04,0.8355,14.9409
+clean,classic+TDA,fixed,3,ECG ACC_neck GYR_neck,True,0.325,0.5,2.0453
+clean,classic+TDA,sensor-aware,3,ECG ACC_neck GYR_neck,True,0.06,0.7368,13.901
+clean,classic+TDA,fixed,3,EEG1 ACC_chest GYR_neck,True,0.325,0.7632,12.393
+clean,classic+TDA,sensor-aware,3,EEG1 ACC_chest GYR_neck,True,0.325,0.7632,12.393
+clean,classic+TDA,fixed,3,ECG ACC_neck ACC_chest,True,0.325,0.5395,5.3385
+clean,classic+TDA,sensor-aware,3,ECG ACC_neck ACC_chest,True,0.15,0.7171,11.8903
+clean,classic+TDA,fixed,3,EEG2 ACC_neck GYR_chest,True,0.325,0.8355,19.7768
+clean,classic+TDA,sensor-aware,3,EEG2 ACC_neck GYR_chest,True,0.475,0.8026,15.4782
+clean,classic+TDA,fixed,3,ACC_neck ACC_chest GYR_neck,True,0.325,0.7303,8.6144
+clean,classic+TDA,sensor-aware,3,ACC_neck ACC_chest GYR_neck,True,0.175,0.7895,13.6756
+clean,classic+TDA,fixed,3,EEG1 EEG2 ACC_chest,False,0.325,0.9803,27.9059
+clean,classic+TDA,sensor-aware,3,EEG1 EEG2 ACC_chest,False,0.95,0.1645,1.404
+clean,classic+TDA,fixed,3,EEG1 EEG2 GYR_neck,False,0.325,0.9605,20.2621
+clean,classic+TDA,sensor-aware,3,EEG1 EEG2 GYR_neck,False,0.95,0.1382,1.7853
+clean,classic+TDA,fixed,3,EEG1 EEG2 ACC_neck,False,0.325,0.9934,23.798
+clean,classic+TDA,sensor-aware,3,EEG1 EEG2 ACC_neck,False,0.95,0.2829,2.6173
+clean,classic+TDA,fixed,3,EEG1 EEG2 ECG,False,0.325,0.9474,32.8458
+clean,classic+TDA,sensor-aware,3,EEG1 EEG2 ECG,False,0.85,0.0395,0.4333
+clean,classic+TDA,fixed,3,EEG1 EEG2 GYR_chest,False,0.325,0.9079,41.5989
+clean,classic+TDA,sensor-aware,3,EEG1 EEG2 GYR_chest,False,0.725,0.4211,6.4825
+clean,classic+TDA,fixed,3,EEG1 EEG2 EMG,False,0.325,0.7829,20.7994
+clean,classic+TDA,sensor-aware,3,EEG1 EEG2 EMG,False,0.5,0.5395,8.3891
+clean,classic+TDA,fixed,4,EEG2 ECG EMG ACC_chest,True,0.325,0.0855,0.3293
+clean,classic+TDA,sensor-aware,4,EEG2 ECG EMG ACC_chest,True,0.2,0.1513,1.4213
+clean,classic+TDA,fixed,4,EEG1 ACC_neck ACC_chest GYR_chest,True,0.325,0.6974,9.0651
+clean,classic+TDA,sensor-aware,4,EEG1 ACC_neck ACC_chest GYR_chest,True,0.2,0.7368,13.1383
+clean,classic+TDA,fixed,4,EEG1 ECG GYR_neck GYR_chest,True,0.325,0.3158,0.3813
+clean,classic+TDA,sensor-aware,4,EEG1 ECG GYR_neck GYR_chest,True,0.04,0.7368,14.0743
+clean,classic+TDA,fixed,4,EEG1 EMG ACC_chest GYR_neck,True,0.325,0.5855,4.4545
+clean,classic+TDA,sensor-aware,4,EEG1 EMG ACC_chest GYR_neck,True,0.08,0.7961,15.6689
+clean,classic+TDA,fixed,4,ECG ACC_neck GYR_neck GYR_chest,True,0.325,0.2171,0.3467
+clean,classic+TDA,sensor-aware,4,ECG ACC_neck GYR_neck GYR_chest,True,0.02,0.7039,11.301
+clean,classic+TDA,fixed,4,ACC_neck ACC_chest GYR_neck GYR_chest,True,0.325,0.5592,2.9119
+clean,classic+TDA,sensor-aware,4,ACC_neck ACC_chest GYR_neck GYR_chest,True,0.05,0.7697,12.8436
+clean,classic+TDA,fixed,4,EEG1 ECG ACC_neck GYR_chest,True,0.325,0.3816,2.4439
+clean,classic+TDA,sensor-aware,4,EEG1 ECG ACC_neck GYR_chest,True,0.08,0.7171,13.3636
+clean,classic+TDA,fixed,4,EEG1 ECG ACC_neck GYR_neck,True,0.325,0.6316,6.5865
+clean,classic+TDA,sensor-aware,4,EEG1 ECG ACC_neck GYR_neck,True,0.15,0.7171,12.6357
+clean,classic+TDA,fixed,4,EEG2 ECG ACC_neck ACC_chest,True,0.325,0.6711,14.7676
+clean,classic+TDA,sensor-aware,4,EEG2 ECG ACC_neck ACC_chest,True,0.65,0.2303,3.6226
+clean,classic+TDA,fixed,4,EMG ACC_neck ACC_chest GYR_neck,True,0.325,0.6316,4.6452
+clean,classic+TDA,sensor-aware,4,EMG ACC_neck ACC_chest GYR_neck,True,0.07,0.8355,16.4142
+clean,classic+TDA,fixed,4,EEG2 ECG EMG GYR_neck,True,0.325,0.1118,0.104
+clean,classic+TDA,sensor-aware,4,EEG2 ECG EMG GYR_neck,True,0.125,0.5658,5.7372
+clean,classic+TDA,fixed,4,ECG EMG ACC_chest GYR_chest,True,0.325,0.1513,0.156
+clean,classic+TDA,sensor-aware,4,ECG EMG ACC_chest GYR_chest,True,0.02,0.7961,20.0021
+clean,classic+TDA,fixed,4,EEG1 EEG2 ACC_neck ACC_chest,False,0.325,0.9934,19.2741
+clean,classic+TDA,sensor-aware,4,EEG1 EEG2 ACC_neck ACC_chest,False,0.97,0.1053,0.5893
+clean,classic+TDA,fixed,4,EEG1 EEG2 ECG GYR_chest,False,0.325,0.4211,22.6194
+clean,classic+TDA,sensor-aware,4,EEG1 EEG2 ECG GYR_chest,False,0.55,0.0789,2.3919
+clean,classic+TDA,fixed,4,EEG1 EEG2 ACC_chest GYR_neck,False,0.325,0.9737,18.5982
+clean,classic+TDA,sensor-aware,4,EEG1 EEG2 ACC_chest GYR_neck,False,0.95,0.0461,0.3813
+clean,classic+TDA,fixed,4,EEG1 EEG2 ECG EMG,False,0.325,0.0592,1.144
+clean,classic+TDA,sensor-aware,4,EEG1 EEG2 ECG EMG,False,0.275,0.1053,2.6866
+clean,classic+TDA,fixed,4,EEG1 EEG2 EMG GYR_neck,False,0.325,0.7763,21.1288
+clean,classic+TDA,sensor-aware,4,EEG1 EEG2 EMG GYR_neck,False,0.6,0.3289,4.0212
+clean,classic+TDA,fixed,4,EEG1 EEG2 EMG GYR_chest,False,0.325,0.2237,1.8026
+clean,classic+TDA,sensor-aware,4,EEG1 EEG2 EMG GYR_chest,False,0.2,0.4671,6.2398
+clean,classic+TDA,fixed,5,EEG1 ECG ACC_neck ACC_chest GYR_chest,True,0.325,0.4671,4.6625
+clean,classic+TDA,sensor-aware,5,EEG1 ECG ACC_neck ACC_chest GYR_chest,True,0.08,0.7237,14.9236
+clean,classic+TDA,fixed,5,EEG2 ECG ACC_chest GYR_neck GYR_chest,True,0.325,0.0921,0.5547
+clean,classic+TDA,sensor-aware,5,EEG2 ECG ACC_chest GYR_neck GYR_chest,True,0.15,0.4079,5.5985
+clean,classic+TDA,fixed,5,EEG1 ECG EMG GYR_neck GYR_chest,True,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,5,EEG1 ECG EMG GYR_neck GYR_chest,True,0.01,0.8026,21.0421
+clean,classic+TDA,fixed,5,EEG2 ECG EMG ACC_chest GYR_neck,True,0.325,0.0066,0.0
+clean,classic+TDA,sensor-aware,5,EEG2 ECG EMG ACC_chest GYR_neck,True,0.175,0.1184,0.7626
+clean,classic+TDA,fixed,5,EEG2 ECG ACC_neck GYR_neck GYR_chest,True,0.325,0.1711,0.9706
+clean,classic+TDA,sensor-aware,5,EEG2 ECG ACC_neck GYR_neck GYR_chest,True,0.15,0.5263,6.5518
+clean,classic+TDA,fixed,5,ECG EMG ACC_neck GYR_neck GYR_chest,True,0.325,0.0395,0.0
+clean,classic+TDA,sensor-aware,5,ECG EMG ACC_neck GYR_neck GYR_chest,True,0.01,0.7171,11.0584
+clean,classic+TDA,fixed,5,EEG1 ECG ACC_neck ACC_chest GYR_neck,True,0.325,0.5987,6.0838
+clean,classic+TDA,sensor-aware,5,EEG1 ECG ACC_neck ACC_chest GYR_neck,True,0.09,0.7303,14.1263
+clean,classic+TDA,fixed,5,EEG2 ECG ACC_neck ACC_chest GYR_chest,True,0.325,0.3355,6.4305
+clean,classic+TDA,sensor-aware,5,EEG2 ECG ACC_neck ACC_chest GYR_chest,True,0.225,0.4408,9.7237
+clean,classic+TDA,fixed,5,EEG1 ECG EMG ACC_neck GYR_chest,True,0.325,0.0921,0.0173
+clean,classic+TDA,sensor-aware,5,EEG1 ECG EMG ACC_neck GYR_chest,True,0.02,0.7632,20.5568
+clean,classic+TDA,fixed,5,EEG1 ECG EMG ACC_neck GYR_neck,True,0.325,0.1776,0.3467
+clean,classic+TDA,sensor-aware,5,EEG1 ECG EMG ACC_neck GYR_neck,True,0.04,0.7566,15.6516
+clean,classic+TDA,fixed,5,EEG2 ECG ACC_neck ACC_chest GYR_neck,True,0.325,0.6447,12.9476
+clean,classic+TDA,sensor-aware,5,EEG2 ECG ACC_neck ACC_chest GYR_neck,True,0.55,0.2961,4.3159
+clean,classic+TDA,fixed,5,EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.325,0.5066,1.3693
+clean,classic+TDA,sensor-aware,5,EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.02,0.8092,16.1196
+clean,classic+TDA,fixed,5,EEG1 EEG2 ECG GYR_neck GYR_chest,False,0.325,0.0461,2.6173
+clean,classic+TDA,sensor-aware,5,EEG1 EEG2 ECG GYR_neck GYR_chest,False,0.475,0.0,0.0347
+clean,classic+TDA,fixed,5,EEG1 EEG2 ECG EMG GYR_neck,False,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,5,EEG1 EEG2 ECG EMG GYR_neck,False,0.25,0.0066,0.2253
+clean,classic+TDA,fixed,5,EEG1 EEG2 ECG ACC_chest GYR_neck,False,0.325,0.9013,30.6965
+clean,classic+TDA,sensor-aware,5,EEG1 EEG2 ECG ACC_chest GYR_neck,False,0.8,0.0,0.0173
+clean,classic+TDA,fixed,5,EEG1 EEG2 ECG EMG GYR_chest,False,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,5,EEG1 EEG2 ECG EMG GYR_chest,False,0.125,0.0526,1.664
+clean,classic+TDA,fixed,5,EEG1 EEG2 EMG ACC_neck GYR_chest,False,0.325,0.2368,2.0626
+clean,classic+TDA,sensor-aware,5,EEG1 EEG2 EMG ACC_neck GYR_chest,False,0.2,0.5263,7.9731
+clean,classic+TDA,fixed,5,EEG1 EEG2 ECG ACC_neck ACC_chest,False,0.325,0.9737,23.8847
+clean,classic+TDA,sensor-aware,5,EEG1 EEG2 ECG ACC_neck ACC_chest,False,0.9,0.0,0.0347
+clean,classic+TDA,fixed,6,EEG2 ECG EMG ACC_neck ACC_chest GYR_chest,True,0.325,0.0132,0.0
+clean,classic+TDA,sensor-aware,6,EEG2 ECG EMG ACC_neck ACC_chest GYR_chest,True,0.06,0.4474,12.2197
+clean,classic+TDA,fixed,6,EEG2 ECG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.325,0.1776,1.0226
+clean,classic+TDA,sensor-aware,6,EEG2 ECG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.175,0.4276,6.5345
+clean,classic+TDA,fixed,6,EEG1 EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.325,0.4342,1.7853
+clean,classic+TDA,sensor-aware,6,EEG1 EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.02,0.8158,16.2929
+clean,classic+TDA,fixed,6,EEG1 ECG EMG ACC_neck GYR_neck GYR_chest,True,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,6,EEG1 ECG EMG ACC_neck GYR_neck GYR_chest,True,0.01,0.7895,17.5409
+clean,classic+TDA,fixed,6,EEG2 EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.325,0.7105,8.8051
+clean,classic+TDA,sensor-aware,6,EEG2 EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.175,0.8158,15.4956
+clean,classic+TDA,fixed,6,EEG2 ECG EMG ACC_neck GYR_neck GYR_chest,True,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,6,EEG2 ECG EMG ACC_neck GYR_neck GYR_chest,True,0.03,0.6118,7.6958
+clean,classic+TDA,fixed,6,EEG1 ECG EMG ACC_neck ACC_chest GYR_chest,True,0.325,0.1447,0.364
+clean,classic+TDA,sensor-aware,6,EEG1 ECG EMG ACC_neck ACC_chest GYR_chest,True,0.02,0.7895,23.6247
+clean,classic+TDA,fixed,6,ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.325,0.0263,0.0
+clean,classic+TDA,sensor-aware,6,ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.01,0.6645,10.677
+clean,classic+TDA,fixed,6,EEG2 ECG EMG ACC_chest GYR_neck GYR_chest,True,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,6,EEG2 ECG EMG ACC_chest GYR_neck GYR_chest,True,0.04,0.2368,2.5479
+clean,classic+TDA,fixed,6,EEG1 ECG EMG ACC_neck ACC_chest GYR_neck,True,0.325,0.1776,0.208
+clean,classic+TDA,sensor-aware,6,EEG1 ECG EMG ACC_neck ACC_chest GYR_neck,True,0.03,0.7303,13.6583
+clean,classic+TDA,fixed,6,EEG1 ECG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.325,0.3289,0.7626
+clean,classic+TDA,sensor-aware,6,EEG1 ECG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.03,0.7237,13.329
+clean,classic+TDA,fixed,6,EEG1 ECG EMG ACC_chest GYR_neck GYR_chest,True,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,6,EEG1 ECG EMG ACC_chest GYR_neck GYR_chest,True,0.01,0.7763,18.1475
+clean,classic+TDA,fixed,6,EEG1 EEG2 ECG ACC_neck GYR_neck GYR_chest,False,0.325,0.0395,0.52
+clean,classic+TDA,sensor-aware,6,EEG1 EEG2 ECG ACC_neck GYR_neck GYR_chest,False,0.3,0.0855,2.3746
+clean,classic+TDA,fixed,6,EEG1 EEG2 EMG ACC_neck ACC_chest GYR_chest,False,0.325,0.2171,2.4093
+clean,classic+TDA,sensor-aware,6,EEG1 EEG2 EMG ACC_neck ACC_chest GYR_chest,False,0.25,0.3355,6.2225
+clean,classic+TDA,fixed,6,EEG1 EEG2 ECG EMG ACC_chest GYR_neck,False,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,6,EEG1 EEG2 ECG EMG ACC_chest GYR_neck,False,0.3,0.0,0.0
+clean,classic+TDA,fixed,6,EEG1 EEG2 ECG EMG ACC_neck GYR_chest,False,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,6,EEG1 EEG2 ECG EMG ACC_neck GYR_chest,False,0.08,0.3618,16.8129
+clean,classic+TDA,fixed,6,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_chest,False,0.325,0.5921,32.8111
+clean,classic+TDA,sensor-aware,6,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_chest,False,0.625,0.1053,3.2066
+clean,classic+TDA,fixed,6,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_neck,False,0.325,0.9737,15.6862
+clean,classic+TDA,sensor-aware,6,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_neck,False,0.775,0.0066,0.0693
+clean,classic+TDA,fixed,7,EEG2 ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,7,EEG2 ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.04,0.3947,4.7665
+clean,classic+TDA,fixed,7,EEG1 ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,7,EEG1 ECG EMG ACC_neck ACC_chest GYR_neck GYR_chest,True,0.01,0.7566,16.5529
+clean,classic+TDA,fixed,7,EEG1 EEG2 EMG ACC_neck ACC_chest GYR_neck GYR_chest,False,0.325,0.0066,0.0
+clean,classic+TDA,sensor-aware,7,EEG1 EEG2 EMG ACC_neck ACC_chest GYR_neck GYR_chest,False,0.25,0.125,0.3813
+clean,classic+TDA,fixed,7,EEG1 EEG2 ECG EMG ACC_neck GYR_neck GYR_chest,False,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,7,EEG1 EEG2 ECG EMG ACC_neck GYR_neck GYR_chest,False,0.05,0.0,0.0
+clean,classic+TDA,fixed,7,EEG1 EEG2 ECG EMG ACC_neck ACC_chest GYR_neck,False,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,7,EEG1 EEG2 ECG EMG ACC_neck ACC_chest GYR_neck,False,0.15,0.1382,2.4959
+clean,classic+TDA,fixed,7,EEG1 EEG2 ECG EMG ACC_chest GYR_neck GYR_chest,False,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,7,EEG1 EEG2 ECG EMG ACC_chest GYR_neck GYR_chest,False,0.07,0.0,0.1907
+clean,classic+TDA,fixed,7,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_neck GYR_chest,False,0.325,0.0592,1.5426
+clean,classic+TDA,sensor-aware,7,EEG1 EEG2 ECG ACC_neck ACC_chest GYR_neck GYR_chest,False,0.325,0.0592,1.5426
+clean,classic+TDA,fixed,7,EEG1 EEG2 ECG EMG ACC_neck ACC_chest GYR_chest,False,0.325,0.0,0.0
+clean,classic+TDA,sensor-aware,7,EEG1 EEG2 ECG EMG ACC_neck ACC_chest GYR_chest,False,0.2,0.0,0.1213

@@ -1,0 +1,4 @@
+fault,healthy,degraded,failed
+decline,0.13,0.218,0.804
+dropout,0.563,0.694,0.944
+pop,0.357,0.465,0.774
