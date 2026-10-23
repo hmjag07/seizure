@@ -369,6 +369,8 @@ In one hour of sub-067 run-01 (seconds 10,000–13,600), the neck accelerometer'
 
 A survey of the motion data in all 304 planned chunks (2026-10-16) found that sub-067 is not alone: **33 chunks (11%) across 10 patients** have at least one dead, saturated or wrongly scaled accelerometer or gyroscope axis. The details, and how these sensors are detected and left out, are in [pipeline Step 1.4](pipeline.md#14-clean-the-signals-preprocesspy).
 
+Phase C4 (2026-10-24) kept these sensors in and passed them through the live system across all 90 training patients. Stuck accelerometers in SeizeIT2 sit at the full-scale value (±32.767); dead devices read 0 on every axis. A past-only rule in front of the health check catches both, and wrongly scaled accelerometers are rejected at cleaning. Healthy gyroscopes at rest also read exactly 0 for minutes, so a frozen-at-0 gyroscope counts as broken only when its accelerometer is frozen too. See [pipeline Phase C4](pipeline.md#c4-real-broken-motion-sensors-real_faultspy).
+
 ### 5.7 Summary
 
 | Check | Expected | Result | Status |

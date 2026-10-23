@@ -291,8 +291,9 @@ def sensor_flags(data, clean_q, fs_, s, health):
     return off & valid
 
 
-def predict(data, models, X, fc, th, dead_rows):
-    """Probabilities with dead sensors blanked per row, and the threshold for each row."""
+def predict(data, models, X, fc, th, dead_rows, sensor_aware=True):
+    """Probabilities with dead sensors blanked per row, and the threshold for each row (the sensor-aware
+    one for the row's dead sensors, or the fixed clean one if sensor_aware is False)."""
     prob = np.empty(len(X))
     thr = np.empty(len(X))
     for k, m in enumerate(models):
@@ -307,6 +308,9 @@ def predict(data, models, X, fc, th, dead_rows):
             if dead[:, j].any():
                 Xk.loc[dead[:, j], th.by_sensor[s]] = np.nan
         prob[sel] = m.predict_proba(Xk)[:, 1]
+        if not sensor_aware:
+            thr[sel] = th.fixed[k]
+            continue
         code = dead.astype(int) @ (1 << np.arange(len(SIGNALS)))  # which sensors are dead, as 8 bits
         thr_k = np.empty(len(code))
         for c in np.unique(code):
