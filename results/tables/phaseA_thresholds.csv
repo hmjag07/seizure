@@ -1,0 +1,33 @@
+model,strategy,setting,sensitivity,fa_per_h,fa_fold_max,folds_over_budget,fa_folds,auroc,aupr
+classic,margin,budget 6/h,0.5959,5.661,7.9021,0,7.9 4.1 7.5 4.4 4.9,0.8406,0.3854
+classic,margin,budget 7/h,0.624,6.4815,8.4294,0,8.0 4.7 8.4 5.0 6.5,0.8406,0.3854
+classic,margin,budget 8/h,0.6445,7.6233,9.6829,0,8.5 6.2 9.7 6.7 7.1,0.8406,0.3854
+classic,margin,budget 9/h,0.6701,8.5941,10.4586,0,10.5 7.0 10.3 7.4 8.2,0.8406,0.3854
+classic,margin,budget 10/h,0.6931,9.5923,11.0164,1,11.0 8.0 10.9 8.1 10.2,0.8406,0.3854
+classic,base,budget 11/h,0.7084,10.57,12.4091,3,11.2 8.7 12.4 9.3 11.2,0.8406,0.3854
+classic,"margin, nested",budget chosen on other folds,0.6777,9.0043,11.0164,1,11.0 8.0 10.3 8.1 8.2,0.8406,0.3854
+classic,patient,floor at own 0.950 quantile,0.6726,6.3447,7.2513,0,7.3 5.3 6.0 6.4 6.8,0.8406,0.3854
+classic,patient,floor at own 0.970 quantile,0.5985,3.8424,4.278,0,4.0 3.5 3.7 3.7 4.3,0.8406,0.3854
+classic,patient,floor at own 0.980 quantile,0.5396,2.2289,2.4756,0,1.8 2.3 2.5 2.0 2.4,0.8406,0.3854
+classic,patient,floor at own 0.990 quantile,0.422,1.0529,1.3475,0,0.9 1.0 1.3 0.9 1.1,0.8406,0.3854
+classic,patient,floor at own 0.995 quantile,0.2839,0.4786,0.6267,0,0.4 0.5 0.6 0.3 0.5,0.8406,0.3854
+classic,rule,5 of 10,0.7084,10.57,12.4091,3,11.2 8.7 12.4 9.3 11.2,0.8406,0.3854
+classic,rule,6 of 10,0.7059,10.6794,11.8764,2,11.0 9.3 11.9 10.2 10.8,0.8406,0.3854
+classic,rule,7 of 10,0.6982,10.7136,12.8165,1,10.9 9.2 12.8 10.0 10.4,0.8406,0.3854
+classic,rule,8 of 10,0.6829,10.3512,12.3465,1,10.5 9.0 12.3 9.9 9.8,0.8406,0.3854
+classic+TDA,margin,budget 6/h,0.624,5.7021,6.988,0,6.8 3.5 7.0 5.2 5.9,0.8505,0.4396
+classic+TDA,margin,budget 7/h,0.6419,6.755,8.8317,0,8.8 3.6 8.7 5.9 6.8,0.8505,0.4396
+classic+TDA,margin,budget 8/h,0.6701,7.6574,9.7142,0,9.4 4.6 9.7 6.3 8.2,0.8505,0.4396
+classic+TDA,margin,budget 9/h,0.6905,8.8197,11.281,1,10.0 5.4 11.3 8.1 9.0,0.8505,0.4396
+classic+TDA,margin,budget 10/h,0.711,9.7974,12.6912,1,10.3 7.0 12.7 8.8 9.8,0.8505,0.4396
+classic+TDA,base,budget 11/h,0.7187,10.3444,12.6912,2,11.7 7.0 12.7 9.2 10.8,0.8505,0.4396
+classic+TDA,"margin, nested",budget chosen on other folds,0.6829,8.5531,11.281,1,9.4 5.4 11.3 8.1 8.2,0.8505,0.4396
+classic+TDA,patient,floor at own 0.950 quantile,0.6701,6.0507,6.7181,0,6.4 4.5 6.2 6.7 6.2,0.8505,0.4396
+classic+TDA,patient,floor at own 0.970 quantile,0.6138,3.439,3.9789,0,2.8 2.5 3.6 3.8 4.0,0.8505,0.4396
+classic+TDA,patient,floor at own 0.980 quantile,0.5345,2.1878,2.6027,0,1.7 1.7 2.1 2.5 2.6,0.8505,0.4396
+classic+TDA,patient,floor at own 0.990 quantile,0.445,0.8136,1.0028,0,0.6 0.6 1.0 0.8 0.9,0.8505,0.4396
+classic+TDA,patient,floor at own 0.995 quantile,0.3171,0.4854,0.6894,0,0.4 0.4 0.7 0.5 0.4,0.8505,0.4396
+classic+TDA,rule,5 of 10,0.7187,10.3444,12.6912,2,11.7 7.0 12.7 9.2 10.8,0.8505,0.4396
+classic+TDA,rule,6 of 10,0.7187,10.5221,12.9419,2,11.7 8.1 12.9 9.2 10.7,0.8505,0.4396
+classic+TDA,rule,7 of 10,0.7263,10.6384,12.6598,3,12.6 7.9 12.7 8.7 11.6,0.8505,0.4396
+classic+TDA,rule,8 of 10,0.7084,10.2692,12.6433,2,12.6 7.8 12.1 8.4 10.8,0.8505,0.4396

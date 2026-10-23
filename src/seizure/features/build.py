@@ -28,10 +28,13 @@ from seizure.features import classic, tda_embedding as tda
 
 ROOT = Path(__file__).resolve().parents[3]
 TABLES = ROOT / "results" / "tables"
-# SEIZURE_SET=heldout builds the 29 held-out patients (data/heldout.py) into separate folders.
-HELDOUT = os.environ.get("SEIZURE_SET", "pilot") == "heldout"
-PLAN_FILE = TABLES / ("heldout_fetch_plan.csv" if HELDOUT else "fetch_plan.csv")
-CACHE = ROOT / "cache" / ("features_heldout" if HELDOUT else "features")
+# SEIZURE_SET picks the patient set: pilot (default), heldout (data/heldout.py) or extra (the other 66
+# training patients, data/fullset.py). Each has its own fetch plan and cache folders.
+SET = os.environ.get("SEIZURE_SET", "pilot")
+HELDOUT = SET == "heldout"
+SUFFIX = "" if SET == "pilot" else f"_{SET}"
+PLAN_FILE = TABLES / ("fetch_plan.csv" if SET == "pilot" else f"{SET}_fetch_plan.csv")
+CACHE = ROOT / "cache" / f"features{SUFFIX}"
 MODALITIES = ("eeg", "ecg", "emg", "mov")
 
 

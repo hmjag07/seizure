@@ -18,6 +18,7 @@ seed, reproduces exactly where every pop and flat burst fell.
 Output: cache/faults/<sub>_wlabels.parquet with run, t, fault, severity, sensor, wclass (0/1/2) and
 wdamage (flat share for dropout, largest step for pops, severity for decline).
 """
+import os
 import sys
 import time
 from concurrent.futures import ProcessPoolExecutor
@@ -98,7 +99,8 @@ def label_patient(sub):
 
 def main():
     subs = sys.argv[1:] or sorted(load_plan().subject.unique())
-    with ProcessPoolExecutor(6) as ex:
+    # 6 workers ran out of memory on the extra patients (longer runs); WL_WORKERS lowers it.
+    with ProcessPoolExecutor(int(os.environ.get("WL_WORKERS", 6))) as ex:
         for sub, n, secs in ex.map(label_patient, subs):
             print(f"{sub}: {n} rows, {secs} s", flush=True)
 
