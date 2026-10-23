@@ -1474,6 +1474,54 @@ False alarms with the health check: 5.2–9.2 per hour in every scenario; none a
 
 ---
 
+## Phase B: TDA-B and the CNN baseline (2026-10-24/25)
+
+### B0: a local copy of the signals ([`signals.py`](../src/seizure/data/signals.py))
+
+TDA-B and the CNN need the signal itself, again and again; re-streaming was ruled out (see [data-access.md](data-access.md#8-caching)). For every chunk in the three fetch plans: stream, clean as for the features (Step 1.4), downsample with causal filters (EEG1, EEG2, ECG to 64 Hz; EMG to 128 Hz, since its content is above 20 Hz; motion magnitudes stay at 25 Hz), and store with the patient's normalisation statistics. 116 patients, 1.24 GB, about 25 minutes (much faster than the feature build, since there is no TDA).
+
+### B1: TDA-B, the topology of the sensor network ([`tda_network.py`](../src/seizure/features/tda_network.py), [`phase_b1.py`](../src/seizure/models/phase_b1.py))
+
+**Per second t:**
+```
+activity(sensor)  = log10 RMS of the normalised signal in 0.25 s steps over the last 10 s   (40 values)
+distance(i, j)    = 1 − |Pearson correlation of activity(i) and activity(j)|
+persistent homology of the distance matrix (ripser): H0 (sensors merging) and H1 (loops)
+```
+9 features that do not depend on how many sensors are working: mean / min / max of the H0 merge distances and their entropy, H1 count / total / max, mean |correlation|, and the share of pairs with |correlation| > 0.5. A dead sensor is left out of the network (fewer than 3 working sensors: missing). About 0.1 ms per second of data. Because TDA-B depends on which sensors are alive **together**, it is recomputed without the dead sensors: per row of the dropout copy and per dead-sensor combination.
+
+**Test:** classic + TDA vs classic + TDA + TDA-B, sensor-dropout training, 90 patients, 5 folds, thresholds at ≤ 8 per hour on the other folds, the 102 dead-sensor sets. About 3 hours.
+
+| Model | Clean: caught | FA / h | AUROC | AUPR | 5 of 8 dead: mean drop (sets passing) |
+|---|---|---|---|---|---|
+| Classic + TDA | 68.8% | 7.6 | 0.851 | 0.443 | 9.8 (8 of 12) |
+| + TDA-B | 69.3% | 7.7 | 0.852 | 0.443 | 10.3 (7 of 12) |
+
+Paired over the 71 dead-sensor sets with an EEG alive:
+```
+difference = caught (with TDA-B) − caught (without):  mean −0.09 points; 33 better, 33 worse, 5 tied
+Wilcoxon signed-rank test: p = 0.54
+```
+For scale, the same classic + TDA model caught 67.3% in A1 and 68.8% here, differing only in the random dead-sensor pattern of the dropout copy: about ±1.5 points of run-to-run variation.
+
+**Result: on SeizeIT2, TDA-B adds nothing measurable**, on clean data or with dead sensors. Likely reasons: at most 8 nodes, half of them motion magnitudes that move together, give little shape (H1 barely exists; H0 is close to the average correlation); per-sensor features with 10 s and 60 s context already capture "everything changes at seizure onset"; and cross-modality coupling changes only slightly in focal seizures. This is the limitation anticipated in Step 4B. The injected-fault round for TDA-B on SeizeIT2 was skipped for that reason; TDA-B will be tested on CHB-MIT (18 EEG channels), where the network hypothesis is natural.
+
+### B2: CNN baseline ([`cnn.py`](../src/seizure/models/cnn.py))
+
+Trained on the GPU (RTX 4050, 6 GB; about 10× faster than the CPU). Install: `pip install torch --index-url https://download.pytorch.org/whl/cu128`.
+
+**v1:** four convolutional branches on the last 4 s of EEG1+EEG2 (2 × 256), 15 s of ECG (960), 4 s of EMG (512) and 4 s of motion (4 × 100), pooled and joined with 8 "sensor working" flags; 283,000 parameters; dead sensors as zero input and flag 0; sensor dropout on the fly (half the windows lose 1–6 sensors); weighted loss; 8 epochs per fold. **v2:** the v1 encoder per second plus a GRU over the last 60 s of encodings (the same context as the XGBoost features); dropout as one dead set per chunk.
+
+| Model (90 patients, same folds and threshold rule) | Caught | FA / h | AUROC | AUPR | 5 of 8 dead: mean drop |
+|---|---|---|---|---|---|
+| XGBoost classic + TDA (A1) | 67.3% | 7.5 | 0.852 | 0.442 | 9.8 |
+| CNN v1 | 40.9% | 7.5 | 0.691 | 0.183 | −3.3 |
+| CNN v2 (+ GRU, 60 s) | 39.9% | 7.9 | 0.689 | 0.156 | −6.2 |
+
+Context did not help because the bottleneck is the frozen v1 encoder: memory cannot add information the per-second encoding lacks. Losing the ECG raises the CNN (to 47–50%), so its ECG branch adds noise. The CNN's flat or rising curve under sensor loss reflects its low starting point, not robustness. **Hand-made features (classic + TDA) clearly beat a deep model learned from raw signals across 90 patients**, in line with deep wearable seizure benchmarks such as SeizeIT2's ChronoNet (100.5 false alarms per hour). An end-to-end CNN + GRU with balanced sampling is on hold.
+
+---
+
 ## Timeline (model in 1 week)
 
 | Day | Work |
