@@ -92,7 +92,7 @@ EEG is always present. The missing modalities are real technical failures and se
 
 Awake: 344 (49%), asleep: 274 (39%), unknown: 84 (12%). The most common specific codes are `sz_foc_a_m_hyperkinetic` (146), `sz_foc_ia_nm` (105) and `sz_foc_ia_m_hyperkinetic` (88).
 
-**Official split** (from the SeizeIT2 paper): sub-001 to sub-096 for training, sub-097 to sub-125 for validation. This project uses sub-097 to sub-125 as its final, untouched test set.
+**Official split** (from the SeizeIT2 paper): sub-001 to sub-096 for training, sub-097 to sub-125 for validation. This project uses sub-097 to sub-125 as its final, untouched test set. The rules for using it were fixed before it was read (2026-10-23, [`heldout.py`](../src/seizure/data/heldout.py)); results are in Step 8 (Final test on held-out patients).
 
 #### CHB-MIT (second)
 
@@ -1265,6 +1265,121 @@ False alarms with the health check: 5.8–11.6 per hour (a few cells slightly ov
 3. **Labelling faults by what is in the window matters**, a methods point for the paper.
 4. **Our health check again beats the "perfect" one in places** (dropout 25%: 75.0% vs 69.8%), because it also switches off some damaged windows that are not "failed": the dropout-trained model copes better with a missing sensor than with a damaged one.
 5. **Remaining limits:** decline is now the hardest fault (68–69% caught, worst set drop 18.1); resting gyroscopes are over-flagged; a few cells exceed 11 false alarms per hour; all results are cross-validation on 30 pilot patients.
+
+### Final test on held-out patients (2026-10-24)
+
+([`heldout.py`](../src/seizure/data/heldout.py), [`final_test.py`](../src/seizure/models/final_test.py), [`final_clean.csv`](../results/tables/final_clean.csv), [`final_dead_sensors.csv`](../results/tables/final_dead_sensors.csv), [`final_faults.csv`](../results/tables/final_faults.csv))
+
+All results above are cross-validation on the 30 pilot patients, where design choices were made while looking at the numbers. The final test scores patients that were never looked at, **once**.
+
+#### Rules, fixed before any held-out data was read
+
+1. All 29 held-out patients (sub-097 to sub-125, the official SeizeIT2 validation split).
+2. Every seizure in a run with all four modalities: no minimum per patient and no cap (the pilot's minimum and cap balanced training; a test counts every seizure, as the benchmark does).
+3. Fetch plan as for the pilot, plus at least one 10-minute background chunk per patient.
+4. Final models retrained on **all 30** pilot patients: classic and classic + TDA with sensor-dropout training, classic + TDA with normal training, and the window-label health check.
+5. Thresholds chosen on the pilot patients' out-of-fold predictions (the saved fold models), at ≤ 11 false alarms per hour, one per set of dead sensors. Clean thresholds: 0.40 (classic + TDA), 0.475 (classic), 0.325 (classic + TDA, normal training). Health cut-off: 0.5 (median of the fold cut-offs).
+6. Held-out features normalised per patient exactly as on the pilot (median and MAD of the patient's own seconds, no labels).
+
+**Data:** 26 patients enter (sub-097, sub-120 and sub-121 have no recording with all four modalities), 181 seizures of which **152** are in all-modality runs; 117 seizure chunks and 86 background chunks, 61.8 hours; 216,507 seconds, 8,809 of them seizure. Clean features, fault-injected features (3 faults × 4 severities × 8 sensors) and window labels were built overnight (about 4 hours); the test itself took about 64 minutes. A quick run on one fault condition checked the code beforehand; nothing was changed after it.
+
+#### Clean data
+
+| Model | Seizures caught | False alarms / h | AUROC | AUPR | Median delay |
+|---|---|---|---|---|---|
+| Classic + TDA, dropout training | 81.6% (124/152) | 13.8 | 0.880 | 0.465 | 6 s |
+| Classic, dropout training | 81.6% (124/152) | 12.6 | 0.871 | 0.437 | 6 s |
+| Classic + TDA, normal training | 80.9% (123/152) | 13.1 | 0.875 | 0.467 | 6 s |
+
+95% confidence interval for 124/152 (Wilson): **74.7% to 86.9%**:
+```
+centre     = (p + z²/2n) ÷ (1 + z²/n)                                = 0.808
+half-width = z × √( p(1−p)/n + z²/4n² ) ÷ (1 + z²/n)  with z = 1.96  = 0.061
+```
+
+- **Sensitivity and ranking hold up** on new patients (81.6% vs 77.9% on the pilot; AUROC 0.880 vs 0.824).
+- **False alarms exceed the budget:** 12.6–13.8 per hour against ≤ 11. The thresholds were set on the pilot; the held-out patients produce more seizure-like background, so the same threshold fires more often. Reported as is.
+- **On clean data TDA does not beat the classic model:** both catch 124 of 152, with more false alarms for TDA (13.8 vs 12.6). TDA still ranks slightly better (AUROC 0.880 vs 0.871, AUPR 0.465 vs 0.437). The pilot's clean-data gap (+7 points) does not replicate.
+- Against the SeizeIT2 benchmark (SVM 71.1% at 11.0 per hour) this is in the same range but not directly comparable (data concentrated around seizures; full recordings in the benchmark).
+
+#### Dead sensors (sensor-aware threshold, at least one EEG alive)
+
+| Sensors dead | 0 | 1 | 2 | 3 | 4 | **5** | 6 | 7 |
+|---|---|---|---|---|---|---|---|---|
+| Classic + TDA, dropout | 81.6% | 80.9% | 80.5% | 79.8% | 76.6% | **72.5%** | 72.3% | 70.4% |
+| Classic, dropout | 81.6% | 79.8% | 79.0% | 77.2% | 74.7% | **70.4%** | 71.2% | 67.4% |
+| Classic + TDA, normal training | 80.9% | 78.5% | 76.8% | 76.8% | 64.6% | **59.1%** | 65.2% | 57.6% |
+
+| 5 of 8 dead | Average drop | Worst drop | Sets passing | False alarms / h |
+|---|---|---|---|---|
+| **Classic + TDA, dropout** | **9.1** | 19.1 | **11 of 12** | 11.2 |
+| Classic, dropout | 11.2 | 19.7 | 10 of 12 | 11.8 |
+| Classic + TDA, normal training | 21.8 | 69.1 | 7 of 12 | 11.7 |
+
+The pilot result replicates: with dropout training and a sensor-aware threshold the drop stays within 15 points (pilot 6.8), and TDA is the most robust model. Without dropout training the target is missed. With one fixed threshold the dropout-trained models over-alarm again (27 per hour with 5 dead), as on the pilot.
+
+![](../results/figures/15_final_dead_sensors.png)
+
+#### Injected faults on 5 of 8 sensors
+
+Seizures caught, classic + TDA with dropout training (clean 81.6%):
+
+| Fault | Way | 25% | 50% | 75% | 100% |
+|---|---|---|---|---|---|
+| Pops | No health check | 79.7% | 80.3% | 75.4% | 74.2% |
+| | Health check | 81.3% | 82.1% | 79.2% | 78.4% |
+| Decline | No health check | 75.3% | 70.8% | 70.3% | 65.5% |
+| | Health check | 75.3% | 74.8% | 75.4% | 73.0% |
+| Dropout | No health check | 67.4% | 61.1% | 46.7% | 30.3% |
+| | Health check | 77.4% | 78.6% | 76.6% | 75.8% |
+
+Target check with the health check (average drop; sets passing of 6):
+
+| Fault | Classic + TDA | Classic |
+|---|---|---|
+| Pops | 0.3 / −0.5 / 2.4 / 3.2 (all 6/6) | 1.8 / 2.0 / 4.2 / 4.1 (all 6/6) |
+| Decline | 6.3 / 6.8 / 6.1 / 8.6 (6, 6, 6, 5 of 6) | 13.2 / 10.7 / 13.6 / 13.9 (3, 5, 3, 3 of 6) |
+| Dropout | 4.2 / 3.0 / 4.9 / 5.8 (all 6/6) | 6.1 / 3.9 / 5.0 / 7.9 (all 6/6) |
+
+| Fault conditions meeting the target | No health check | Health check | Perfect check |
+|---|---|---|---|
+| **Classic + TDA, dropout** | 8 of 12 | **12 of 12** | 12 of 12 |
+| Classic, dropout | 7 of 12 | 12 of 12 | 11 of 12 |
+| Classic + TDA, normal training | 6 of 12 | 11 of 12 | 12 of 12 |
+
+- **The complete system meets the target in all 12 fault conditions on new patients**, as on the pilot.
+- **TDA is more robust than the classic model under faults** even though it is not better on clean data: smaller drops in every fault type, most clearly for decline (6–9 points vs 11–14; every set passes vs 50–80%).
+- **The health check is essential:** a full dropout on 5 sensors leaves 30.3% without it and 75.8% with it.
+- **A fault on a single sensor** leaves classic + TDA with the health check at 80.5–82.4%, the same as clean data.
+- **Both EEG channels faulty:** with the health check classic + TDA still catches 76–82% on these patients; the remaining sensors carry enough once the broken EEG is switched off.
+- **False alarms under faults** with the health check: 10.3–13.9 per hour, in line with the clean held-out rate; the same threshold-transfer issue.
+
+![](../results/figures/16_final_faults_5of8.png)
+
+#### Health check on new patients (single-sensor faults; share of windows switched off by true window label)
+
+| Fault | Truly failed | Truly degraded | "Healthy" windows inside a fault |
+|---|---|---|---|
+| Dropout | 94.4% | 69.4% | 56.3% |
+| Decline | 80.4% | 21.8% | 13.0% |
+| Pops | 77.4% | 46.5% | 35.7% |
+
+It catches 77–94% of failed windows on unseen patients. Many "healthy" windows inside a fault (the gaps between pops or dropout bursts) are also switched off; that is the 30 s hysteresis keeping an unreliable sensor off, as intended. Switch-offs of sensors with no fault at all were not measured separately on the held-out set.
+
+#### Pilot vs held-out
+
+| Claim | Pilot (cross-validation) | Held-out | Holds? |
+|---|---|---|---|
+| Clean ≥ 60% at ≤ 11 false alarms/h (T1) | 77.9% at 10.2 | 81.6% at **13.8** | sensitivity yes; **false alarms over budget** |
+| TDA beats classic on clean data | +7.1 points | 0 points | **no** |
+| 5 of 8 dead, sensor-aware threshold: drop ≤ 15 | 6.8 | 9.1 | yes |
+| Injected faults with health check: target met | 12 of 12 | 12 of 12 | yes |
+| TDA more robust than classic under faults | yes | yes, smaller drops in every fault type | yes |
+| Health check essential | yes | yes | yes |
+
+![](../results/figures/14_final_pilot_vs_heldout.png)
+
+**Headline for the paper.** A seizure detector combining TDA features, sensor-dropout training, a health check and sensor-aware thresholds keeps detection within 15 points of its clean performance when 5 of 8 wearable sensors fail or degrade, on patients it never saw. TDA's contribution is robustness to faults rather than clean accuracy. The main weakness is false alarms above the budget on new patients (about 13–14 per hour). No threshold or setting was changed after seeing held-out results; ways to address this (calibration period, more training patients, tuning) are future work.
 
 ---
 

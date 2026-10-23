@@ -295,12 +295,13 @@ FAULT_NAMES = {"pop": "Electrode pops", "decline": "Gradual decline", "dropout":
 CLEAN_SENS = {("dropout", "classic+TDA"): 0.779, ("dropout", "classic"): 0.739, ("clean", "classic+TDA"): 0.769}
 
 
-def fig_fault_curves(r, sel, title, name, target=False):
+def fig_fault_curves(r, sel, title, name, target=False, clean_sens=None):
     """Seizures caught vs fault severity, one panel per fault type (rows chosen by sel)."""
     lines = [(("dropout", "classic+TDA", "B"), MODELS["classic+TDA"][1], "-", "Classic + TDA, health check"),
              (("dropout", "classic+TDA", "A"), MODELS["classic+TDA"][1], ":", "Classic + TDA, no health check"),
              (("dropout", "classic+TDA", "C"), INK2, "--", "Classic + TDA, perfect health check"),
              (("dropout", "classic", "B"), MODELS["classic"][1], "-", "Classic, health check")]
+    clean_sens = clean_sens or CLEAN_SENS
     fig, axes = plt.subplots(1, 3, figsize=(13, 4.6), sharey=True)
     s = r[sel]
     for ax, fault in zip(axes, ("pop", "decline", "dropout")):
@@ -308,10 +309,10 @@ def fig_fault_curves(r, sel, title, name, target=False):
             g = s[(s.fault == fault) & (s.training == tr) & (s.model == nm) & (s["mode"] == mode)]
             g = g.groupby("severity").sensitivity.mean()
             x = [0.0] + list(g.index)
-            y = [CLEAN_SENS[(tr, nm)]] + list(g.values)
+            y = [clean_sens[(tr, nm)]] + list(g.values)
             ax.plot(x, y, ls=style, color=color, marker="o", ms=5, label=label)
         if target:
-            ax.axhline(CLEAN_SENS[("dropout", "classic+TDA")] - 0.15, color=MUTED, lw=1, ls="--")
+            ax.axhline(clean_sens[("dropout", "classic+TDA")] - 0.15, color=MUTED, lw=1, ls="--")
         ax.set_title(FAULT_NAMES[fault], fontsize=11)
         ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0], ["0%", "25%", "50%", "75%", "100%"])
         ax.set_xlabel("Fault severity")
@@ -320,7 +321,7 @@ def fig_fault_curves(r, sel, title, name, target=False):
     axes[0].set_ylabel("Seizures caught")
     axes[0].legend(loc="lower left", fontsize=8)
     if target:
-        axes[0].text(0.02, CLEAN_SENS[("dropout", "classic+TDA")] - 0.15 + 0.015, "target line", fontsize=8, color=INK2)
+        axes[0].text(0.02, clean_sens[("dropout", "classic+TDA")] - 0.15 + 0.015, "target line", fontsize=8, color=INK2)
     fig.suptitle(title, x=0.01, ha="left", fontsize=13, fontweight="bold")
     fig.tight_layout()
     save(fig, name)
@@ -350,6 +351,66 @@ def fig_window_labels(old, new):
                  x=0.01, ha="left", fontsize=13, fontweight="bold")
     fig.tight_layout()
     save(fig, "13_window_labels_before_after")
+
+
+def fig_final_compare(p_clean, p_dead, p_faults, h_clean, h_dead, h_faults):
+    """Pilot (cross-validation) vs held-out, dropout-trained models: seizures caught and false alarms."""
+    def row(clean, dead, faults, tr_col, nm):
+        c = clean[(clean.training == "dropout") & (clean.model == nm)].iloc[0]
+        d = dead[(dead.model == nm) & dead.eeg_alive & (dead.dead == 5)]
+        f = faults[(faults.training == "dropout") & (faults.model == nm) & (faults["mode"] == "B")
+                   & (faults.n_sensors == 5) & faults.eeg_alive]
+        return [(c.sensitivity, c.fa_per_h), (d.sensitivity.mean(), d.fa_per_h.mean()),
+                (f.sensitivity.mean(), f.fa_per_h.mean())]
+    groups = ["Clean data", "5 of 8 sensors dead", "Injected faults on 5 of 8\n(average, health check)"]
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.6))
+    w = 0.2
+    x = np.arange(len(groups))
+    bars = [("classic+TDA", "pilot", MODELS["classic+TDA"][1], 0.45), ("classic+TDA", "held-out", MODELS["classic+TDA"][1], 1.0),
+            ("classic", "pilot", MODELS["classic"][1], 0.45), ("classic", "held-out", MODELS["classic"][1], 1.0)]
+    for i, (nm, which, color, alpha) in enumerate(bars):
+        vals = row(p_clean, p_dead, p_faults, None, nm) if which == "pilot" else row(h_clean, h_dead, h_faults, None, nm)
+        for ax, j in zip(axes, (0, 1)):
+            ax.bar(x + (i - 1.5) * w, [v[j] for v in vals], width=w, color=color, alpha=alpha,
+                   label=f"{MODELS[nm][0]}, {which}")
+    axes[0].set_ylim(0, 1)
+    axes[0].yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
+    axes[0].set_ylabel("Seizures caught")
+    axes[0].set_title("Seizures caught")
+    axes[1].axhline(FA_BUDGET, color=INK2, ls="--", lw=1)
+    axes[1].text(-0.45, FA_BUDGET + 0.3, "budget 11/h", fontsize=8.5, color=INK2, ha="left")
+    axes[1].set_ylabel("False alarms per hour")
+    axes[1].set_title("False alarms per hour")
+    for ax in axes:
+        ax.set_xticks(x, groups, fontsize=9)
+        ax.grid(axis="x", visible=False)
+    axes[0].legend(loc="lower left", fontsize=8)
+    fig.suptitle("Pilot (cross-validation, 30 patients) vs held-out test (26 new patients), sensor-dropout training",
+                 x=0.01, ha="left", fontsize=12, fontweight="bold")
+    fig.tight_layout()
+    save(fig, "14_final_pilot_vs_heldout")
+
+
+def fig_final_dead(d):
+    alive = d[d.eeg_alive & (d.rule == "sensor-aware")]
+    fig, ax = plt.subplots(figsize=(8.5, 5.3))
+    lines = [("dropout", "classic+TDA", "-"), ("dropout", "classic", "-"), ("clean", "classic+TDA", ":")]
+    for tr, nm, style in lines:
+        g = alive[(alive.training == tr) & (alive.model == nm)].groupby("dead").sensitivity.mean()
+        label = f"{MODELS[nm][0]}, {'sensor-dropout' if tr == 'dropout' else 'normal'} training"
+        ax.plot(g.index, g.values, ls=style, color=MODELS[nm][1], marker="o", ms=5, label=label)
+    clean = alive[(alive.training == "dropout") & (alive.model == "classic+TDA") & (alive.dead == 0)].sensitivity.iloc[0]
+    ax.axhline(clean - 0.15, color=INK2, ls="--", lw=1)
+    ax.text(0.05, clean - 0.15 + 0.012, "target: at most 15 points below clean", fontsize=8.5, color=INK2)
+    ax.axvline(5, color=MUTED, lw=1, ls=":")
+    ax.set_xticks(range(0, 8), [f"{k}\n({k / 8:.0%})" for k in range(8)])
+    ax.set_xlabel("Sensors dead (out of 8)")
+    ax.set_ylim(0, 1)
+    ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
+    ax.set_ylabel("Seizures caught")
+    ax.set_title("Held-out test: dead sensors (sensor-aware threshold, at least one EEG alive)")
+    ax.legend(loc="lower left", fontsize=8.5)
+    save(fig, "15_final_dead_sensors")
 
 
 def main():
@@ -386,6 +447,19 @@ def main():
         before = TABLES / "faults_eval_severity_labels.csv"
         if before.exists():
             fig_window_labels(pd.read_csv(before), f)
+    final = TABLES / "final_faults.csv"
+    if final.exists():
+        hc, hd, hf = (pd.read_csv(TABLES / f"final_{n}.csv") for n in ("clean", "dead_sensors", "faults"))
+        held_clean = {(r.training, r.model): r.sensitivity for r in hc.itertuples()}
+        fig_fault_curves(hf, (hf.n_sensors == 5) & hf.eeg_alive,
+                         "Held-out test: injected faults on 5 of 8 sensors", "16_final_faults_5of8",
+                         target=True, clean_sens=held_clean)
+        fig_final_dead(hd)
+        pc = pd.DataFrame([dict(training="dropout", model="classic+TDA", sensitivity=0.779, fa_per_h=10.18),
+                           dict(training="dropout", model="classic", sensitivity=0.739, fa_per_h=10.35)])
+        pd_ = pd.read_csv(TABLES / "robustness_sensor_aware.csv").query("training == 'dropout'")
+        fig_final_compare(pc, pd_, pd.read_csv(TABLES / "faults_eval.csv"),
+                          hc, hd.query("training == 'dropout' and rule == 'sensor-aware'"), hf)
     print("written to", FIGS)
 
 
