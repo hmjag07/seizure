@@ -1383,6 +1383,97 @@ It catches 77–94% of failed windows on unseen patients. Many "healthy" windows
 
 ---
 
+## Phase A: after the held-out test (2026-10-24)
+
+The held-out test showed two weaknesses: false alarms above the 11 per hour budget on new patients (13.8), and no clean-data advantage for TDA. Phase A addresses the first, and adds fault-augmented training. **The held-out set is not used in Phase A**: every choice is made by cross-validation on training patients; a second held-out run (v2) will be reported alongside v1 at the end.
+
+### A1: train on all 90 usable training patients ([`fullset.py`](../src/seizure/data/fullset.py), [`phase_a.py`](../src/seizure/models/phase_a.py))
+
+Rules for the other 66 training-range patients, fixed before building: every patient, every seizure in all-modality runs with at most 10 per patient (seed 42), at least one 10-minute background chunk each. 60 have a recording with all four modalities: 155 seizures, 72.4 hours, built with `SEIZURE_SET=extra` (clean features 47 min, faulty features 4 h; window labels needed 3 workers instead of 6 to fit in memory). Together with the pilot: **90 patients, 551,429 seconds, 24,882 seizure seconds**.
+
+5-fold cross-validation over the 90 patients (dropout training, threshold at ≤ 11 per hour on the other folds):
+
+| | Pilot CV (30) | A1 CV (90) |
+|---|---|---|
+| Classic + TDA: caught / FA per h | 77.9% / 10.2 | 71.9% / 10.3 |
+| Classic: caught / FA per h | 73.9% / 10.3 | 70.8% / 10.6 |
+| AUROC (TDA / classic) | 0.824 / 0.813 | 0.851 / 0.841 |
+| AUPR (TDA / classic) | 0.331 / 0.253 | 0.440 / 0.385 |
+
+Ranking improves with more patients; sensitivity is lower because the extra patients (many with 1–2 seizures, more unusual) are harder than the pilot's (chosen with at least 3 seizures). But **2 of 5 folds exceed 11 false alarms per hour** (11.7 and 12.7): the same transfer problem as the held-out test.
+
+### A2: a threshold that keeps the budget on unseen patients
+
+Four strategies, each chosen on the other folds only and judged by the held-out fold's false alarms:
+
+| Strategy (classic + TDA) | Caught | FA / h | Worst fold | Folds over 11 |
+|---|---|---|---|---|
+| Current: best at ≤ 11 per hour | 71.9% | 10.3 | 12.7 | 2 |
+| Margin: best at ≤ 10 | 71.1% | 9.8 | 12.7 | 1 |
+| Margin: best at ≤ 9 | 69.1% | 8.8 | 11.3 | 1 |
+| **Margin: best at ≤ 8** | **67.0%** | **7.7** | **9.7** | **0** |
+| Margin, budget chosen by nested CV | 68.3% | 8.6 | 11.3 | 1 |
+| Per patient: max(threshold, own 95th percentile) | 67.0% | 6.1 | 6.7 | 0 |
+| Stricter alarm, 6–8 of 10 | 70.8–72.6% | 10.3–10.6 | 12.6–12.9 | 2–3 |
+
+```
+margin rule:       threshold = best threshold at ≤ b false alarms/h on training patients, b = 8
+per-patient rule:  threshold(patient) = max(margin-free threshold, q-th quantile of that patient's own probabilities)
+```
+
+A stricter alarm does not help: false alarms come in long bursts. **Adopted: the margin rule at 8 per hour** (`train.SELECT_BUDGET`), judged against the 11 budget. Per-patient calibration gives the best numbers but its quantile depends on how much of a patient's data is seizure, which is high in our seizure-centred chunks and low in real 24-hour monitoring; it would need a seizure-free calibration period, so it is reported as an alternative. Cost of the margin rule: about 5 points of sensitivity for a budget that holds.
+
+### A3: training with injected faults ([`phase_a3.py`](../src/seizure/models/phase_a3.py))
+
+**Why:** the model had only practised with dead sensors, but the health check passes on sensors it judges healthy or degraded, so the model also sees damaged-but-on data.
+
+**How:** for each of the 12 fault conditions, a random set of 1–5 sensors is made faulty from the onset (the fault build of Step 2); a random 5% of the seconds after the onset are added to training, with every truly failed window blanked, because the health check would switch that sensor off. About 196,000 rows; each fold uses only its training patients' rows. **A1** = clean + dead-sensor copy; **A3** = A1 + fault rows. The health check was retrained on the same 90-patient folds (7% of whole series per patient to fit in memory; cut-offs 0.5–0.55). Thresholds at ≤ 8 per hour; judged at 11. Two models per fold were trained from one pre-allocated table, A1 on the first two thirds and A3 on all of it, to fit in memory. Run time about 2 h 20 min.
+
+**Health check on 90 patients:** truly failed windows switched off 84.1%, degraded 30.2%. **Sensors with no fault switched off:** EEG1 0.1%, EEG2 0.2%, EMG 0.1%, ECG 1.1%, accelerometers 0.1–0.6%, gyroscopes 18–26%.
+
+**Clean data, every fold within the budget:**
+
+| Model | Caught | FA / h | FA per fold | Folds over 11 | AUPR |
+|---|---|---|---|---|---|
+| A1 classic | 66.8% | 7.7 | 8.5 6.2 9.9 6.9 7.0 | 0 | 0.382 |
+| A1 classic + TDA | 67.3% | 7.5 | 9.4 5.7 9.0 6.5 7.2 | 0 | 0.442 |
+| A3 classic | 67.5% | 7.5 | 8.9 4.9 9.2 7.2 7.1 | 0 | 0.382 |
+| **A3 classic + TDA** | **67.5%** | **7.3** | 9.0 5.8 8.0 6.8 7.4 | **0** | **0.445** |
+
+**Faults on 5 of 8 sensors with the health check** (caught at 25 / 50 / 75 / 100%):
+
+| Fault | A1 classic + TDA | A3 classic + TDA | A3 classic |
+|---|---|---|---|
+| Decline | 60.0 / 58.1 / 58.3 / 56.5% | **64.6 / 63.3 / 62.0 / 61.0%** | 61.1 / 60.8 / 58.4 / 58.4% |
+| Dropout | 61.7 / 61.9 / 61.4 / 61.7% | **65.3 / 62.1 / 60.9 / 60.7%** | 63.4 / 61.2 / 58.2 / 57.8% |
+| Pops | 65.9 / 64.0 / 63.9 / 63.4% | **68.0 / 65.8 / 64.3 / 63.6%** | 64.7 / 63.5 / 63.0 / 62.5% |
+
+Average drop in points (sets passing of 6):
+
+| Fault | A1 classic + TDA | **A3 classic + TDA** | A3 classic |
+|---|---|---|---|
+| Decline | 7.3 / 9.2 / 9.0 / 10.8 (6, 6, 5, 4) | **2.9 / 4.3 / 5.5 / 6.5 (all 6)** | 6.4 / 6.7 / 9.1 / 9.1 (6, 6, 5, 4) |
+| Dropout | 5.6 / 5.3 / 5.8 / 5.6 (all 6) | **2.3 / 5.5 / 6.6 / 6.9 (all 6)** | 4.1 / 6.4 / 9.3 / 9.7 (6, 6, 5, 4) |
+| Pops | 1.4 / 3.2 / 3.4 / 3.8 (all 6) | **−0.5 / 1.7 / 3.2 / 3.9 (all 6)** | 2.9 / 4.0 / 4.6 / 5.0 (all 6) |
+
+| Fault conditions meeting the target | No health check | Health check |
+|---|---|---|
+| A1 classic | 3 of 12 | 11 of 12 |
+| A3 classic | 9 of 12 | 12 of 12 |
+| A1 classic + TDA | 5 of 12 | 12 of 12 |
+| **A3 classic + TDA** | **8 of 12** | **12 of 12, all 72 sensor sets** |
+
+False alarms with the health check: 5.2–9.2 per hour in every scenario; none above 11.
+
+**What Phase A shows:**
+1. Training on 90 patients gives a more realistic, better-ranking model, and confirms the false-alarm transfer problem.
+2. Choosing the threshold at 8 per hour on training patients keeps the 11 budget on every unseen fold, in clean data and in all fault scenarios, at a cost of about 5 points of sensitivity (71.9% → 67.5% on clean data).
+3. Fault-augmented training costs nothing on clean data and fixes the weakest fault: gradual decline drops 3–6.5 points instead of 7–11, and every individual sensor set passes.
+4. TDA keeps its pattern: about the same clean sensitivity as classic (better AUPR, 0.445 vs 0.382), and more robust under faults.
+5. Limits: still cross-validation (held-out v2 pending); gyroscopes over-flagged; the margin trades sensitivity for false-alarm reliability, and both operating points should be reported.
+
+---
+
 ## Timeline (model in 1 week)
 
 | Day | Work |
