@@ -42,15 +42,15 @@ PARAMS = dict(n_estimators=300, max_depth=6, learning_rate=0.1, subsample=0.8, c
               tree_method="hist", n_jobs=-1, random_state=SEED, objective="multi:softprob")
 
 
-def keep_series(keys):
-    """True for about SAMPLE of the series, decided by a hash of the series key (reproducible)."""
-    return np.array([zlib.crc32(k.encode()) % 1000 < SAMPLE * 1000 for k in keys])
+def keep_series(keys, sample=SAMPLE):
+    """True for about `sample` of the series, decided by a hash of the series key (reproducible)."""
+    return np.array([zlib.crc32(k.encode()) % 1000 < sample * 1000 for k in keys])
 
 
-def patient_rows(sub):
+def patient_rows(sub, out=OUT, sample=SAMPLE):
     """Clean and faulty quality rows of one patient, with context features and labels."""
     # Two adjacent background chunks share their boundary second (once in the data: sub-055); keep one.
-    q = (pd.read_parquet(OUT / f"{sub}_quality.parquet").sort_values(["run", "t"])
+    q = (pd.read_parquet(out / f"{sub}_quality.parquet").sort_values(["run", "t"])
          .drop_duplicates(["run", "t"]))
     q["seg"] = ((q.t.diff() != 1) | (q.run != q.run.shift())).cumsum()
     clean = []
@@ -62,7 +62,7 @@ def patient_rows(sub):
         clean.append(part.rename(columns=dict(zip(cols, QUALITY))).assign(sensor=s))
     clean = pd.concat(clean, ignore_index=True).assign(fault="none", severity=0.0, onset=np.nan, eff=0.0)
 
-    f = pd.read_parquet(OUT / f"{sub}_faulty.parquet",
+    f = pd.read_parquet(out / f"{sub}_faulty.parquet",
                         columns=["subject", "run", "t", "label", "fault", "severity", "sensor", "onset", "eff",
                                  *QUALITY]).drop_duplicates(["run", "t", "fault", "severity", "sensor"])
     seg_of = q.set_index(["run", "t"]).seg
@@ -74,12 +74,12 @@ def patient_rows(sub):
     rows = pd.concat([clean, pre, f], ignore_index=True)
     rows["sid"] = (sub + "|" + rows.fault + "|" + rows.severity.astype(str) + "|" + rows.sensor
                    + "|" + rows.seg.astype(str))
-    rows = rows[keep_series(rows.sid.to_numpy())].sort_values(["sid", "t"]).reset_index(drop=True)
+    rows = rows[keep_series(rows.sid.to_numpy(), sample)].sort_values(["sid", "t"]).reset_index(drop=True)
     rows = add_context(rows, "sid")
     # Keep clean series whole, and faulty series from the onset on (their clean lead-in only fed the context).
     rows = rows[(rows.fault == "none") | (rows.t > rows.onset)].reset_index(drop=True)
     # Window-level labels (window_labels.py): what the fault did inside each window. Clean rows are healthy.
-    wl = pd.read_parquet(OUT / f"{sub}_wlabels.parquet").drop_duplicates(["run", "t", "fault", "severity", "sensor"])
+    wl = pd.read_parquet(out / f"{sub}_wlabels.parquet").drop_duplicates(["run", "t", "fault", "severity", "sensor"])
     keys = ["run", "t", "fault", "severity", "sensor"]
     rows = rows.merge(wl, on=keys, how="left")
     rows["y"] = np.where(rows.fault == "none", 0, rows.wclass.fillna(0)).astype("int8")

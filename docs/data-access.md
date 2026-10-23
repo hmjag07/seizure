@@ -2,7 +2,7 @@
 
 This document explains how the project reads its data, what the data files look like inside, how raw numbers are turned into real physical units, which checks were run to prove it works, and what problems were found in the data along the way.
 
-**Key principle:** both datasets are read directly from the internet, piece by piece. Raw signal is never downloaded in full and never committed to the repository. Only small text files (labels, file lists) and derived results are kept.
+**Key principle:** both datasets are read directly from the internet, piece by piece. Raw signal is never downloaded in full and never committed to the repository. Only small text files (labels, file lists) and derived results are kept. From Phase B on, a cleaned, downsampled copy of the fetched chunks is kept locally (section 8).
 
 ---
 
@@ -424,6 +424,23 @@ chb01_03.edf
 
 ## 8. Caching
 
-Raw signal is never saved. Computed features may be saved to `cache/` (git-ignored) so experiments do not re-stream and recompute persistent homology on every run. The cache can be deleted and rebuilt from the online sources at any time.
+Computed features are saved to `cache/` (git-ignored) so experiments do not re-stream and recompute persistent homology on every run. The cache can be deleted and rebuilt from the online sources at any time.
 
-**Open question:** confirm with the supervisor whether a local feature cache is acceptable or whether zero local storage is required.
+### Decision (2026-10-24): a local, downsampled copy of the signal
+
+Up to Phase A, raw signal was never saved: every step streamed what it needed and kept only features. From Phase B on, two parts of the project need the signal itself, again and again:
+
+- **TDA-B** (the topology of the sensor network) compares sensors with each other in every window. Under faults its features depend on **which combination** of sensors is faulty, so they cannot be assembled sensor by sensor from precomputed features the way TDA-A and the classic features are. Every fault combination needs the signals of all sensors at once.
+- **The CNN baseline** learns directly from the signal and passes over the training data many times.
+
+Re-streaming from OpenNeuro for every CNN training pass and every TDA-B fault combination would mean re-downloading many hours of recordings each time. That is very slow, depends on the network being available for every run, and makes each experiment much harder to repeat. **So we do not re-stream for these; we keep a downsampled copy of the fetched chunks instead.**
+
+| | Choice |
+|---|---|
+| What is saved | Only the chunks in the fetch plans (seizures with 10 min context, sampled background), after cleaning (Step 1.4) |
+| Sampling rate | EEG, ECG, EMG at 64 Hz; motion magnitudes at 25 Hz |
+| Where | `cache/signals/` and its held-out and extra counterparts, git-ignored, never committed or shared |
+| Size | About 1 GB for all 90 training and 26 held-out patients |
+| Rebuild | Deletable at any time; rebuilt from the online sources with the same code |
+
+This departs from the earlier "raw signal is never saved" rule, deliberately and only for the reasons above. The data stays derived (cleaned and downsampled), local and outside version control.

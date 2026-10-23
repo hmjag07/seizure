@@ -1,0 +1,9 @@
+,healthy_sensor_switched_off
+ACC_chest,0.001
+ACC_neck,0.006
+ECG,0.011
+EEG1,0.001
+EEG2,0.002
+EMG,0.001
+GYR_chest,0.181
+GYR_neck,0.259
