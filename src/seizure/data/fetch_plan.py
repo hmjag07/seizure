@@ -41,19 +41,19 @@ def overlaps(a, b, zones):
     return any(a < z1 and z0 < b for z0, z1 in zones)
 
 
-def main():
-    pilot = [r["subject"] for r in csv.DictReader(open(TABLES / "pilot_patients.csv"))]
-    runs = [r for r in csv.DictReader(open(TABLES / "seizeit2_runs.csv"))
-            if r["subject"] in pilot and r["all_modalities"] == "True"]
-    seizures = [s for s in csv.DictReader(open(TABLES / "seizeit2_seizures.csv")) if s["subject"] in pilot]
+def make_plan(subjects, runs, seizures, out_file, min_bg_chunks=0):
+    """Fetch plan for subjects. runs: rows with all four modalities; seizures: rows with a "used" flag.
 
+    min_bg_chunks: background chunks per patient at least (when available), so patients with few or no
+    used seizures still contribute background seconds and normalisation statistics.
+    """
     with ThreadPoolExecutor(16) as ex:
         events = dict(zip([(r["subject"], r["run"]) for r in runs],
                           ex.map(lambda r: read_events(r["subject"], r["run"]), runs)))
 
     rng = random.Random(SEED)
     plan = []
-    for sub in pilot:
+    for sub in subjects:
         sub_runs = {r["run"]: float(r["duration_s"]) for r in runs if r["subject"] == sub}
         used = [s for s in seizures if s["subject"] == sub and s["used"] == "True"]
 
@@ -81,7 +81,7 @@ def main():
                     candidates.append((run, t))
                 t += CHUNK_S
         target = BG_RATIO * sum(float(s["duration"]) for s in used)
-        n = min(len(candidates), math.ceil(target / CHUNK_S))
+        n = min(len(candidates), max(math.ceil(target / CHUNK_S), min_bg_chunks))
         for run, t in sorted(rng.sample(candidates, n)):
             plan.append(dict(subject=sub, run=run, kind="background", t0=float(t), t1=float(t + CHUNK_S)))
 
@@ -89,7 +89,7 @@ def main():
         p["fetch_t0"] = max(0.0, p["t0"] - WARMUP_S)
         p["hours"] = round((p["t1"] - p["fetch_t0"]) / 3600, 3)
     plan.sort(key=lambda p: (p["subject"], p["run"], p["t0"]))
-    with open(TABLES / "fetch_plan.csv", "w", newline="") as f:
+    with open(out_file, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(plan[0]))
         w.writeheader()
         w.writerows(plan)
@@ -98,6 +98,14 @@ def main():
         ps = [p for p in plan if p["kind"] == kind]
         print(f"{kind}: {len(ps)} chunks, {sum(p['hours'] for p in ps):.1f} h")
     print(f"total: {sum(p['hours'] for p in plan):.1f} h")
+
+
+def main():
+    pilot = [r["subject"] for r in csv.DictReader(open(TABLES / "pilot_patients.csv"))]
+    runs = [r for r in csv.DictReader(open(TABLES / "seizeit2_runs.csv"))
+            if r["subject"] in pilot and r["all_modalities"] == "True"]
+    seizures = [s for s in csv.DictReader(open(TABLES / "seizeit2_seizures.csv")) if s["subject"] in pilot]
+    make_plan(pilot, runs, seizures, TABLES / "fetch_plan.csv")
 
 
 if __name__ == "__main__":

@@ -10,6 +10,7 @@ Per patient, chunk by chunk to keep memory low:
 3. For every chunk: clean, normalise, cut 1 s windows, label, compute classic and TDA-A features.
 Output: cache/features/<subject>.parquet, one row per window.
 """
+import os
 import random
 import sys
 import time
@@ -27,12 +28,15 @@ from seizure.features import classic, tda_embedding as tda
 
 ROOT = Path(__file__).resolve().parents[3]
 TABLES = ROOT / "results" / "tables"
-CACHE = ROOT / "cache" / "features"
+# SEIZURE_SET=heldout builds the 29 held-out patients (data/heldout.py) into separate folders.
+HELDOUT = os.environ.get("SEIZURE_SET", "pilot") == "heldout"
+PLAN_FILE = TABLES / ("heldout_fetch_plan.csv" if HELDOUT else "fetch_plan.csv")
+CACHE = ROOT / "cache" / ("features_heldout" if HELDOUT else "features")
 MODALITIES = ("eeg", "ecg", "emg", "mov")
 
 
 def load_plan():
-    p = pd.read_csv(TABLES / "fetch_plan.csv", dtype={"run": str})
+    p = pd.read_csv(PLAN_FILE, dtype={"run": str})
     p["run"] = p["run"].str.zfill(2)
     return p
 

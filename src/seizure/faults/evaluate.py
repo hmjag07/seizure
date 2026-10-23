@@ -57,9 +57,12 @@ def specific(sensor, generic_col):
 class Data:
     """Clean features (normalised + context), patient statistics, row positions and fold models."""
 
-    def __init__(self):
+    def __init__(self, raw=None, single=False):
+        """raw: feature table (default: the pilot patients). single: one group of patients scored by one
+        final model (the held-out test) instead of the 5 patient-grouped folds."""
+        raw = load() if raw is None else raw
         # Two adjacent background chunks share their boundary second (once: sub-055); keep one.
-        raw = (load().sort_values(["subject", "run", "t"]).drop_duplicates(["subject", "run", "t"])
+        raw = (raw.sort_values(["subject", "run", "t"]).drop_duplicates(["subject", "run", "t"])
                .reset_index(drop=True))
         self.base = [c for c in raw.columns if c not in META]
         self.med = raw.groupby("subject")[self.base].median()
@@ -67,7 +70,7 @@ class Data:
                     .groupby(raw.subject).median() * 1.4826).replace(0, np.nan)
         z = ((raw[self.base] - self.med.reindex(raw.subject).to_numpy()) / self.mad.reindex(raw.subject).to_numpy())
         self.df = pd.concat([raw[META], z.astype("float32")], axis=1)
-        self.df["fold"] = folds(self.df)
+        self.df["fold"] = 0 if single else folds(self.df)
         self.seg = ((self.df.t.diff() != 1) | (self.df.subject != self.df.subject.shift())
                     | (self.df.run != self.df.run.shift())).cumsum().to_numpy()
         self.pos = pd.Series(np.arange(len(self.df)),
@@ -76,8 +79,9 @@ class Data:
         self.df = pd.concat([self.df, self.context(self.df, self.ctx_cols)], axis=1)
         self.cols = self.base + [f"{c}_{s}" for s in ("m10", "d60") for c in self.ctx_cols]
         self.fold = self.df.fold.to_numpy()
-        self.events = {k: FastEvents(self.df[self.fold == k]) for k in range(N_FOLDS)}
-        self.other = {k: FastEvents(self.df[self.fold != k]) for k in range(N_FOLDS)}
+        groups = sorted(set(self.fold))
+        self.events = {k: FastEvents(self.df[self.fold == k]) for k in groups}
+        self.other = {} if single else {k: FastEvents(self.df[self.fold != k]) for k in groups}
 
     def context(self, df, cols):
         g = df[cols].groupby(self.seg)
@@ -129,7 +133,7 @@ class Thresholds:
 def score(data, prob, thr_per_row):
     det = n = fa = 0
     hours = 0.0
-    for k in range(N_FOLDS):
+    for k in data.events:
         sel = data.fold == k
         d, nk, f, h = data.events[k].score(prob[sel] >= thr_per_row[sel], *ALARM)
         det, n, fa, hours = det + d, n + nk, fa + f, hours + h
@@ -150,12 +154,10 @@ def main():
         pd.MultiIndex.from_frame(data.df[["subject", "run", "t"]])).reset_index(drop=True)
     health = load_health()
     HEALTH_CUTS.update(pd.read_csv(TABLES / "health_cutoffs.csv").set_index("fold").cutoff.to_dict())
-    clean_flags = {}
     models = {(tr, nm): load_models(tr, nm) for tr, nm in MODELS}
     thresholds = {(tr, nm): Thresholds(data, models[(tr, nm)], feature_cols[nm], tr, nm) for tr, nm in MODELS}
     print(f"models and clean thresholds ready, {time.time() - t_start:.0f} s", flush=True)
 
-    rows = []
     conditions = [("pop", 0.5)] if quick else list(itertools.product(FAULTS, SEVERITIES))
     out_file = TABLES / ("faults_eval_quick.csv" if quick else "faults_eval.csv")
     part = next((a for a in sys.argv[1:] if "/" in a), None)  # e.g. "1/2": every 2nd condition from the 1st
@@ -163,13 +165,26 @@ def main():
         i, n = map(int, part.split("/"))
         conditions = conditions[i - 1::n]
         out_file = TABLES / f"faults_eval_part{i}of{n}.csv"
+    rows = run_scenarios(data, OUT, conditions, sets, models, thresholds, feature_cols, health, clean_q, out_file)
+    res = pd.DataFrame(rows).round(4)
+    res.to_csv(out_file, index=False)
+    print(res.groupby(["training", "model", "mode", "fault", "severity"])[["sensitivity", "fa_per_h"]]
+          .mean().round(3).unstack("mode").to_string())
+    print(f"done in {time.time() - t_start:.0f} s")
+
+
+def run_scenarios(data, faults_dir, conditions, sets, models, thresholds, feature_cols, health, clean_q, out_file,
+                  health_log=None):
+    """Score every (fault, severity) condition x sensor set x model x way (A, B, C); see the module docstring.
+    health_log, if a list, collects the health check's switch-off decisions on single-sensor faults."""
+    rows, clean_flags = [], {}
     for fault, sev in conditions:
         t0 = time.time()
-        f = pd.concat([pd.read_parquet(OUT / f"{s}_faulty.parquet",
+        f = pd.concat([pd.read_parquet(faults_dir / f"{s}_faulty.parquet",
                                        filters=[("fault", "==", fault), ("severity", "==", sev)])
                        for s in data.df.subject.unique()], ignore_index=True)
         f = f.drop_duplicates(["subject", "run", "t", "sensor"])
-        wl = pd.concat([pd.read_parquet(OUT / f"{s}_wlabels.parquet",
+        wl = pd.concat([pd.read_parquet(faults_dir / f"{s}_wlabels.parquet",
                                         filters=[("fault", "==", fault), ("severity", "==", sev)]).assign(subject=s)
                         for s in data.df.subject.unique()], ignore_index=True)
         wl = wl.drop_duplicates(["subject", "run", "t", "sensor"])
@@ -196,6 +211,11 @@ def main():
             if touched:
                 X[[f"{c}_{w}" for w in ("m10", "d60") for c in touched]] = data.context(X, touched).to_numpy()
             flagged = health_flags(data, clean_q, f, sset, health, clean_flags)
+            if health_log is not None and len(sset) == 1 and not f[f.sensor == sset[0]].empty:
+                fs_ = f[f.sensor == sset[0]]
+                health_log.append(pd.DataFrame({"fault": fault, "severity": sev, "sensor": sset[0],
+                                                "wclass": fs_.wclass.to_numpy(),
+                                                "off": flagged[sset[0]][fs_.pos.to_numpy()]}))
             for (tr, nm), ms in models.items():
                 th = thresholds[(tr, nm)]
                 fc = feature_cols[nm]
@@ -214,11 +234,7 @@ def main():
         print(f"{fault} {sev}: {len(sets)} sets in {time.time() - t0:.0f} s", flush=True)
         pd.DataFrame(rows).round(4).to_csv(out_file, index=False)
 
-    res = pd.DataFrame(rows).round(4)
-    res.to_csv(out_file, index=False)
-    print(res.groupby(["training", "model", "mode", "fault", "severity"])[["sensitivity", "fa_per_h"]]
-          .mean().round(3).unstack("mode").to_string())
-    print(f"done in {time.time() - t_start:.0f} s")
+    return rows
 
 
 def health_flags(data, clean_q, f, sset, health, cache):
@@ -251,7 +267,8 @@ def sensor_flags(data, clean_q, fs_, s, health):
     off = np.zeros(len(part), bool)
     for k in range(N_FOLDS):
         sel = data.fold == k
-        off[sel] = decide(p_failed[sel], data.seg[sel], HEALTH_CUTS[k])
+        if sel.any():
+            off[sel] = decide(p_failed[sel], data.seg[sel], HEALTH_CUTS[k])
     return off & valid
 
 
