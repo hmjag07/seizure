@@ -1522,6 +1522,108 @@ Context did not help because the bottleneck is the frozen v1 encoder: memory can
 
 ---
 
+## Phase C: statistics, ablations, live timing and real broken sensors (2026-10-24)
+
+### C1 + C2: what each part of the system contributes ([`phase_c.py`](../src/seizure/models/phase_c.py))
+
+**Variants.** Each removes one part of the full system (A3 classic + TDA, health check, sensor-aware threshold); 90 patients, the same 5 folds, thresholds at ≤ 8 per hour on the other folds:
+
+| Variant | What changes | Model |
+|---|---|---|
+| full | nothing | A3 classic + TDA (263 features) |
+| −TDA | no TDA features | A3 classic (111) |
+| −TDA size | TDA shape summaries only | new (183) |
+| −TDA shape | TDA size summaries only | new (191) |
+| −memory | no _m10 / _d60 context | new (93) |
+| −fault train | dropout copy only | A1 classic + TDA |
+| −robust train | no dropout copy, no fault rows | new |
+| −health check | faulty sensors stay on, one fixed threshold | full |
+| −sensor-aware | health check on, one fixed threshold | full |
+
+Each variant is scored per patient (seizures caught, seizures, false alarms, hours) on clean data and on the 12 fault conditions × 6 five-of-eight sensor sets (Step 8). Four new model sets were trained (about 30 min) and everything scored in 2 h 10 min.
+
+**Statistics: a bootstrap over patients.** Seconds of the same patient are not independent, so patients are resampled, not seconds:
+```
+for b = 1 … 2000:   draw 90 patients with replacement (seed 42)
+                    sensitivity_b = Σ caught / Σ seizures over the drawn patients (same for false alarms per hour)
+95% interval        = 2.5th and 97.5th percentiles of the 2000 values
+paired difference   = sensitivity_b(full) − sensitivity_b(variant), on the same drawn patients
+p (one-sided)       = share of draws where the full system is not better (difference ≤ 0)
+```
+Example: if, in 37 of the 2000 draws, the variant catches at least as many as the full system, p = 37 / 2000 = 0.0185. Under faults, sums run over all 72 scenarios.
+
+**Results** (sensitivity [95% interval], false alarms per hour; difference = full − variant, in points):
+
+| Variant | Clean | Faults on 5 of 8 | Difference under faults [95%] | p |
+|---|---|---|---|---|
+| **full** | **67.5% [54–81], 7.3** | **63.5% [51–76], 7.1** | | |
+| −TDA | 67.5%, 7.5 | 61.1%, 7.2 | **+2.4 [0.1, 4.8]** | **0.019** |
+| −TDA size | 68.5%, 7.5 | 64.0%, 7.0 | −0.5 [−1.4, 0.4] | 0.85 |
+| −TDA shape | 68.3%, 7.8 | 62.8%, 7.4 | +0.6 [−0.9, 2.2] | 0.21 |
+| −memory | 53.4%, 7.6 | 50.5%, 7.1 | **+13.0 [8.6, 17.3]** | < 0.001 |
+| −fault train | 67.3%, 7.5 | 61.4%, 6.9 | **+2.1 [1.2, 3.1]** | < 0.001 |
+| −robust train | 67.3%, 7.5 | 56.0%, 7.2 | **+7.5 [5.4, 9.7]** | < 0.001 |
+| −health check | 67.5%, 7.3 | 52.2%, 5.1 | **+11.2 [8.7, 13.8]** | < 0.001 |
+| −sensor-aware | 67.5%, 7.3 | 69.4%, **10.3 [9.3, 11.4]** | −5.9 | (false alarms over budget) |
+
+**What it shows:**
+1. **TDA helps under faults, not on clean data:** the same clean sensitivity, but 2.4 points more under faults, with an interval that excludes 0 (p = 0.019). This is the project's central claim, now with patient-level uncertainty.
+2. TDA size and shape summaries are interchangeable: removing either one alone costs nothing; removing both costs 2.4 points.
+3. The 10 s / 60 s memory is the largest single part (13–14 points, clean and faulty).
+4. Robustness comes from three parts that add up: the health check (11.2), dropout training (about 5.4 on top of fault training) and fault training (2.1).
+5. Without sensor-aware thresholds the model catches more but raises 10.3 false alarms per hour (upper bound 11.4), over the 8 used for selection; the sensor-aware thresholds are what keep the budget when sensors switch off.
+
+### C3: live run and timing ([`live.py`](../src/seizure/models/live.py))
+
+Three training patients (sub-004, sub-076, sub-031), 600 s each, played second by second through the whole system with the fold-0 models: re-clean the last 75 s, features for the window ending now, quality features, context from the history, health check with its 15 s smoothing, the stuck rule (C4), the seizure model with switched-off sensors blanked, and the 5-of-10 alarm. Laptop CPU (no GPU), one process:
+
+| Step | Mean (ms) | 99th percentile (ms) |
+|---|---|---|
+| Cleaning (last 75 s) | 4.7 | 5.4 |
+| Features (classic + TDA-A) | 42.7 | 50.2 |
+| Quality features | 5.5 | 6.7 |
+| Context | 10.8 | 14.3 |
+| Health check | 8.3 | 9.9 |
+| Stuck rule | 0.4 | 0.6 |
+| Seizure model | 13.5 | 17.4 |
+| **Total** | **86.0** | **101.9 (max 119.7)** |
+
+All 1,800 seconds were processed within 0.2 s: **the system runs about 10× faster than real time** on a laptop. TDA-A (persistent homology of 150-point clouds) is the largest part, about half.
+
+### C4: real broken motion sensors ([`real_faults.py`](../src/seizure/faults/real_faults.py))
+
+Step 1.4 found genuinely broken motion sensors in SeizeIT2 and removed them. Here they are kept and passed through the system. Scan of all 569 chunks of the 90 patients (2,276 motion sensor-chunks): 2,056 healthy, 79 missing, 48 accelerometers with a wrong scale (gravity outside 0.1–1.5), 93 labelled stuck by preprocess.stuck (20 patients).
+
+**Wrong scale:** caught every time, at cleaning (the gravity calibration fails), before the health check.
+
+**Stuck: the learned health check alone is not enough.** It sees the magnitude of the three axes, and a single frozen axis hides behind the two moving ones; frozen axes were also not among the simulated faults. Rather than rebuild the fault set, a rule was added in front of the health check ([`health.stuck_motion`](../src/seizure/faults/health.py)), on the past 60 s only:
+```
+switch a motion sensor off if any axis, over the last 60 s:
+  sits at its full-scale limit (from the EDF header) for more than half of the samples, or
+  is exactly constant, except: a gyroscope at 0 (within 2 quantisation steps)
+                               counts only if the same device's accelerometer is also frozen
+```
+Why this form: healthy sensors at rest flicker between one or two quantised values, so "pinned at the window's own min / max" (the definition of preprocess.stuck) fires on them; and a gyroscope at rest reads exactly 0 for minutes. Stuck accelerometers in SeizeIT2 sit at ±32.767 (the full scale); dead devices read 0 on every axis.
+
+| Rule on all 2,056 healthy motion sensor-chunks | Share of seconds switched off |
+|---|---|
+| Window's own min / max (rejected) | 13.4% |
+| Any exact constant (rejected) | 3.8% |
+| **Full-scale or constant, gyroscope-at-rest exemption, 60 s** | **0.6%** |
+| Same, 300 s window | 0.1% |
+
+**Stuck sensor-chunks (93), share of seconds switched off:**
+
+| | Health check | Rule | Both |
+|---|---|---|---|
+| Pinned at full scale or dead device (68) | 95.5% | 94.0% | **99.7%** |
+| Labelled stuck only by the window min / max test (25) | 10% | 3% | 11% |
+| Matched healthy controls (93) | 5.6% | 0.5% | 6.0% |
+
+The 25 chunks that nothing switches off are mostly gyroscopes at 0 while the accelerometer moves, or accelerometers pinned at their own min / max: the same signature as a sensor at rest, so they are most likely not faults. **Result: every genuinely broken motion sensor found in SeizeIT2 (wrong scale, pinned at full scale, dead device) is switched off, in 99.7–100% of its seconds, at a cost of 0.4 ms per second and 0.6% extra switch-off of healthy motion sensors.** Gyroscopes remain the sensors the health check over-flags (Phase A3).
+
+---
+
 ## Timeline (model in 1 week)
 
 | Day | Work |

@@ -99,6 +99,70 @@ def decide(p_failed, gid, cut, smooth=15, recover=30):
     return out
 
 
+def stuck_trailing(axes, fs, ends, fetch_t0, window_s=60, constant=True, limits=None, rest_value=None,
+                   rest_tol=0.0, companion=None):
+    """Per-axis stuck rule on the past only (Phase C4). True at each window end where any axis, over the
+    last window_s seconds,
+      - is exactly constant (if `constant`). A constant equal to `rest_value` (a gyroscope reads exactly 0
+        at rest: dead-zone) counts only when a `companion` axis (the same device's accelerometer) is also
+        exactly constant, i.e. the whole device is dead. `rest_tol` is how close counts as equal (the
+        stored zero is offset by a fraction of one quantisation step); or
+      - sits at a pinned edge for more than half of the samples. The edge is the axis's full-scale limit
+        when `limits` gives (low, high) per axis, the window's own min / max when limits == "window",
+        and the pinned test is skipped when limits is None.
+    The "window" edge also fires on healthy axes at rest (they flicker between one or two quantised
+    values), so the full-scale edge is the one used. This is the live counterpart of preprocess.stuck,
+    which looks at the whole chunk. It exists because the learned health check sees the axis magnitude,
+    in which a single frozen axis hides behind the two moving ones."""
+    n = int(window_s * fs)
+    stops = np.round((np.asarray(ends) - fetch_t0) * fs).astype(int)
+    out = np.zeros(len(stops), bool)
+
+    def frozen(x, stop):
+        seg = x[max(0, stop - n):stop]
+        return len(seg) > 0 and seg.min() == seg.max()
+
+    for j, x in enumerate(axes):
+        for i, stop in enumerate(stops):
+            if out[i]:
+                continue
+            seg = x[max(0, stop - n):stop]
+            if len(seg) == 0:
+                continue
+            lo_w, hi_w = seg.min(), seg.max()
+            if lo_w == hi_w:
+                if constant and (rest_value is None or abs(lo_w - rest_value) > rest_tol
+                                 or any(frozen(c, stop) for c in (companion or []))):
+                    out[i] = True
+                continue
+            if limits is None:
+                continue
+            lo, hi = (lo_w, hi_w) if limits == "window" else limits[j]
+            tol = 1e-6 * max(abs(lo), abs(hi), 1.0)
+            if max(np.mean(np.abs(seg - lo) <= tol), np.mean(np.abs(seg - hi) <= tol)) > 0.5:
+                out[i] = True
+    return out
+
+
+def stuck_motion(mov, header, sensor, fs, ends, fetch_t0, window_s=60):
+    """The stuck rule as used by the system for one motion sensor (ACC_/GYR_ + neck/chest): full-scale
+    pinning or exact constancy; a gyroscope frozen at exactly 0 only if its accelerometer is frozen too."""
+    kind, dev = sensor.split("_")
+    keys = [f"{pp.DEVICES[dev]} {kind} {a}" for a in ("XYZ" if kind == "ACC" else "ABC")]
+    lim, steps = [], []
+    for k in keys:
+        i = header["labels"].index(k)
+        lim.append((header["offset"][i] + header["gain"][i] * header["dmin"][i],
+                    header["offset"][i] + header["gain"][i] * header["dmax"][i]))
+        steps.append(abs(header["gain"][i]))
+    axes = [mov[k][0] for k in keys]
+    if kind == "ACC":
+        return stuck_trailing(axes, fs, ends, fetch_t0, window_s, limits=lim)
+    acc = [mov[f"{pp.DEVICES[dev]} ACC {a}"][0] for a in "XYZ" if f"{pp.DEVICES[dev]} ACC {a}" in mov]
+    return stuck_trailing(axes, fs, ends, fetch_t0, window_s, limits=lim, rest_value=0.0,
+                          rest_tol=2 * max(steps), companion=acc)
+
+
 def health_class(eff):
     """0 healthy, 1 degraded, 2 failed, from the effective fault severity at the window's end."""
     return np.where(eff <= 0, 0, np.where(eff < 0.6, 1, 2)).astype(np.int8)
