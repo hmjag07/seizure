@@ -112,8 +112,9 @@ def load_health():
 class Thresholds:
     """Per-fold thresholds: the fixed clean one, and sensor-aware ones per set of dead sensors (cached)."""
 
-    def __init__(self, data, models, fc, training, name):
+    def __init__(self, data, models, fc, training, name, budget=None):
         self.data, self.models, self.fc, self.cache = data, models, fc, {}
+        self.budget = budget
         self.by_sensor = sensor_columns(fc)
         self.fixed = self.for_set(frozenset())
 
@@ -126,7 +127,8 @@ class Thresholds:
                 for s in dead:
                     X[self.by_sensor[s]] = np.nan
                 prob[d.fold == k] = m.predict_proba(X)[:, 1]
-            self.cache[dead] = [best_threshold(d.other[k], prob[d.fold != k]) for k in range(N_FOLDS)]
+            kw = {} if self.budget is None else {"budget": self.budget}
+            self.cache[dead] = [best_threshold(d.other[k], prob[d.fold != k], **kw) for k in range(N_FOLDS)]
         return self.cache[dead]
 
 
@@ -173,43 +175,60 @@ def main():
     print(f"done in {time.time() - t_start:.0f} s")
 
 
+def fault_dir(faults_dir, subject):
+    """faults_dir is one folder, or a function subject -> folder (patients spread over several folders)."""
+    return faults_dir(subject) if callable(faults_dir) else faults_dir
+
+
+def load_condition(data, faults_dir, fault, sev):
+    """Faulty rows of every patient for one (fault, severity), with window labels and row positions."""
+    subs = data.df.subject.unique()
+    f = pd.concat([pd.read_parquet(fault_dir(faults_dir, s) / f"{s}_faulty.parquet",
+                                   filters=[("fault", "==", fault), ("severity", "==", sev)])
+                   for s in subs], ignore_index=True)
+    f = f.drop_duplicates(["subject", "run", "t", "sensor"])
+    wl = pd.concat([pd.read_parquet(fault_dir(faults_dir, s) / f"{s}_wlabels.parquet",
+                                    filters=[("fault", "==", fault), ("severity", "==", sev)]).assign(subject=s)
+                    for s in subs], ignore_index=True)
+    wl = wl.drop_duplicates(["subject", "run", "t", "sensor"])
+    f = f.merge(wl[["subject", "run", "t", "sensor", "wclass"]], on=["subject", "run", "t", "sensor"], how="left")
+    f["pos"] = data.pos.reindex(pd.MultiIndex.from_frame(f[["subject", "run", "t"]])).to_numpy()
+    f = f.dropna(subset=["pos"])
+    f["pos"] = f.pos.astype(int)
+    return f
+
+
+def assemble(data, f, sset):
+    """Feature table with the sensors in sset faulty from their onset (normalised with the patient's clean
+    statistics, context recomputed), and per sensor the rows whose window is truly failed."""
+    X = data.df[data.cols].copy()
+    truly_failed = {s: np.zeros(len(X), bool) for s in SIGNALS}
+    for s in sset:
+        fs_ = f[f.sensor == s]
+        if fs_.empty:
+            continue
+        cols = [c for c in fs_.columns if specific(s, c) in data.base]
+        spec = [specific(s, c) for c in cols]
+        subj = fs_.subject.to_numpy()
+        vals = (fs_[cols].to_numpy(dtype="float64") - data.med.loc[subj, spec].to_numpy()) /             data.mad.loc[subj, spec].to_numpy()
+        X.loc[fs_.pos.to_numpy(), spec] = vals.astype("float32")
+        truly_failed[s][fs_.pos.to_numpy()] = fs_.wclass.to_numpy() == 2  # window-level truth
+    touched = [c for c in data.ctx_cols if any(c.removeprefix("TDA_").startswith(s + "_") for s in sset)]
+    if touched:
+        X[[f"{c}_{w}" for w in ("m10", "d60") for c in touched]] = data.context(X, touched).to_numpy()
+    return X, truly_failed
+
+
 def run_scenarios(data, faults_dir, conditions, sets, models, thresholds, feature_cols, health, clean_q, out_file,
-                  health_log=None):
+                  health_log=None, modes=("A", "B", "C")):
     """Score every (fault, severity) condition x sensor set x model x way (A, B, C); see the module docstring.
     health_log, if a list, collects the health check's switch-off decisions on single-sensor faults."""
     rows, clean_flags = [], {}
     for fault, sev in conditions:
         t0 = time.time()
-        f = pd.concat([pd.read_parquet(faults_dir / f"{s}_faulty.parquet",
-                                       filters=[("fault", "==", fault), ("severity", "==", sev)])
-                       for s in data.df.subject.unique()], ignore_index=True)
-        f = f.drop_duplicates(["subject", "run", "t", "sensor"])
-        wl = pd.concat([pd.read_parquet(faults_dir / f"{s}_wlabels.parquet",
-                                        filters=[("fault", "==", fault), ("severity", "==", sev)]).assign(subject=s)
-                        for s in data.df.subject.unique()], ignore_index=True)
-        wl = wl.drop_duplicates(["subject", "run", "t", "sensor"])
-        f = f.merge(wl[["subject", "run", "t", "sensor", "wclass"]], on=["subject", "run", "t", "sensor"], how="left")
-        f["pos"] = data.pos.reindex(pd.MultiIndex.from_frame(f[["subject", "run", "t"]])).to_numpy()
-        f = f.dropna(subset=["pos"])
-        f["pos"] = f.pos.astype(int)
+        f = load_condition(data, faults_dir, fault, sev)
         for sset in sets:
-            X = data.df[data.cols].copy()
-            truly_failed = {s: np.zeros(len(X), bool) for s in SIGNALS}
-            flagged = {s: np.zeros(len(X), bool) for s in SIGNALS}
-            for s in sset:
-                fs_ = f[f.sensor == s]
-                if fs_.empty:
-                    continue
-                cols = [c for c in fs_.columns if specific(s, c) in data.base]
-                spec = [specific(s, c) for c in cols]
-                subj = fs_.subject.to_numpy()
-                vals = (fs_[cols].to_numpy(dtype="float64") - data.med.loc[subj, spec].to_numpy()) / \
-                    data.mad.loc[subj, spec].to_numpy()
-                X.loc[fs_.pos.to_numpy(), spec] = vals.astype("float32")
-                truly_failed[s][fs_.pos.to_numpy()] = fs_.wclass.to_numpy() == 2  # window-level truth
-            touched = [c for c in data.ctx_cols if any(c.removeprefix("TDA_").startswith(s + "_") for s in sset)]
-            if touched:
-                X[[f"{c}_{w}" for w in ("m10", "d60") for c in touched]] = data.context(X, touched).to_numpy()
+            X, truly_failed = assemble(data, f, sset)
             flagged = health_flags(data, clean_q, f, sset, health, clean_flags)
             if health_log is not None and len(sset) == 1 and not f[f.sensor == sset[0]].empty:
                 fs_ = f[f.sensor == sset[0]]
@@ -220,7 +239,7 @@ def run_scenarios(data, faults_dir, conditions, sets, models, thresholds, featur
                 th = thresholds[(tr, nm)]
                 fc = feature_cols[nm]
                 done = {}
-                for mode in ("A", "B", "C"):
+                for mode in modes:
                     dead_rows = {"A": None, "B": flagged, "C": truly_failed}[mode]
                     if mode != "A" and not any(v.any() for v in dead_rows.values()):
                         sens, fa = done["A"]  # nothing switched off: identical to no health check

@@ -35,8 +35,8 @@ def load_models(training, name):
     return models
 
 
-def best_threshold(fe, prob, look_ahead=3):
-    """Highest sensitivity at <= FA_BUDGET false alarms/h.
+def best_threshold(fe, prob, look_ahead=3, budget=FA_BUDGET):
+    """Highest sensitivity at <= budget false alarms/h (default FA_BUDGET).
 
     False alarms fall as the threshold rises, so a halving search finds the lowest threshold within
     budget (about 6 scorings instead of 46); the next few thresholds up are also checked in case
@@ -49,14 +49,14 @@ def best_threshold(fe, prob, look_ahead=3):
     lo, hi = 0, len(THRESHOLDS) - 1
     while lo < hi:
         mid = (lo + hi) // 2
-        if score(mid)[1] <= FA_BUDGET:
+        if score(mid)[1] <= budget:
             hi = mid
         else:
             lo = mid + 1
     best, best_sens = len(THRESHOLDS) - 1, -1.0
     for i in range(lo, min(lo + look_ahead + 1, len(THRESHOLDS))):
         sens, fa = score(i)
-        if fa <= FA_BUDGET and sens >= best_sens:
+        if fa <= budget and sens >= best_sens:
             best, best_sens = i, sens
     return THRESHOLDS[best]
 

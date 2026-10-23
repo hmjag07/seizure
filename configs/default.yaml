@@ -30,4 +30,6 @@ tda:
 
 alarm:
   threshold: 0.5
+  fa_budget_per_h: 11          # success target T1
+  select_budget_per_h: 8       # thresholds chosen at this rate on training patients (Phase A2)
   x_of_y: [5, 10]            # SeizeIT2 benchmark used 8 of 10; changed 2026-10-19 to catch short seizures

@@ -30,6 +30,9 @@ N_FOLDS = 5
 SHAPE = ("H0_entropy", "H1_count", "H1_entropy")
 TDA_CONTEXT = ("H0_total", "H1_total", "H1_max") + SHAPE
 FA_BUDGET = 11  # false alarms per hour, as in success target T1
+# Thresholds are chosen at this rate on training patients so the 11/h budget holds on new ones
+# (Phase A2, 2026-10-24: every cross-validation fold stayed within 11/h, worst 9.7).
+SELECT_BUDGET = 8
 ALARM = (5, 10)  # x of the last y seconds
 THRESHOLDS = np.round(np.arange(0.1, 0.96, 0.05), 2)
 PARAMS = dict(n_estimators=400, max_depth=6, learning_rate=0.05, subsample=0.8, colsample_bytree=0.8,
