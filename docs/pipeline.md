@@ -1622,6 +1622,19 @@ Why this form: healthy sensors at rest flicker between one or two quantised valu
 
 The 25 chunks that nothing switches off are mostly gyroscopes at 0 while the accelerometer moves, or accelerometers pinned at their own min / max: the same signature as a sensor at rest, so they are most likely not faults. **Result: every genuinely broken motion sensor found in SeizeIT2 (wrong scale, pinned at full scale, dead device) is switched off, in 99.7–100% of its seconds, at a cost of 0.4 ms per second and 0.6% extra switch-off of healthy motion sensors.** Gyroscopes remain the sensors the health check over-flags (Phase A3).
 
+### Figures for the health check and Phases A to C ([`plots_phases.py`](../src/seizure/evaluation/plots_phases.py))
+
+`python -m seizure.evaluation.plots_phases` draws Figures 17–25 into results/figures/ from the saved tables only:
+- 17: what the health check switches off;
+- 18: 30 vs 90 training patients (A1);
+- 19: false alarms per unseen fold for each threshold rule (A2);
+- 20: fault training (A3);
+- 21: TDA-B paired differences (B1);
+- 22: the CNN baseline (B2);
+- 23: the ablation with 95% intervals (C1 + C2);
+- 24: live timing (C3);
+- 25: real broken motion sensors (C4).
+
 ---
 
 ## Timeline (model in 1 week)
