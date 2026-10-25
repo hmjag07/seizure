@@ -466,9 +466,34 @@ def fig_d_health():
     save(fig, "29_d_health")
 
 
+def fig_spec():
+    """30: spectrogram CNN + GRU and the hybrid against XGBoost and the first CNNs, as sensors die."""
+    c = pd.read_csv(TABLES / "cnn_spec_dead_sensors.csv")
+    h = pd.read_csv(TABLES / "hybrid_dead_sensors.csv")
+    c1 = pd.read_csv(TABLES / "cnn_dead_sensors.csv")
+    lines = [(h, "xgboost", TDA_C, ":", "XGBoost, classic + TDA"),
+             (h, "hybrid", TDA_C, "-", "Hybrid: XGBoost + the spectrogram CNN's score"),
+             (c, "spectrogram cnn+gru", SHAPE_C, "-", "Spectrogram CNN + GRU (end to end)"),
+             (c1, "cnn", CLASSIC_C, ":", "First CNN (raw signals, 4 s)")]
+    fig, ax = plt.subplots(figsize=(8.5, 5.2))
+    for d, m, color, style, name in lines:
+        g = d[(d.model == m) & d.eeg_alive].groupby("dead").sensitivity.mean()
+        ax.plot(g.index, g.values, ls=style, color=color, marker="o", ms=5, label=name)
+    ax.set_xticks(range(0, 8), [f"{k}\n({k / 8:.0%})" for k in range(8)])
+    ax.set_xlabel("Sensors dead (out of 8)")
+    ax.set_ylim(0, 1)
+    ax.yaxis.set_major_formatter(PCT)
+    ax.set_ylabel("Seizures caught (at <= 8 false alarms/h on training folds)")
+    ax.set_title("Deep learning revisited: spectrogram CNN + GRU and the hybrid (SeizeIT2, 90 patients)")
+    ax.legend(loc="lower left", fontsize=8.5)
+    ax.text(0, -0.2, "Average over dead-sensor sets with at least one EEG alive; thresholds per set of dead sensors, "
+            "chosen on the other folds.", transform=ax.transAxes, fontsize=8, color=MUTED)
+    save(fig, "30_spectrogram_cnn_hybrid")
+
+
 def main():
     for f in (fig_health, fig_a1, fig_a2, fig_a3, fig_b1, fig_b2, fig_ablation, fig_timing, fig_real_faults,
-              fig_d_dead, fig_d_faults, fig_d_stats, fig_d_health):
+              fig_d_dead, fig_d_faults, fig_d_stats, fig_d_health, fig_spec):
         f()
         print(f.__name__, "done", flush=True)
 

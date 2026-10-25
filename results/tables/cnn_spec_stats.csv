@@ -1,0 +1,5 @@
+test,model,sens,fa_per_h,xgboost_sens,diff_pts,lo,hi,p_not_better
+clean,spectrogram cnn+gru,0.688,6.9532,0.6803,0.7673,-7.3356,8.3532,0.473
+clean,hybrid,0.6905,7.4797,0.6803,1.023,-1.1364,3.039,0.2025
+5 of 8 sensors dead,spectrogram cnn+gru,0.6317,7.9207,0.5786,5.3069,1.2621,9.4568,0.0065
+5 of 8 sensors dead,hybrid,0.6153,7.6876,0.5786,3.6658,1.5224,5.7888,0.001

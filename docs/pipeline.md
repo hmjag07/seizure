@@ -1796,6 +1796,71 @@ Within the 15-point target at 11 dead: all 8 sets for classic and classic + TDA,
 
 ---
 
+## Phase B3: a spectrogram CNN + GRU, and a hybrid (2026-10-25) ([`cnn_spec.py`](../src/seizure/models/cnn_spec.py))
+
+The CNN baselines of Phase B2 caught about 40% of seizures, and frozen features were the bottleneck. This is the end-to-end retry that had been put on hold.
+
+**Input: one spectrogram per sensor, every second.** Each sensor's last 4 s (ECG 15 s) of the cached signal becomes a log-power spectrogram, `log(|STFT|² + 10⁻⁴)` with a Hann window:
+
+| Sensor | Rate | STFT window / step | Spectrogram (frequencies × time steps) |
+|---|---|---|---|
+| EEG1, EEG2 | 64 Hz | 1 s / 0.25 s | 33 × 13 (0–32 Hz) |
+| ECG | 64 Hz | 2 s / 1 s | 65 × 14 |
+| EMG | 128 Hz | 0.5 s / 0.25 s | 33 × 15 (0–64 Hz) |
+| Motion (4 channels) | 25 Hz | 1 s / 0.24 s | 13 × 13 |
+
+Worked example (EEG): 4 s at 64 Hz is 256 samples. A 64-sample window moved 16 samples at a time fits 1 + (256 − 64)/16 = 13 times, and each window gives 64/2 + 1 = 33 frequencies (0, 1, …, 32 Hz).
+
+**Network.**
+1. A small 2-D CNN per sensor group: three blocks of 3×3 convolution, batch normalisation and pooling (16–64 filters).
+2. The groups' outputs and the 8 "working" flags are joined into a 128-number summary of the second.
+3. A GRU (64 units) reads the summaries of the **last 90 seconds**, and its last state gives the seizure probability.
+
+A dead sensor's spectrogram is zero and its flag 0.
+
+**Training, end to end on the GPU** (about 5 minutes per fold):
+- 4,000 steps of 24 sequences of 90 seconds; loss on the last 30 seconds of each sequence;
+- **balanced sampling:** half the sequences end on a seizure second;
+- **sensor dropout:** half the sequences lose a random 1–6 sensors for the whole sequence;
+- AdamW with a one-cycle learning rate, and mixed precision.
+
+**Hybrid.** The CNN's score per second is added as one feature to XGBoost classic + TDA.
+- **No label leaks:** for each outer fold, the four training folds are split into two halves. A CNN trained on one half scores the other (2,000 steps each), so no training row's score comes from a network that saw it. The test fold gets the mean of the two networks' scores.
+- **Dropout copy:** one random dead set per chunk (1–6 sensors, half the chunks), so the CNN score can be computed with the same sensors dead.
+- **Fair comparison:** the XGBoost reference uses the same copy, without the CNN score. It catches 68.0%; Phase A1's per-second copy gave 67.3%.
+
+**Results** (90 patients, 5 folds, threshold per set of dead sensors chosen on the other folds at ≤ 8 FA/h; mean over the dead-sensor sets with an EEG alive):
+
+| Model | Clean: caught | FA / h | AUROC | AUPR | 5 of 8 dead | 7 of 8 dead | Both EEG dead |
+|---|---|---|---|---|---|---|---|
+| CNN v1 (raw, 4 s) | 40.9% | 7.5 | 0.691 | 0.183 | 44.3% | 41.6% | |
+| CNN v2 (frozen v1 + GRU) | 39.9% | 7.9 | 0.689 | 0.156 | | | |
+| **Spectrogram CNN + GRU** | **68.8%** | 7.0 | 0.799 | 0.441 | **63.2%** | **61.4%** | 51.3% |
+| XGBoost classic + TDA (same dropout copy) | 68.0% | 7.5 | 0.850 | 0.443 | 57.9% | 56.3% | 38.3% |
+| **Hybrid** | 69.1% | 7.5 | **0.854** | **0.489** | 61.5% | 58.8% | 43.5% |
+
+In the hybrid, the CNN score is the single most useful of the 264 features (largest gain in fold 0).
+
+**Patient bootstrap** (2,000 resamples of the 90 patients; 5 of 8 dead sums the 12 sets with an EEG alive per patient):
+
+| Against XGBoost | Clean | 5 of 8 sensors dead |
+|---|---|---|
+| Spectrogram CNN + GRU | +0.8 [−7.3, 8.4], p = 0.47 | **+5.3 [1.3, 9.5], p = 0.007** |
+| Hybrid | +1.0 [−1.1, 3.0], p = 0.20 | **+3.7 [1.5, 5.8], p = 0.001** |
+
+**What B3 shows:**
+1. **Learning frequency directly from the signal fixes the deep model.** Giving the network spectrograms instead of raw samples, and training it end to end with balanced sampling, lifts it from 41% to 69%. That matches XGBoost on clean data, although its ranking (AUROC 0.80) is still weaker.
+2. **With dead sensors the spectrogram CNN is the most robust model so far:** 63% with 5 of 8 dead against 58% for XGBoost, significant across patients. With both EEG channels dead it still catches 51%, against 38%. Training on whole 90-second sequences with a sensor missing throughout seems to teach it to use what remains better than per-second dropout teaches XGBoost.
+3. **The hybrid gives the best clean ranking** (AUPR 0.489 against 0.443) **and a significant gain with dead sensors** (+3.7 points), so the CNN and the hand-made features carry partly different information.
+4. **Limits.**
+   - Tested on dead sensors only. The injected-fault scenarios (health check, faults that start partway) and the held-out patients are not yet run for these models.
+   - The clean-data differences are not significant.
+   - TDA's own role is unchanged: the comparison here is against classic + TDA.
+
+**Figure 30** shows the four models as sensors die.
+
+---
+
 ## Timeline (model in 1 week)
 
 | Day | Work |
