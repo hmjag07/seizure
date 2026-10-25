@@ -1859,6 +1859,53 @@ In the hybrid, the CNN score is the single most useful of the 264 features (larg
 
 **Figure 30** shows the four models as sensors die.
 
+### B4: the spectrogram CNN and the hybrid under injected faults ([`cnn_faults.py`](../src/seizure/models/cnn_faults.py))
+
+**Protocol (Phase C):**
+- faults on 5 of 8 sensors: 12 fault conditions × the 6 sensor sets of `evaluate.sensor_sets`, so 72 scenarios;
+- 90 patients, 5 folds;
+- each second, the 90-patient health check (its fold cut-offs) switches sensors off, and the model gets the rest.
+
+**The three models compared:**
+- XGBoost classic + TDA with the per-chunk dropout copy (the B3 reference);
+- the hybrid;
+- the spectrogram CNN + GRU.
+
+**Faulty inputs.**
+- *XGBoost:* features come from the fault build (recomputed from the faulty raw signals).
+- *CNN:* it reads signals, so the same fault is injected into the cached cleaned, normalised signal of each faulty sensor, with the same type, severity and chunk onset (read from the fault build). Pop and flat-burst positions are drawn at the cached sampling rate, so the faults match the feature build in kind, severity and onset, but not sample by sample.
+
+**Threshold: count-aware, as for CHB-MIT.**
+- The threshold depends on how many sensors are switched off (0–8). It is chosen on the other folds' clean data at ≤ 8 FA/h, with that many random sensors dead in each chunk (one set per chunk, as the CNN was trained; seed 1000 + count).
+- Phase C's rule (one threshold per set of switched-off sensors) needs every network to score all 551,429 seconds for each of the many sets the health check produces. After 54 minutes the first fault condition was still not done, so that run was stopped.
+- All three models use the same rule here, so the comparison is fair. It differs from Phase C's rule for the main system.
+
+**Results** (mean over 6 sensor sets per condition; caught / FA per hour):
+
+| Fault | Severity | XGBoost | Hybrid | Spectrogram CNN |
+|---|---|---|---|---|
+| Pops | 25 / 50 / 75 / 100% | 65.5 / 63.4 / 62.3 / 63.1% | 66.4 / 65.1 / 63.8 / 64.2% | 69.1 / 67.9 / 67.3 / 67.4% |
+| Decline | 25 / 50 / 75 / 100% | 59.4 / 55.9 / 57.6 / 56.0% | 62.7 / 58.3 / 59.7 / 59.5% | 69.5 / 68.4 / 67.6 / 67.2% |
+| Dropout | 25 / 50 / 75 / 100% | 59.9 / 63.3 / 63.3 / 63.9% | 63.6 / 64.5 / 65.7 / 65.5% | 69.1 / 67.6 / 65.8 / 66.0% |
+| **All 72 scenarios** | | **61.1% at 7.5 FA/h** (2 over 11) | **63.3% at 7.4** (none over 11) | **67.7% at 9.5** (12 over 11; up to 22.8) |
+
+**Patient bootstrap** (2,000 resamples, all 72 scenarios summed per patient, against XGBoost):
+
+| Model | Seizures caught | False alarms per hour |
+|---|---|---|
+| Spectrogram CNN + GRU | **+6.6 points [2.0, 10.5], p = 0.003** | **+2.0 [0.9, 3.2]**: significantly more |
+| Hybrid | **+2.1 points [0.6, 3.7], p = 0.005** | −0.1 [−0.6, 0.4]: no change |
+
+**What B4 shows:**
+1. **The spectrogram CNN catches the most seizures under every fault**, including gradual decline, where XGBoost and the hybrid lose most. But it **over-alarms with mild intermittent dropout**: 17.8 false alarms per hour at 25% and 12.1 at 50%.
+   - The short flat bursts are too brief for the health check to switch the sensor off.
+   - In a spectrogram they look like sudden loss of all power, and the CNN was never trained on such faults (only on whole sensors missing).
+   - At 75–100% the health check switches the sensor off and false alarms return to 8–9.
+2. **The hybrid is the best balanced model.** It catches significantly more than XGBoost (+2.1 points) at the same false-alarm rate, and no scenario goes over 11 per hour. XGBoost appears to keep the CNN score in check when the CNN alone would alarm.
+3. **Fault training (Phase A3) was not applied to the CNN or the hybrid.** Training the CNN on flat bursts is the obvious fix for its false alarms. For reference, the main system (A3 classic + TDA, fault-trained, per-set thresholds) caught 63.5% at 7.1 in Phase C; the hybrid reaches 63.3% at 7.4 without fault training.
+
+**Figure 31** shows seizures caught and false alarms per fault type for the three models.
+
 ---
 
 ## Timeline (model in 1 week)
