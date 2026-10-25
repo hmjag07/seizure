@@ -107,7 +107,7 @@ def main():
     cnn_nets = []
     for k in range(N_FOLDS):
         net = cs.SpecNet().to(cs.DEVICE)
-        net.load_state_dict(torch.load(cs.MODELS / f"cnn_spec_fold{k}.pt"))
+        net.load_state_dict(torch.load(cs.MODELS / f"cnn_spec{cs.TAG}_fold{k}.pt"))
         net.eval()
         cnn_nets.append(net)
     from seizure.models.phase_a import load_all
@@ -218,10 +218,10 @@ def main():
                 f"{r['model']} {r['sensitivity']:.3f}/{r['fa_per_h']:.1f}" for r in rows[-len(p):]), flush=True)
         print(f"{fault} {sev}: {len(five)} sets, {len(thr_cache)} threshold sets, {time.time() - t0:.0f} s, "
               f"total {time.time() - t_start:.0f} s", flush=True)
-        pd.DataFrame(rows).round(4).to_csv(TABLES / "cnn_faults.csv", index=False)
-        pd.DataFrame(patients).to_csv(TABLES / "cnn_faults_per_patient.csv", index=False)
+        pd.DataFrame(rows).round(4).to_csv(TABLES / f"cnn_faults{cs.TAG}.csv", index=False)
+        pd.DataFrame(patients).to_csv(TABLES / f"cnn_faults{cs.TAG}_per_patient.csv", index=False)
     res = pd.DataFrame(rows).round(4)
-    res.to_csv(TABLES / "cnn_faults.csv", index=False)
+    res.to_csv(TABLES / f"cnn_faults{cs.TAG}.csv", index=False)
     pd.set_option("display.width", 200)
     print(res.groupby(["model", "fault", "severity"])[["sensitivity", "fa_per_h"]].mean().round(3)
           .unstack("model").to_string())
@@ -231,7 +231,7 @@ def main():
 
 def stats(n_boot=2000, seed_=42):
     """Patient bootstrap over all 72 scenarios: CNN and hybrid against XGBoost, seizures caught and false alarms."""
-    r = pd.read_csv(TABLES / "cnn_faults_per_patient.csv")
+    r = pd.read_csv(TABLES / f"cnn_faults{cs.TAG}_per_patient.csv")
     g = r.groupby(["model", "subject"])[["detected", "seizures", "false_alarms", "hours"]].sum()
     people = sorted(r.subject.unique())
     boot = np.random.default_rng(seed_).integers(0, len(people), (n_boot, len(people)))
@@ -251,7 +251,7 @@ def stats(n_boot=2000, seed_=42):
                         fa_diff=a[:, 2].sum() / a[:, 3].sum() - base[:, 2].sum() / base[:, 3].sum(),
                         fa_lo=np.percentile(df, 2.5), fa_hi=np.percentile(df, 97.5)))
     res = pd.DataFrame(out).round(4)
-    res.to_csv(TABLES / "cnn_faults_stats.csv", index=False)
+    res.to_csv(TABLES / f"cnn_faults{cs.TAG}_stats.csv", index=False)
     print(res.to_string(index=False))
 
 

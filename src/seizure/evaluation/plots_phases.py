@@ -519,9 +519,39 @@ def fig_spec_faults():
     save(fig, "31_spectrogram_cnn_faults")
 
 
+def fig_spec_fault_training():
+    """32: the spectrogram CNN before (B4) and after (B5) fault training, under injected faults."""
+    before, after = pd.read_csv(TABLES / "cnn_faults.csv"), pd.read_csv(TABLES / "cnn_faultsf.csv")
+    lines = ((after, "xgboost", TDA_C, ":", "XGBoost, classic + TDA"),
+             (after, "hybrid", TDA_C, "-", "Hybrid (fault-trained CNN score)"),
+             (before, "cnn", SHAPE_C, ":", "Spectrogram CNN, no fault training (B4)"),
+             (after, "cnn", SHAPE_C, "-", "Spectrogram CNN, fault training (B5)"))
+    fig, axes = plt.subplots(2, 3, figsize=(13, 7.2), sharex=True)
+    for col, fault in enumerate(("pop", "decline", "dropout")):
+        for r, m, color, style, name in lines:
+            g = r[(r.fault == fault) & (r.model == m)].groupby("severity")[["sensitivity", "fa_per_h"]].mean()
+            axes[0, col].plot(g.index, g.sensitivity, ls=style, color=color, marker="o", ms=5, label=name)
+            axes[1, col].plot(g.index, g.fa_per_h, ls=style, color=color, marker="o", ms=5, label=name)
+        axes[0, col].set_title(FAULT_NAMES[fault], fontsize=11)
+        axes[0, col].set_ylim(0.4, 0.8)
+        axes[0, col].yaxis.set_major_formatter(PCT)
+        axes[1, col].axhline(FA_BUDGET, color=INK2, ls="--", lw=1)
+        axes[1, col].set_ylim(0, 20)
+        axes[1, col].set_xticks([0.25, 0.5, 0.75, 1.0], ["25%", "50%", "75%", "100%"])
+        axes[1, col].set_xlabel("Fault severity")
+    axes[0, 0].set_ylabel("Seizures caught")
+    axes[1, 0].set_ylabel("False alarms per hour")
+    axes[1, 0].text(0.26, FA_BUDGET + 0.4, "budget 11/h", fontsize=8.5, color=INK2)
+    axes[0, 0].legend(loc="lower left", fontsize=8)
+    fig.suptitle("Fault training the spectrogram CNN (faults on 5 of 8 sensors, health check, SeizeIT2)",
+                 x=0.01, ha="left", fontsize=13, fontweight="bold")
+    fig.tight_layout()
+    save(fig, "32_spectrogram_cnn_fault_training")
+
+
 def main():
     for f in (fig_health, fig_a1, fig_a2, fig_a3, fig_b1, fig_b2, fig_ablation, fig_timing, fig_real_faults,
-              fig_d_dead, fig_d_faults, fig_d_stats, fig_d_health, fig_spec, fig_spec_faults):
+              fig_d_dead, fig_d_faults, fig_d_stats, fig_d_health, fig_spec, fig_spec_faults, fig_spec_fault_training):
         f()
         print(f.__name__, "done", flush=True)
 

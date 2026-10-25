@@ -29,6 +29,7 @@ Same rows, labels and patient-grouped folds as the XGBoost models; thresholds ch
 <= 8 false alarms per hour, per set of dead sensors (sensor-aware); judged at 11. Writes
 results/tables/cnn_spec_*.csv and hybrid_*.csv.
 """
+import os
 import sys
 import time
 
@@ -52,6 +53,80 @@ STFT = {"EEG1": (64, 16), "EEG2": (64, 16), "ECG": (128, 64), "EMG": (64, 16 * 2
 HISTORY, LOSS_STEPS = 90, 30
 SEQ_BATCH, STEPS, LR = 24, 4000, 1e-3
 MODELS = ROOT / "cache" / "models"
+# CNN_TAG=f: fault training (Phase B5). Models and tables get the tag; the XGBoost reference has no CNN, so it is
+# shared between the two runs.
+TAG = os.environ.get("CNN_TAG", "")
+FAULT_TRAIN = TAG == "f"
+FAULT_SHARE = 0.4  # share of training sequences with an injected fault (on top of sensor dropout)
+FAULT_MAX_SENSORS = 5
+RAMP_S, POP_RATE, POP_SIZE, POP_DECAY, BURST = 300, 6, 20, (0.3, 2.0), (0.5, 5.0)  # as faults/inject.py
+MAX_EVENTS = 48
+
+
+def sample_faults(B, rng, avail):
+    """Per training sequence and sensor: fault type (0 none, 1 pop, 2 decline, 3 dropout), severity in
+    [0.25, 1], onset as a fraction of the sequence span, and random draws for pops and flat bursts.
+    The fault is applied in absolute buffer positions, so every overlapping window of a sequence sees the
+    same fault (faults/inject.py rules; scale 1, since the cached signals are normalised per patient)."""
+    kind = np.zeros((B, len(SIGNALS)), np.int64)
+    for b in np.flatnonzero(rng.random(B) < FAULT_SHARE):
+        ok = np.flatnonzero(avail[b])
+        if len(ok) == 0:
+            continue
+        chosen = rng.choice(ok, min(len(ok), rng.integers(1, FAULT_MAX_SENSORS + 1)), replace=False)
+        kind[b, chosen] = rng.integers(1, 4)
+    return dict(kind=kind, sev=rng.uniform(0.25, 1.0, (B, len(SIGNALS))),
+                onset=rng.uniform(0.0, 1.0, (B, len(SIGNALS))),  # 0 = start of the sequence's span, 1 = its end
+                ev_pos=rng.random((B, len(SIGNALS), MAX_EVENTS)), ev_a=rng.random((B, len(SIGNALS), MAX_EVENTS)),
+                ev_b=rng.random((B, len(SIGNALS), MAX_EVENTS)), sign=rng.choice([-1.0, 1.0], (B, len(SIGNALS), MAX_EVENTS)))
+
+
+def apply_fault(w, pos, j, fs, f, seq, span0, span1):
+    """Damage windows w (n, L) of sensor j in place-free fashion. pos: (n, L) absolute buffer positions;
+    seq: (n,) sequence of each window; span0/span1: (B,) first and last buffer position of each sequence."""
+    sel = torch.nonzero(f["kind"][seq, j] > 0).squeeze(1)
+    if len(sel) == 0:
+        return w
+    full, w, pos, seq = w, w[sel], pos[sel], seq[sel]  # only the windows with a fault on this sensor
+    kind = f["kind"][seq, j]
+    sev = f["sev"][seq, j][:, None]
+    # onset anywhere from RAMP_S before the sequence to its end, so a decline can be at any stage of its ramp
+    s0, s1 = span0[seq].float(), span1[seq].float()
+    onset = (s1 - f["onset"][seq, j] * (s1 - s0 + RAMP_S * fs))[:, None]
+    after = pos.float() >= onset
+    out = w.clone()
+    # decline: shrink to (1 - level) and add noise of size level; level ramps to sev over RAMP_S
+    lvl = sev * torch.clamp((pos.float() - onset) / (RAMP_S * fs), 0, 1) * after
+    dec = w * (1 - lvl) + torch.randn_like(w) * lvl
+    out = torch.where((kind == 2)[:, None], dec, out)
+    first = torch.maximum(onset[:, 0], s0)  # pops and bursts are only placed inside the sequence's span
+    after_len = s1 - first
+    p = pos.float()
+    # pops: steps of up to POP_SIZE x sev, decaying over 0.3-2 s, at about sev x 6 per minute after the onset
+    n_pop = torch.clamp(torch.ceil(sev[:, 0] * POP_RATE * after_len / fs / 60), 0, MAX_EVENTS)
+    # dropout: flat bursts of 0.5-5 s (mean 2.75 s) covering about sev of the time after the onset
+    n_burst = torch.clamp(torch.ceil(sev[:, 0] * after_len / (2.75 * fs)), 0, MAX_EVENTS)
+    add = torch.zeros_like(w)
+    flat = (sev >= 1.0) & after  # sev = 1: flat from the onset (a dead sensor)
+    n_events = int(torch.max(torch.where(kind == 1, n_pop, torch.where(kind == 3, n_burst, torch.zeros_like(n_pop)))))
+    for e in range(n_events):  # one event at a time keeps memory at (windows x samples)
+        at = first + f["ev_pos"][seq, j, e] * after_len
+        d = p - at[:, None]
+        is_pop = ((kind == 1) & (e < n_pop))[:, None]
+        if is_pop.any():
+            size = sev[:, 0] * POP_SIZE * f["sign"][seq, j, e] * (0.5 + 0.5 * f["ev_a"][seq, j, e])
+            tau = (POP_DECAY[0] + (POP_DECAY[1] - POP_DECAY[0]) * f["ev_b"][seq, j, e]) * fs
+            add = add + torch.where(is_pop & (d >= 0), size[:, None] * torch.exp(-torch.clamp(d, min=0) / tau[:, None]),
+                                    torch.zeros_like(w))
+        is_burst = ((kind == 3) & (e < n_burst))[:, None]
+        if is_burst.any():
+            b_len = (BURST[0] + (BURST[1] - BURST[0]) * f["ev_a"][seq, j, e]) * fs
+            flat = flat | (is_burst & (d >= 0) & (d < b_len[:, None]))
+    out = torch.where((kind == 1)[:, None], w + add, out)
+    out = torch.where((kind == 3)[:, None] & flat & after, torch.zeros_like(w), out)
+    full = full.clone()
+    full[sel] = torch.clamp(out, -20, 20)
+    return full
 
 
 class GpuWindows:
@@ -69,8 +144,9 @@ class GpuWindows:
         idx = np.arange(len(r))[:, None] - np.arange(HISTORY - 1, -1, -1)[None, :]
         self.hist = torch.from_numpy(np.maximum(idx, seg_start[:, None])).to(DEVICE)  # (rows, HISTORY)
 
-    def spectra(self, rows, dead):
-        """rows: (n,) GPU long tensor; dead: (n, 8) GPU bool. {group: (n, channels, freq, time)}, flags."""
+    def spectra(self, rows, dead, faults=None, seq=None, B=None):
+        """rows: (n,) GPU long tensor; dead: (n, 8) GPU bool. {group: (n, channels, freq, time)}, flags.
+        faults: optional sample_faults() output (as GPU tensors) with seq, the sequence of each row (training)."""
         avail = (self.start[rows] >= 0) & ~dead
         out = {}
         for g, sensors in GROUPS.items():
@@ -78,7 +154,18 @@ class GpuWindows:
             for s in sensors:
                 j, L = SIGNALS.index(s), SECONDS[s] * FS[s]
                 st = torch.where(avail[:, j], self.start[rows, j], torch.zeros_like(rows))
-                w = self.sig[s][st[:, None] + torch.arange(L, device=DEVICE)].float()
+                pos = st[:, None] + torch.arange(L, device=DEVICE)
+                w = self.sig[s][pos].float()
+                if faults is not None:
+                    # span of each sequence in this sensor's buffer: first window start to last window end
+                    # (only windows where the sensor works; others read position 0 and are masked out anyway)
+                    big = torch.full_like(st, 2 ** 62)
+                    s0 = torch.full((B,), 2 ** 62, dtype=torch.long, device=DEVICE).scatter_reduce(
+                        0, seq, torch.where(avail[:, j], st, big), "amin")
+                    s1 = torch.zeros(B, dtype=torch.long, device=DEVICE).scatter_reduce(
+                        0, seq, torch.where(avail[:, j], st + L, torch.zeros_like(st)), "amax")
+                    s0 = torch.minimum(s0, s1)  # sequences where the sensor never works: empty span
+                    w = apply_fault(w, pos, j, FS[s], faults, seq, s0, s1)
                 n_fft, hop = STFT[s]
                 spec = torch.stft(w, n_fft, hop, window=torch.hann_window(n_fft, device=DEVICE), center=False,
                                   return_complex=True).abs().pow(2)
@@ -134,10 +221,17 @@ def train_net(W, train_rows, seed, steps=STEPS, tag=""):
         half = SEQ_BATCH // 2
         ends = np.concatenate([rng.choice(pos, half), rng.choice(train_rows, SEQ_BATCH - half)])
         rows = W.hist[torch.from_numpy(ends).to(DEVICE)]  # (B, HISTORY)
-        dead = torch.from_numpy(random_dead(SEQ_BATCH, rng)).to(DEVICE)  # one dead set per sequence
+        dead_np = random_dead(SEQ_BATCH, rng)
+        dead = torch.from_numpy(dead_np).to(DEVICE)  # one dead set per sequence
         flat = rows.reshape(-1)
+        kw = {}
+        if FAULT_TRAIN:
+            f = sample_faults(SEQ_BATCH, rng, ~dead_np)
+            kw = dict(faults={k: torch.from_numpy(v).to(DEVICE) if k == "kind" else
+                              torch.from_numpy(v).float().to(DEVICE) for k, v in f.items()},
+                      seq=torch.arange(SEQ_BATCH, device=DEVICE).repeat_interleave(HISTORY), B=SEQ_BATCH)
         with torch.autocast(DEVICE, dtype=torch.float16, enabled=DEVICE == "cuda"):
-            spectra, flags = W.spectra(flat, dead.repeat_interleave(HISTORY, 0))
+            spectra, flags = W.spectra(flat, dead.repeat_interleave(HISTORY, 0), **kw)
             z = net.summarise(spectra, flags).reshape(SEQ_BATCH, HISTORY, -1)
             logits = net.sequence(z.float())[:, -LOSS_STEPS:]
         loss = loss_fn(logits.float(), label[rows[:, -LOSS_STEPS:]])
@@ -199,7 +293,7 @@ def cv():
     print(f"{len(W.rows)} rows on {DEVICE}, {time.time() - t_start:.0f} s", flush=True)
     nets = []
     for k in range(N_FOLDS):
-        path = MODELS / f"cnn_spec_fold{k}.pt"
+        path = MODELS / f"cnn_spec{TAG}_fold{k}.pt"
         if path.exists():
             net = SpecNet().to(DEVICE)
             net.load_state_dict(torch.load(path))
@@ -224,10 +318,10 @@ def cv():
                         eeg_alive=not EEG <= set(combo), sensitivity=sens, fa_per_h=fa, folds_over_budget=over,
                         **(window_scores(W.label, prob) if not combo else {})))
         if not combo:
-            meta.assign(fold=W.fold, cnn_spec=prob).to_parquet(ROOT / "cache" / "predictions" / "cnn_spec_oof.parquet")
+            meta.assign(fold=W.fold, cnn_spec=prob).to_parquet(ROOT / "cache" / "predictions" / f"cnn_spec{TAG}_oof.parquet")
             print(res[-1], flush=True)
     out = pd.DataFrame(res).round(4)
-    out.to_csv(TABLES / "cnn_spec_dead_sensors.csv", index=False)
+    out.to_csv(TABLES / f"cnn_spec{TAG}_dead_sensors.csv", index=False)
     print(out[out.eeg_alive].groupby("dead")[["sensitivity", "fa_per_h"]].mean().round(3).to_string())
     print(f"done in {time.time() - t_start:.0f} s")
 
@@ -265,7 +359,7 @@ def prepare_hybrid():
         halves = (others[:2], others[2:])
         nets = []
         for h, half in enumerate(halves):
-            path = MODELS / f"cnn_spec_inner{k}{h}.pt"
+            path = MODELS / f"cnn_spec{TAG}_inner{k}{h}.pt"
             if path.exists():
                 net = SpecNet().to(DEVICE)
                 net.load_state_dict(torch.load(path))
@@ -292,16 +386,15 @@ def prepare_hybrid():
         X_copy[np.ix_(dead_copy[:, j], idx)] = np.nan
     models = {"xgboost": [], "hybrid": []}
     for k in range(N_FOLDS):
-        paths = {name: MODELS / f"{name}_spec_fold{k}.json" for name in models}
-        if all(q.exists() for q in paths.values()):
-            for name in models:
-                m = XGBClassifier()
-                m.load_model(paths[name])
-                models[name].append(m)
-            continue
+        paths = {name: MODELS / f"{name}_spec{TAG if name == 'hybrid' else ''}_fold{k}.json" for name in models}
         tr = W.fold != k
         y = np.concatenate([y_all[tr], y_all[tr]])
         for name in models:
+            if paths[name].exists():
+                m = XGBClassifier()
+                m.load_model(paths[name])
+                models[name].append(m)
+                continue
             X = np.concatenate([X_clean[tr], X_copy[tr]])
             cols = list(fc)
             if name == "hybrid":
@@ -360,10 +453,10 @@ def hybrid():
             rank = [c for c, _ in top].index("cnn_score") + 1 if "cnn_score" in gain else None
             print(f"cnn_score gain rank in fold 0: {rank} of {len(top)}", flush=True)
         if ci % 10 == 0:
-            pd.DataFrame(res).round(4).to_csv(TABLES / "hybrid_dead_sensors.csv", index=False)
+            pd.DataFrame(res).round(4).to_csv(TABLES / f"hybrid{TAG}_dead_sensors.csv", index=False)
             print(f"combination {ci + 1}/{len(combos)}, {time.time() - t_start:.0f} s", flush=True)
     out = pd.DataFrame(res).round(4)
-    out.to_csv(TABLES / "hybrid_dead_sensors.csv", index=False)
+    out.to_csv(TABLES / f"hybrid{TAG}_dead_sensors.csv", index=False)
     print(out[out.eeg_alive].groupby(["model", "dead"])[["sensitivity", "fa_per_h"]].mean().round(3)
           .unstack("model").to_string())
     print(f"done in {time.time() - t_start:.0f} s")
@@ -392,7 +485,7 @@ def stats():
     cnn_nets = []
     for k in range(N_FOLDS):
         net = SpecNet().to(DEVICE)
-        net.load_state_dict(torch.load(MODELS / f"cnn_spec_fold{k}.pt"))
+        net.load_state_dict(torch.load(MODELS / f"cnn_spec{TAG}_fold{k}.pt"))
         net.eval()
         cnn_nets.append(net)
     rows = []
@@ -409,7 +502,7 @@ def stats():
                           seizures=n, false_alarms=f, hours=h) for s, d, n, f, h in per_patient(W, prob)]
         print(f"{' '.join(combo) or 'clean'}: {time.time() - t_start:.0f} s", flush=True)
     r = pd.DataFrame(rows)
-    r.to_csv(TABLES / "cnn_spec_per_patient.csv", index=False)
+    r.to_csv(TABLES / f"cnn_spec{TAG}_per_patient.csv", index=False)
     g = r.groupby(["model", "dead", "subject"])[["detected", "seizures", "false_alarms", "hours"]].sum()
     people = sorted(r.subject.unique())
     boot = np.random.default_rng(SEED).integers(0, len(people), (N_BOOT, len(people)))
@@ -427,7 +520,7 @@ def stats():
                             lo=np.percentile(diff, 2.5) * 100, hi=np.percentile(diff, 97.5) * 100,
                             p_not_better=float((diff <= 0).mean())))
     res = pd.DataFrame(out).round(4)
-    res.to_csv(TABLES / "cnn_spec_stats.csv", index=False)
+    res.to_csv(TABLES / f"cnn_spec{TAG}_stats.csv", index=False)
     pd.set_option("display.width", 200)
     print(res.to_string(index=False))
 

@@ -1906,6 +1906,60 @@ In the hybrid, the CNN score is the single most useful of the 264 features (larg
 
 **Figure 31** shows seizures caught and false alarms per fault type for the three models.
 
+### B5: fault training for the spectrogram CNN (`CNN_TAG=f python -m seizure.models.cnn_spec cv|hybrid|stats`, then `cnn_faults`)
+
+**Why.** The CNN over-alarmed on mild dropout because it had never seen faults during training (B4).
+
+**How.** On top of the sensor dropout, 40% of training sequences get a fault on 1–5 working sensors:
+- type: pop, decline or dropout, chosen at random;
+- severity: uniform from 25% to 100%;
+- onset: anywhere from 5 minutes before the sequence to its end, so a decline can be at any stage of its 5-minute ramp.
+
+The faults follow the `faults/inject.py` rules on the normalised cached signal (scale 1):
+- **pops:** up to 20 × severity, decaying over 0.3–2 s, about severity × 6 per minute;
+- **decline:** the signal shrinks to (1 − level) and noise of size level is added, with the level ramping to the severity over 5 minutes;
+- **dropout:** flat bursts of 0.5–5 s covering about the severity's share of the time after the onset, or all of it at 100%.
+
+They are applied on the GPU in absolute sample positions, so the 90 overlapping windows of a sequence see the same fault (checked: overlapping windows agree exactly). Everything else is as in B3/B4: the 5 folds, the 10 inner networks for the hybrid (retrained with faults), and the shared XGBoost reference. Run time: 4 h, with the GPU at about 10 minutes per fold.
+
+**Results, before → after fault training:**
+
+| | Spectrogram CNN | Hybrid | XGBoost (unchanged) |
+|---|---|---|---|
+| Clean: caught (FA / h) | 68.8% (7.0) → **65.2% (6.4)** | 69.1% (7.5) → 68.0% (7.8) | 68.0% (7.5) |
+| Clean: AUROC / AUPR | 0.799 / 0.441 → 0.811 / 0.464 | 0.854 / 0.489 → 0.853 / 0.482 | 0.850 / 0.443 |
+| 5 of 8 dead | 63.2% → 63.4% | 61.5% → 62.0% | 57.9% |
+| Both EEG dead | 51.3% → 52.7% | 43.5% → 44.5% | 38.3% |
+| **Faults on 5 of 8: caught** | 67.7% → **66.1%** | 63.3% → 63.6% | 61.1% |
+| **Faults: FA / h (worst; scenarios over 11)** | 9.5 (22.8; 12 of 72) → **8.4 (12.0; 4 of 72)** | 7.4 (10.8; 0) → 7.3 (11.5; 2) | 7.5 (11.3; 2) |
+| Mild dropout (25%): FA / h | 17.8 → **9.8** | 7.2 → 6.7 | 6.5 |
+
+**Patient bootstrap against XGBoost, after fault training:**
+
+| Comparison | CNN | Hybrid |
+|---|---|---|
+| Faults on 5 of 8: caught | **+5.0 [1.7, 8.6], p = 0.002** | **+2.4 [0.7, 4.1], p = 0.004** |
+| Faults on 5 of 8: false alarms | +0.9 [−0.2, 2.0] (no longer significant) | −0.2 [−0.8, 0.3] |
+| 5 of 8 dead: caught | **+5.6 [1.9, 9.8], p < 0.001** | **+4.2 [2.0, 6.5], p < 0.001** |
+| Clean: caught | −2.8 [−7.4, 1.7], not significant | 0.0 [−2.8, 2.2] |
+
+**What B5 shows:**
+1. **Fault training fixes most of the CNN's over-alarming:**
+   - mild-dropout false alarms fall from 17.8 to 9.8 per hour;
+   - scenarios over 11 fall from 12 to 4 (worst 12.0);
+   - the extra false alarms against XGBoost are no longer significant.
+2. **The cost is a few points on clean data** (68.8% → 65.2%, not significantly below XGBoost). The ranking improves (AUROC 0.80 → 0.81, AUPR 0.44 → 0.46), so the cost comes from where the alarm threshold falls rather than from weaker ranking.
+3. **The fault-trained CNN is still the most robust model:**
+   - faults: +5.0 points over XGBoost;
+   - dead sensors: +5.6 points;
+   - both EEG channels dead: 52.7% against 38.3%.
+4. **The hybrid stays the best-balanced choice:**
+   - clean: as good as XGBoost, with a better AUPR;
+   - dead sensors: +4.2 points;
+   - faults: +2.4 points, at the same false-alarm rate.
+
+**Figure 32** compares the CNN before and after fault training, with XGBoost and the hybrid.
+
 ---
 
 ## Timeline (model in 1 week)
