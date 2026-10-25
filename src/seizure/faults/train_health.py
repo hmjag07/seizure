@@ -47,14 +47,14 @@ def keep_series(keys, sample=SAMPLE):
     return np.array([zlib.crc32(k.encode()) % 1000 < sample * 1000 for k in keys])
 
 
-def patient_rows(sub, out=OUT, sample=SAMPLE):
+def patient_rows(sub, out=OUT, sample=SAMPLE, signals=SIGNALS):
     """Clean and faulty quality rows of one patient, with context features and labels."""
     # Two adjacent background chunks share their boundary second (once in the data: sub-055); keep one.
     q = (pd.read_parquet(out / f"{sub}_quality.parquet").sort_values(["run", "t"])
          .drop_duplicates(["run", "t"]))
     q["seg"] = ((q.t.diff() != 1) | (q.run != q.run.shift())).cumsum()
     clean = []
-    for s in SIGNALS:
+    for s in signals:
         cols = [f"{s}_{c}" for c in QUALITY]
         if cols[0] not in q:
             continue
@@ -87,9 +87,9 @@ def patient_rows(sub, out=OUT, sample=SAMPLE):
     return rows
 
 
-def features(df):
+def features(df, signals=SIGNALS):
     X = df[[*QUALITY, *CONTEXT]].copy()
-    for s in SIGNALS:
+    for s in signals:
         X[f"is_{s}"] = (df.sensor == s).astype("int8")
     return X
 

@@ -38,9 +38,9 @@ def raw_signal(raw, name):
     return np.linalg.norm(np.stack([raw["mov"][k][0] for k in keys]), axis=0)
 
 
-def quality_features(name, clean, raw_x, stats, fetch_t0, ends):
-    """Quality features of one sensor for the windows ending at ends."""
-    fs, L = pp.FS[name], WINDOW_S[name]
+def quality_features(name, clean, raw_x, stats, fetch_t0, ends, fs=None, length_s=None):
+    """Quality features of one sensor for the windows ending at ends (fs and window default to SeizeIT2's)."""
+    fs, L = fs or pp.FS[name], length_s or WINDOW_S[name]
     med, sd = stats.get(name, (0.0, 1.0))
     w = windows((clean - med) / sd, fs, L, fetch_t0, ends)
     r = windows(raw_x, fs, L, fetch_t0, ends)

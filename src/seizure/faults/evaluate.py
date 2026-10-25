@@ -57,9 +57,10 @@ def specific(sensor, generic_col):
 class Data:
     """Clean features (normalised + context), patient statistics, row positions and fold models."""
 
-    def __init__(self, raw=None, single=False):
+    def __init__(self, raw=None, single=False, group=None):
         """raw: feature table (default: the pilot patients). single: one group of patients scored by one
-        final model (the held-out test) instead of the 5 patient-grouped folds."""
+        final model (the held-out test) instead of the 5 patient-grouped folds. group: optional function
+        subject -> person, so recordings of one person share a fold (CHB-MIT: chb21 is chb01)."""
         raw = load() if raw is None else raw
         # Two adjacent background chunks share their boundary second (once: sub-055); keep one.
         raw = (raw.sort_values(["subject", "run", "t"]).drop_duplicates(["subject", "run", "t"])
@@ -70,7 +71,8 @@ class Data:
                     .groupby(raw.subject).median() * 1.4826).replace(0, np.nan)
         z = ((raw[self.base] - self.med.reindex(raw.subject).to_numpy()) / self.mad.reindex(raw.subject).to_numpy())
         self.df = pd.concat([raw[META], z.astype("float32")], axis=1)
-        self.df["fold"] = 0 if single else folds(self.df)
+        self.df["fold"] = 0 if single else folds(
+            self.df if group is None else self.df.assign(subject=self.df.subject.map(group)))
         self.seg = ((self.df.t.diff() != 1) | (self.df.subject != self.df.subject.shift())
                     | (self.df.run != self.df.run.shift())).cumsum().to_numpy()
         self.pos = pd.Series(np.arange(len(self.df)),
@@ -198,11 +200,11 @@ def load_condition(data, faults_dir, fault, sev):
     return f
 
 
-def assemble(data, f, sset):
+def assemble(data, f, sset, signals=SIGNALS):
     """Feature table with the sensors in sset faulty from their onset (normalised with the patient's clean
     statistics, context recomputed), and per sensor the rows whose window is truly failed."""
     X = data.df[data.cols].copy()
-    truly_failed = {s: np.zeros(len(X), bool) for s in SIGNALS}
+    truly_failed = {s: np.zeros(len(X), bool) for s in signals}
     for s in sset:
         fs_ = f[f.sensor == s]
         if fs_.empty:
@@ -256,14 +258,21 @@ def run_scenarios(data, faults_dir, conditions, sets, models, thresholds, featur
     return rows
 
 
-def health_flags(data, clean_q, f, sset, health, cache):
+def health_flags(data, clean_q, f, sset, health, cache, signals=SIGNALS):
     """Per sensor, rows the health check calls failed. Clean quality everywhere, faulty quality after
     the onset for sensors in sset; results for sensors without a fault are cached across scenarios."""
-    return {s: (sensor_flags(data, clean_q, f[f.sensor == s], s, health) if s in sset
-                else cache.setdefault(s, sensor_flags(data, clean_q, None, s, health))) for s in SIGNALS}
+    out = {}
+    for s in signals:
+        if s in sset:
+            out[s] = sensor_flags(data, clean_q, f[f.sensor == s], s, health, signals)
+        else:
+            if s not in cache:
+                cache[s] = sensor_flags(data, clean_q, None, s, health, signals)
+            out[s] = cache[s]
+    return out
 
 
-def sensor_flags(data, clean_q, fs_, s, health):
+def sensor_flags(data, clean_q, fs_, s, health, signals=SIGNALS):
     """Rows where the health check switches sensor s off: quality features (faulty after the onset if
     fs_ is given), health context, failed-probability per fold model, then smoothing + hysteresis with
     the fold's cut-off (faults/train_health.py)."""
@@ -276,7 +285,7 @@ def sensor_flags(data, clean_q, fs_, s, health):
     part["seg"] = data.seg
     part = add_health_context(part, "seg")
     part["sensor"] = s
-    Xh = health_features(part)
+    Xh = health_features(part, signals)
     p_failed = np.zeros(len(part))
     valid = part[list(QUALITY)].notna().all(axis=1).to_numpy()
     for k in range(N_FOLDS):
@@ -291,7 +300,7 @@ def sensor_flags(data, clean_q, fs_, s, health):
     return off & valid
 
 
-def predict(data, models, X, fc, th, dead_rows, sensor_aware=True):
+def predict(data, models, X, fc, th, dead_rows, sensor_aware=True, signals=SIGNALS):
     """Probabilities with dead sensors blanked per row, and the threshold for each row (the sensor-aware
     one for the row's dead sensors, or the fixed clean one if sensor_aware is False)."""
     prob = np.empty(len(X))
@@ -303,18 +312,18 @@ def predict(data, models, X, fc, th, dead_rows, sensor_aware=True):
             prob[sel] = m.predict_proba(Xk)[:, 1]
             thr[sel] = th.fixed[k]
             continue
-        dead = np.stack([dead_rows[s][sel] for s in SIGNALS], axis=1)
-        for j, s in enumerate(SIGNALS):
+        dead = np.stack([dead_rows[s][sel] for s in signals], axis=1)
+        for j, s in enumerate(signals):
             if dead[:, j].any():
                 Xk.loc[dead[:, j], th.by_sensor[s]] = np.nan
         prob[sel] = m.predict_proba(Xk)[:, 1]
         if not sensor_aware:
             thr[sel] = th.fixed[k]
             continue
-        code = dead.astype(int) @ (1 << np.arange(len(SIGNALS)))  # which sensors are dead, as 8 bits
+        code = dead.astype(np.int64) @ (np.int64(1) << np.arange(len(signals), dtype=np.int64))  # dead set as bits
         thr_k = np.empty(len(code))
         for c in np.unique(code):
-            dead_set = frozenset(s for j, s in enumerate(SIGNALS) if c >> j & 1)
+            dead_set = frozenset(s for j, s in enumerate(signals) if c >> j & 1)
             thr_k[code == c] = th.for_set(dead_set)[k]
         thr[sel] = thr_k
     return prob, thr

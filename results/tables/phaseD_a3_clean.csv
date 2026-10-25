@@ -1,0 +1,4 @@
+training,model,sensitivity,fa_per_h,folds_over_budget,auroc,aupr
+A3,classic,0.8077,7.5836,0,0.8849,0.6604
+A3,classic+TDA,0.859,7.7885,1,0.8982,0.7041
+A3,classic+TDA+TDAB,0.8397,7.4042,1,0.8988,0.7023

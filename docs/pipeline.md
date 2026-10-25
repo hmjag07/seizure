@@ -1637,6 +1637,165 @@ The 25 chunks that nothing switches off are mostly gyroscopes at 0 while the acc
 
 ---
 
+## Phase D: CHB-MIT, the second dataset (2026-10-24/25)
+
+### D0: a dataset adapter ([`datasets.py`](../src/seizure/data/datasets.py), [`build_any.py`](../src/seizure/features/build_any.py))
+
+Everything after streaming only needs a few facts about a dataset, so they now sit behind one interface:
+- the signal names and their order;
+- each signal's sampling rate and window;
+- each signal's kind, which sets its classic features (EEG, ECG, EMG or motion);
+- the fetch plan;
+- per patient: headers, seizure times and normalisation statistics;
+- how to stream a chunk;
+- how to clean a chunk, leaving out broken signals;
+- how to clean one signal without the whole-chunk check (for injected faults);
+- which raw channels lie behind a signal (where faults are injected).
+
+`build_any.py` runs Steps 2–4 for any dataset through that interface, with the same seeds, fault types, onsets and labelling rules. The analysis code (`faults/evaluate.py`, `faults/train_health.py`) got an optional list of signals, which defaults to SeizeIT2's.
+
+The SeizeIT2 adapter wraps the original code unchanged. **Check:** run through the adapter, it reproduces the cached features of sub-004 exactly: 2,525 seconds × 93 features, largest difference 0 (`datasets.check_seizeit2`).
+
+### D0: CHB-MIT data ([`chbmit.py`](../src/seizure/data/chbmit.py))
+
+**The dataset.** PhysioNet `chbmit/1.0.0`, read from the public S3 bucket with the same HTTP range requests:
+- 686 files (983 h), 24 recordings, 23 people (chb21 is chb01 a year and a half later);
+- 256 Hz.
+
+**Channels.** The 18 bipolar channels of the double-banana montage are in 683 files. Three chb12 files use another montage; their 13 seizures are left out. One file name contains "+" and has to be URL-encoded.
+
+**Seizure times.** These come from `chbXX-summary.txt`: 198 seizures, 185 of them in files with all 18 channels.
+
+**Cleaning** is as for SeizeIT2's EEG: a causal 0.5–40 Hz band-pass, then a notch at **60 Hz** (US mains; SeizeIT2 is 50 Hz). A flat or pinned channel is left out.
+
+**Fetch plan** (SeizeIT2 rules, adapted to one-hour files):
+- at most 10 seizures per person (seed 42): **149 seizures**, 2.6 h of seizure;
+- seizure chunks: each seizure ±300 s, clipped to its file;
+- background chunks: 10 minutes long, taken only from seizure-free files whose neighbouring files are also seizure-free; 5× the seizure time, at least 3 per person.
+
+The plan has **235 chunks, 43.6 h, 150,026 seconds**. 156 seizures are scored, including 7 unused ones that fall inside chunks.
+
+**Why ±300 s instead of ±600 s.** TDA on 18 channels costs 174 ms per second of data (9.7 ms per channel). With ±600 s the fault build alone would need about 14 h on 6 cores, against 9 h with ±300 s. That is still far more than the 70 s the context features need.
+
+**TDA settings.** AMI/FNN on 3,600 background windows from 10 recordings, pooled over the 18 channels: **τ = 14 samples (55 ms), m = 4**. SeizeIT2's wearable EEG gave τ = 6–7 and m = 5.
+
+**Features per second:** 7 classic and 7 TDA-A features per channel, giving 252 base features. With context, that is **432 columns for classic** and **774 for classic + TDA**. Adding the 9 TDA-B network features (the 18 channels as nodes, Phase B1) gives 783.
+
+### D1 + D2: clean data and dead channels ([`phase_d.py`](../src/seizure/models/phase_d.py))
+
+**Same system as SeizeIT2:**
+- patient-grouped 5 folds (grouped by person, so chb01 and chb21 share a fold);
+- sensor-dropout training: the copy of each row loses a random 1–13 of the 18 channels (6–72%; SeizeIT2: 1–6 of 8), with TDA-B recomputed without them;
+- thresholds chosen at ≤ 8 false alarms/h on the other folds, judged at 11.
+
+**One rule had to change.** A threshold per set of dead sensors (256 sets for SeizeIT2) does not scale to 262,144 sets. Instead, the threshold depends on **how many** channels are dead:
+```
+threshold(fold f, k dead) = best threshold at ≤ 8 FA/h on the other folds' out-of-fold predictions,
+                            with a random k channels blanked in every second (seed 1000 + k)
+```
+This count-aware threshold is also what a deployed monitor could use. The test sets are 8 different random channel sets per level k = 1…17, seeded separately.
+
+**Clean data:**
+
+| Model | Caught | FA / h | AUROC | AUPR |
+|---|---|---|---|---|
+| Classic | 80.8% | 7.5 | 0.880 | 0.667 |
+| Classic + TDA | 84.6% | 7.3 | 0.898 | 0.713 |
+| Classic + TDA + TDA-B | **87.8%** | 7.8 | 0.897 | 0.709 |
+
+**Dead channels**, count-aware threshold (mean over the 8 sets per level; drop is against the model's own clean result):
+
+| Channels dead | Classic | Classic + TDA | + TDA-B |
+|---|---|---|---|
+| 5 | 80.4% | 83.3% | 83.4% |
+| 8 | 77.4% | 80.2% | 80.1% |
+| **11 (60%)** | **74.3% (drop 6.5, worst 9.0)** | **78.3% (drop 6.3, worst 10.9)** | **77.4% (drop 10.4, worst 16.0)** |
+| 14 | 69.4% | 73.4% | 71.5% |
+
+Within the 15-point target at 11 dead: all 8 sets for classic and classic + TDA, 7 of 8 for + TDA-B. False alarms average 4.8–8.4 per hour at every level (single sets 0.4–11.9). **With one fixed threshold they climb to 48 per hour at 11 dead channels**, the same over-alarming SeizeIT2 showed before the sensor-aware threshold.
+
+### D3: health check ([`phase_d.py`](../src/seizure/models/phase_d.py) `health`)
+
+**Fault build.** As for SeizeIT2: 3 faults × 4 severities × 18 channels, from seeded onsets, with window-level labels. That gives 20 million faulty rows, about 9 h on 6 cores.
+
+**Training.** The health check was retrained on 10% of whole series per recording: 2.2 million rows, quality features plus context, 5 folds. The cut-off chosen on the other folds was 0.55 in every fold.
+
+**Results:**
+- failed windows switched off: **78.8%**;
+- degraded windows switched off: 19.2%;
+- channels with no fault switched off: **0.02%** (maximum 0.26%);
+- unharmed windows of faulty channels switched off: 18.6% (between pops, or within the 30 s hysteresis).
+
+**Faulty seconds flagged:**
+- declines: 92–96%;
+- dropouts: 52–100%, rising with severity;
+- pops: 27–51%, because single brief steps are hard to see.
+
+### D4: injected faults on 11 of 18 channels (`faults`)
+
+**Models.** Fault training (A3) as for SeizeIT2: the dropout copy plus 5% of the post-onset seconds of each fault condition, on a random 1–11 channels, with truly failed windows blanked.
+
+**Scenarios.** 12 conditions × (6 random sets of 11 channels + 3 single channels).
+
+**Two ways of scoring:**
+- **A**: no health check, fixed threshold;
+- **B**: health check, then a count-aware threshold for the number of channels it switched off.
+
+**TDA-B under faults.** The faulty channels' activities are recomputed from the cached 64 Hz cleaned signal, with the same fault, severity and onset. Pop and flat-burst positions are drawn for 64 Hz, so this is an approximation of the raw injection behind the other features.
+
+**Clean results of the fault-trained models:**
+- classic 80.8% at 7.6 FA/h;
+- classic + TDA 85.9% at 7.8;
+- + TDA-B 84.0% at 7.4.
+
+**Faults on 11 of 18 channels with the health check** (mean over 72 condition × set scenarios):
+
+| Model | Caught | Mean drop | Worst drop | Scenarios within 15 points | FA / h (max) |
+|---|---|---|---|---|---|
+| Classic | 76.9% | 3.9 | 10.9 | 72 of 72 | 7.2 (9.1) |
+| **Classic + TDA** | **81.5%** | 4.4 | 12.2 | 72 of 72 | 7.7 (9.7) |
+| Classic + TDA + TDA-B | 80.4% | 3.5 | 12.2 | 72 of 72 | 7.4 (9.4) |
+| Classic + TDA, dropout training only (A1) | 80.8% | | 11.5 | 72 of 72 | 7.6 (9.9) |
+
+- **Without the health check**, classic + TDA falls to 51.6% at 100% dropout. The health check keeps it at 79.2%.
+- **Pops and declines** barely matter, with or without the health check.
+
+### Statistics: patient bootstrap (`stats`)
+
+2,000 resamples of the 23 people, as in Phase C1. The difference is in points of seizures caught; p is one-sided, the share of resamples in which the addition is not better.
+
+| Comparison | Clean | 11 channels dead | Faults on 11 of 18 + health check |
+|---|---|---|---|
+| TDA added to classic | **+3.8 [0.7, 7.9], p = 0.010** | **+4.0 [0.5, 8.2], p = 0.014** | **+4.6 [1.8, 7.7], p < 0.001** |
+| TDA-B added to classic + TDA | +3.2 [0.0, 6.8], p = 0.035 | −0.9 [−3.0, 1.0], p = 0.78 | −1.1 [−2.5, 0.2], p = 0.88 |
+| Fault training (A3 vs A1, classic + TDA) | | | +0.7 [−0.2, 1.8], p = 0.08 |
+
+### What Phase D shows
+
+1. **The system transfers to a different dataset unchanged** (hospital scalp EEG, children, 18 channels). The adapter reproduces SeizeIT2 exactly, and on CHB-MIT every robustness target is met:
+   - 60% of channels dead: mean drops of 6–10 points; every set within 15 points for classic and classic + TDA (7 of 8 for + TDA-B);
+   - faults on 60% of channels with the health check: 72 of 72 scenarios within 15 points;
+   - average false alarms within budget in every scenario.
+2. **TDA-A helps on CHB-MIT in every condition**, by +3.8 to +4.6 points with intervals above zero. That includes clean data, where SeizeIT2 showed no gain. Scalp EEG with 18 channels carries more rhythmic structure than two behind-the-ear channels.
+3. **TDA-B is the first sign that the network idea works:** +3.2 points on clean data. The interval only just touches zero (lower bound 0.0, p = 0.035), so this is suggestive, not conclusive. But it **does not survive sensor loss**: once channels die or are switched off, the network has fewer nodes and the gain disappears (−0.9 and −1.1, not significant). On SeizeIT2 it never helped (Phase B1).
+4. **The count-aware threshold** replaces SeizeIT2's per-set threshold and scales to any number of channels. Without it, false alarms reach 48 per hour.
+5. **Fault training adds little on CHB-MIT** (+0.7, not significant). Dropout training plus the health check already covers these faults.
+
+**Limits:**
+- Cross-validation only: CHB-MIT has no held-out set in this project.
+- 23 people give folds of 4–5 people, so one fold's false-alarm rate is often above 11 per hour (1 of 5 folds in the clean results), while the total stays at 7–8.
+- ±300 s seizure context (compute).
+- TDA-B under injected faults is approximated from the 64 Hz signal.
+- chb12's three differently wired files are left out.
+
+### Figures 26–29 ([`plots_phases.py`](../src/seizure/evaluation/plots_phases.py))
+- 26: dead channels (seizures caught, and false alarms with a fixed vs a count-aware threshold);
+- 27: injected faults on 11 of 18 channels;
+- 28: bootstrap differences for TDA and TDA-B;
+- 29: the CHB-MIT health check.
+
+---
+
 ## Timeline (model in 1 week)
 
 | Day | Work |

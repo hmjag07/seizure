@@ -331,8 +331,144 @@ def fig_real_faults():
     save(fig, "25_c4_real_faults")
 
 
+D_MODELS = (("classic", CLASSIC_C, "Classic"), ("classic+TDA", TDA_C, "Classic + TDA"),
+            ("classic+TDA+TDAB", SHAPE_C, "Classic + TDA + TDA-B (network)"))
+
+
+def fig_d_dead():
+    """26: CHB-MIT, seizures caught and false alarms as channels die."""
+    d = pd.read_csv(TABLES / "phaseD_dead_channels.csv")
+    fig, axes = plt.subplots(1, 2, figsize=(13, 4.8), gridspec_kw=dict(width_ratios=[1.4, 1]))
+    ax = axes[0]
+    for m, color, name in D_MODELS:
+        g = d[(d.model == m) & (d.rule == "count-aware")].groupby("dead").sensitivity.mean()
+        ax.plot(g.index, g.values, marker="o", ms=5, color=color, label=name)
+    clean = d[(d.model == "classic+TDA") & (d.dead == 0)].sensitivity.iloc[0]
+    ax.axhline(clean - 0.15, color=INK2, ls="--", lw=1)
+    ax.text(0.2, clean - 0.15 + 0.012, "target: at most 15 points below clean (classic + TDA)", fontsize=8.5,
+            color=INK2)
+    ax.axvline(11, color=MUTED, lw=1, ls=":")
+    ax.text(11.15, 0.05, "11 of 18 dead (60%)", fontsize=8.5, color=INK2)
+    ax.set_xticks(range(0, 18, 2))
+    ax.set_xlabel("Channels dead (out of 18)")
+    ax.set_ylim(0, 1)
+    ax.yaxis.set_major_formatter(PCT)
+    ax.set_ylabel("Seizures caught")
+    ax.set_title("Seizures caught (count-aware threshold)", fontsize=11)
+    ax.legend(loc="lower left", fontsize=8.5)
+    ax = axes[1]
+    for rule, style in (("fixed", ":"), ("count-aware", "-")):
+        g = d[(d.model == "classic+TDA") & (d.rule == rule)].groupby("dead").fa_per_h.mean()
+        ax.plot(g.index, g.values, ls=style, marker="o", ms=4, color=TDA_C,
+                label=f"{'one fixed threshold' if rule == 'fixed' else 'threshold by number of dead channels'}")
+    ax.axhline(FA_BUDGET, color=INK2, ls="--", lw=1)
+    ax.text(0.2, FA_BUDGET + 1, "budget 11/h", fontsize=8.5, color=INK2)
+    ax.set_xticks(range(0, 18, 2))
+    ax.set_xlabel("Channels dead (out of 18)")
+    ax.set_ylabel("False alarms per hour")
+    ax.set_title("False alarms, classic + TDA", fontsize=11)
+    ax.legend(loc="upper left", fontsize=8.5)
+    fig.suptitle("CHB-MIT: dead channels (23 people, sensor-dropout training, 8 random sets per level)",
+                 x=0.01, ha="left", fontsize=13, fontweight="bold")
+    fig.tight_layout()
+    save(fig, "26_d_dead_channels")
+
+
+def fig_d_faults():
+    """27: CHB-MIT, injected faults on 11 of 18 channels."""
+    f = pd.read_csv(TABLES / "phaseD_faults.csv")
+    clean = pd.read_csv(TABLES / "phaseD_a3_clean.csv").set_index("model").sensitivity
+    f = f[(f.n_channels == 11) & (f.training == "A3")]
+    fig, axes = plt.subplots(1, 3, figsize=(13, 4.6), sharey=True)
+    for ax, fault in zip(axes, ("pop", "decline", "dropout")):
+        for m, color, name in D_MODELS:
+            for mode, style in (("B", "-"), ("A", ":")):
+                if mode == "A" and m != "classic+TDA":
+                    continue
+                g = f[(f.fault == fault) & (f.model == m) & (f["mode"] == mode)].groupby("severity").sensitivity.mean()
+                ax.plot([0.0] + list(g.index), [clean[m]] + list(g.values), ls=style, color=color, marker="o", ms=5,
+                        label=f"{name}, {'health check' if mode == 'B' else 'no health check'}")
+        ax.axhline(clean["classic+TDA"] - 0.15, color=MUTED, lw=1, ls="--")
+        ax.set_title(FAULT_NAMES[fault], fontsize=11)
+        ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0], ["0%", "25%", "50%", "75%", "100%"])
+        ax.set_xlabel("Fault severity")
+        ax.set_ylim(0, 1)
+        ax.yaxis.set_major_formatter(PCT)
+    axes[0].set_ylabel("Seizures caught")
+    axes[0].legend(loc="lower left", fontsize=7.5)
+    axes[0].text(0.02, clean["classic+TDA"] - 0.15 + 0.015, "target line", fontsize=8, color=INK2)
+    fig.suptitle("CHB-MIT: injected faults on 11 of 18 channels (fault training, 6 channel sets per condition)",
+                 x=0.01, ha="left", fontsize=13, fontweight="bold")
+    fig.tight_layout()
+    save(fig, "27_d_faults")
+
+
+def fig_d_stats():
+    """28: CHB-MIT, bootstrap differences between feature sets."""
+    s = pd.read_csv(TABLES / "phaseD_stats.csv")
+    s = s[s.a != "A1"]
+    tests = ["clean", "11 channels dead", "faults on 11 of 18, health check"]
+    pairs = [("classic", "classic+TDA", "TDA added to classic", TDA_C),
+             ("classic+TDA", "classic+TDA+TDAB", "TDA-B added to classic + TDA", SHAPE_C)]
+    fig, ax = plt.subplots(figsize=(10, 4.6))
+    y, labels = 0, []
+    for test in tests:
+        for a, b, name, color in pairs:
+            r = s[(s.test == test) & (s.a == a) & (s.b == b)].iloc[0]
+            sig = r.lo > 0
+            ax.plot([r.lo, r.hi], [y, y], color=color if sig else MUTED, lw=2.5, solid_capstyle="butt")
+            ax.plot(r.diff_pts, y, "o", ms=8, color=color if sig else MUTED, mec=SURFACE)
+            ax.text(max(r.hi, r.diff_pts) + 0.3, y, f"{r.diff_pts:+.1f}  (p = {r.p_not_better:.3f})", va="center",
+                    fontsize=8.5, color=INK2)
+            labels.append(f"{test}: {name}")
+            y += 1
+        y += 0.5
+    ax.axvline(0, color=INK2, lw=1)
+    ax.set_yticks([i + (i // 2) * 0.5 for i in range(len(labels))], labels, fontsize=9)
+    ax.invert_yaxis()
+    ax.set_xlim(-4, 12)
+    ax.set_xlabel("Change in seizures caught (points), 95% interval from 2,000 resamples of the 23 people")
+    ax.set_title("CHB-MIT: what TDA and TDA-B add (coloured: interval above 0)")
+    ax.grid(axis="y", visible=False)
+    save(fig, "28_d_bootstrap")
+
+
+def fig_d_health():
+    """29: CHB-MIT health check."""
+    cls = pd.read_csv(TABLES / "phaseD_health_switch_off.csv").set_index("true_class").switched_off
+    fault = pd.read_csv(TABLES / "phaseD_health_by_fault.csv", index_col=0)
+    clean = pd.read_csv(TABLES / "phaseD_health_clean_channels.csv").healthy_switched_off
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.3), gridspec_kw=dict(width_ratios=[0.9, 1.2]))
+    ax = axes[0]
+    bars = ax.bar(["Channels with\nno fault", "Faulty: window\nunharmed", "Degraded", "Failed"],
+                  [clean.mean(), cls["healthy"], cls["degraded"], cls["failed"]],
+                  color=[CLASSIC_C, MUTED, "#f2a37f", TDA_C], width=0.6)
+    label_bars(ax, bars, "{:.2%}", 0.015)
+    ax.set_ylim(0, 1.05)
+    ax.yaxis.set_major_formatter(PCT)
+    ax.set_ylabel("Share of seconds switched off")
+    ax.set_title("What it switches off", fontsize=11)
+    ax.tick_params(axis="x", labelsize=8.5)
+    ax.grid(axis="x", visible=False)
+    ax = axes[1]
+    sev = [0.25, 0.5, 0.75, 1.0]
+    for fl, c in zip(("pop", "decline", "dropout"), (SHAPE_C, CLASSIC_C, TDA_C)):
+        ax.plot(sev, fault.loc[fl, [str(x) for x in sev]], marker="o", color=c, label=FAULT_NAMES[fl])
+    ax.set_xticks(sev, ["25%", "50%", "75%", "100%"])
+    ax.set_xlabel("Fault severity")
+    ax.set_ylim(0, 1.05)
+    ax.yaxis.set_major_formatter(PCT)
+    ax.set_title("Faulty seconds flagged (degraded or failed)", fontsize=11)
+    ax.legend(loc="lower right", fontsize=8.5)
+    fig.suptitle("CHB-MIT: the health check, retrained on CHB-MIT's injected faults", x=0.01, ha="left",
+                 fontsize=13, fontweight="bold")
+    fig.tight_layout()
+    save(fig, "29_d_health")
+
+
 def main():
-    for f in (fig_health, fig_a1, fig_a2, fig_a3, fig_b1, fig_b2, fig_ablation, fig_timing, fig_real_faults):
+    for f in (fig_health, fig_a1, fig_a2, fig_a3, fig_b1, fig_b2, fig_ablation, fig_timing, fig_real_faults,
+              fig_d_dead, fig_d_faults, fig_d_stats, fig_d_health):
         f()
         print(f.__name__, "done", flush=True)
 

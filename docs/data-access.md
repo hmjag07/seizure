@@ -125,6 +125,15 @@ For analysis, `labels.py` groups them into four coarse types:
 | Sampling rate | 256 Hz |
 | Labels | Seizure start/end times in `chbXX/chbXX-summary.txt` |
 
+**Scanned in full in Phase D (2026-10-24, [`chbmit.py`](../src/seizure/data/chbmit.py)):**
+- **Files:** 686 (983 h), 24 recordings, 23 people (chb21 is chb01 later). Durations run from 10 minutes to 4 hours; most are 1 hour.
+- **Channels:** the 18 double-banana channels are in 683 files. Three chb12 files use another montage, so their 13 seizures are left out.
+- **Seizures:** 198 in total; 185 in usable files.
+- **File names:** one file is named `chb02_16+.edf`, and the "+" must be URL-encoded (`%2B`) or the bucket answers 404.
+- **Duplicates:** a few files write channel names in mixed case (`Fz-Cz`), so names are upper-cased when read. `T8-P8` appears twice; the first copy is used.
+- **Mains noise** is at **60 Hz** (US), so the EEG notch is at 60 Hz instead of SeizeIT2's 50 Hz.
+- **Download cost:** every 1-second record holds all 23 channels, so 10 minutes costs about 7 MB.
+
 ---
 
 ## 3. How streaming works

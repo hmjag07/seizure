@@ -1,0 +1,19 @@
+signal,tau,m,tau_iqr,m_iqr,n_windows,pooled,patients
+FP1-F7,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+F7-T7,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+T7-P7,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+P7-O1,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+FP1-F3,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+F3-C3,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+C3-P3,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+P3-O1,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+FP2-F4,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+F4-C4,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+C4-P4,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+P4-O2,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+FP2-F8,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+F8-T8,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+T8-P8,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+P8-O2,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+FZ-CZ,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10
+CZ-PZ,14,4,10-18,4-4,3600,True,chb21 chb04 chb01 chb09 chb08 chb20 chb05 chb23 chb03 chb10

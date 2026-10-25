@@ -1,0 +1,11 @@
+test,a,b,sens_a,sens_b,fa_a,fa_b,diff_pts,lo,hi,p_not_better,people
+clean,classic,classic+TDA,0.8077,0.8462,7.4811,7.3018,3.8462,0.6849,7.8655,0.01,23
+clean,classic+TDA,classic+TDA+TDAB,0.8462,0.8782,7.3018,7.7629,3.2051,0.0,6.8031,0.035,23
+clean,classic,classic+TDA+TDAB,0.8077,0.8782,7.4811,7.7629,7.0513,2.0,12.95,0.0015,23
+11 channels dead,classic,classic+TDA,0.7428,0.7829,7.8238,8.3618,4.0064,0.4994,8.2114,0.014,23
+11 channels dead,classic+TDA,classic+TDA+TDAB,0.7829,0.774,8.3618,8.3042,-0.8814,-2.9793,0.9753,0.7825,23
+11 channels dead,classic,classic+TDA+TDAB,0.7428,0.774,7.8238,8.3042,3.125,0.0,6.6882,0.0285,23
+"faults on 11 of 18, health check",classic,classic+TDA,0.7693,0.8152,7.205,7.6925,4.5851,1.7609,7.67,0.0,23
+"faults on 11 of 18, health check",classic+TDA,classic+TDA+TDAB,0.8152,0.8045,7.6925,7.3825,-1.0684,-2.5161,0.1773,0.88,23
+"faults on 11 of 18, health check",classic,classic+TDA+TDAB,0.7693,0.8045,7.205,7.3825,3.5167,0.4279,7.1071,0.007,23
+faults on 11 of 18: fault training (classic+TDA),A1,A3,0.808,0.8152,7.5512,7.6925,0.7212,-0.2359,1.7678,0.0825,23
