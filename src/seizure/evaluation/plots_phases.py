@@ -549,9 +549,54 @@ def fig_spec_fault_training():
     save(fig, "32_spectrogram_cnn_fault_training")
 
 
+def fig_final2():
+    """33: held-out test v2, the five systems on clean data, 5 of 8 sensors dead, and injected faults."""
+    c = pd.read_csv(TABLES / "final2_clean.csv").set_index("system")
+    d = pd.read_csv(TABLES / "final2_dead_sensors.csv")
+    d = d[(d.dead == 5) & d.eeg_alive & d.rule.isin(["sensor-aware", "count-aware"])].groupby("system")[
+        ["sensitivity", "fa_per_h"]].mean()
+    fm = pd.read_csv(TABLES / "final2_faults_main.csv")
+    fm = fm[(fm.n_sensors == 5) & fm.eeg_alive & (fm["mode"] == "B")]
+    fm = fm.assign(system=fm.model.map({"classic+TDA": "main", "classic": "classic"})).groupby("system")[
+        ["sensitivity", "fa_per_h"]].mean()
+    fd = pd.read_csv(TABLES / "final2_faults_dl.csv").groupby("system")[["sensitivity", "fa_per_h"]].mean()
+    faults = pd.concat([fm, fd])
+    systems = [("classic", "Classic (A3)", CLASSIC_C, 0.45), ("main", "Main: classic + TDA (A3)", TDA_C, 1.0),
+               ("xgboost", "XGBoost reference", MUTED, 1.0), ("hybrid", "Hybrid", "#f2a37f", 1.0),
+               ("cnn", "Spectrogram CNN (fault-trained)", SHAPE_C, 1.0)]
+    groups = [("Clean data", c), ("5 of 8 sensors dead", d), ("Faults on 5 of 8\n(health check)", faults)]
+    fig, axes = plt.subplots(1, 2, figsize=(13, 4.8))
+    x = np.arange(len(groups))
+    w = 0.16
+    for i, (s, name, color, alpha) in enumerate(systems):
+        for ax, col in zip(axes, ("sensitivity", "fa_per_h")):
+            vals = [g.loc[s, col] for _, g in groups]
+            bars = ax.bar(x + (i - 2) * w, vals, w, color=color, alpha=alpha, label=name)
+            if col == "sensitivity":
+                for b, v in zip(bars, vals):
+                    ax.text(b.get_x() + b.get_width() / 2, v + 0.01, f"{v:.0%}", ha="center", fontsize=7, color=INK)
+    axes[0].set_ylim(0, 1)
+    axes[0].yaxis.set_major_formatter(PCT)
+    axes[0].set_ylabel("Seizures caught (152 seizures)")
+    axes[0].set_title("Seizures caught", fontsize=11)
+    axes[1].axhline(FA_BUDGET, color=INK2, ls="--", lw=1)
+    axes[1].text(-0.45, FA_BUDGET + 0.3, "budget 11/h", fontsize=8.5, color=INK2)
+    axes[1].set_ylim(0, 14)
+    axes[1].set_ylabel("False alarms per hour")
+    axes[1].set_title("False alarms per hour", fontsize=11)
+    for ax in axes:
+        ax.set_xticks(x, [g for g, _ in groups], fontsize=9)
+        ax.grid(axis="x", visible=False)
+    axes[0].legend(loc="lower left", fontsize=7.5)
+    fig.suptitle("Held-out test v2: 26 new SeizeIT2 patients, five systems trained on 90 patients",
+                 x=0.01, ha="left", fontsize=13, fontweight="bold")
+    fig.tight_layout()
+    save(fig, "33_final2_heldout")
+
+
 def main():
     for f in (fig_health, fig_a1, fig_a2, fig_a3, fig_b1, fig_b2, fig_ablation, fig_timing, fig_real_faults,
-              fig_d_dead, fig_d_faults, fig_d_stats, fig_d_health, fig_spec, fig_spec_faults, fig_spec_fault_training):
+              fig_d_dead, fig_d_faults, fig_d_stats, fig_d_health, fig_spec, fig_spec_faults, fig_spec_fault_training, fig_final2):
         f()
         print(f.__name__, "done", flush=True)
 

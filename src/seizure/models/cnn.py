@@ -46,14 +46,18 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 class Windows:
     """All signals of the 90 patients in one float16 array per sensor, and per row the start of its window."""
 
-    def __init__(self):
-        rows = load_all()[["subject", "run", "t", "label"]]
-        rows["fold"] = folds(rows)
+    def __init__(self, rows=None, dirs=None):
+        """rows: optional table (subject, run, t, label, fold) in place of the 90 training patients;
+        dirs: optional signal-cache folders (default: the training patients' folders)."""
+        if rows is None:
+            rows = load_all()[["subject", "run", "t", "label"]]
+            rows["fold"] = folds(rows)
         self.rows = rows.reset_index(drop=True)
+        rows = self.rows
         bufs = {s: [] for s in SIGNALS}
         size = {s: 0 for s in SIGNALS}
         self.start = np.full((len(rows), len(SIGNALS)), -1, dtype=np.int64)
-        for d in SIGNAL_DIRS:
+        for d in (dirs or SIGNAL_DIRS):
             for path in sorted(d.glob("sub-*.npz")):
                 sub = path.stem
                 meta, data = load_patient(path)

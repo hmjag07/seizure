@@ -132,8 +132,8 @@ def apply_fault(w, pos, j, fs, f, seq, span0, span1):
 class GpuWindows:
     """The CNN v1 window table (cnn.Windows), with the signals and window starts on the GPU."""
 
-    def __init__(self):
-        W = Windows()
+    def __init__(self, rows=None, dirs=None):
+        W = Windows(rows, dirs)
         self.rows, self.label, self.fold = W.rows, W.label, W.fold
         self.sig = {s: W.sig[s].to(DEVICE) for s in SIGNALS}
         self.start = torch.from_numpy(W.start).to(DEVICE)

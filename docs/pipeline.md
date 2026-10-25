@@ -1962,6 +1962,134 @@ They are applied on the GPU in absolute sample positions, so the 90 overlapping 
 
 ---
 
+## Phase E: the second and final held-out test (v2, 2026-10-26) ([`final_test_v2.py`](../src/seizure/models/final_test_v2.py))
+
+**Why a second run.** The first held-out test (v1, Step 8) showed two weaknesses:
+- false alarms over budget on new patients (13.8 per hour);
+- no clean-data gain from TDA.
+
+Phases A–C (and B3–B5) were designed to fix these using training patients only. v2 tests the final systems on the same held-out patients. This is the second and last use of that group; it was announced in Phase A.
+
+### Protocol (fixed before the held-out data was read again; approved by the project owner)
+
+**Data:** the 26 held-out SeizeIT2 patients of v1 (sub-097 to sub-125 with an all-modality run): 152 seizures, 216,507 seconds. The features, injected faults, window labels and signal copy are those built for v1. Nothing from these patients was used to train or to choose anything.
+
+**Systems,** all trained on the 90 training patients:
+
+| # | System | Thresholds (from the training patients' out-of-fold predictions) |
+|---|---|---|
+| 1 | **Main:** XGBoost classic + TDA, fault training (A3), the 90-patient health check | one per set of dead sensors, ≤ 8 FA/h (Phase C) |
+| 2 | Classic: the same with classic features only | the same |
+| 3 | Spectrogram CNN + GRU, fault training (B5), trained on all 90 patients | one per number of switched-off sensors (B4) |
+| 4 | Hybrid: XGBoost classic + TDA + the CNN score; held-out score = mean of the 5 cross-validation CNNs | the same |
+| 5 | XGBoost classic + TDA with the per-chunk dropout copy (reference for 3 and 4) | the same |
+
+- **Health check:** retrained on all 90 patients; cut-off 0.5, the median of the A3 fold cut-offs.
+- **Tests:**
+  - clean data;
+  - the 102 dead-sensor sets;
+  - injected faults: 192 scenarios for systems 1–2 (v1's 16 sensor sets, with and without the health check) and 72 for systems 3–5 (the 6 five-of-eight sets, with it).
+- **Statistics:**
+  - Wilson interval for clean sensitivity;
+  - patient bootstrap over the 26 patients (2,000 resamples) for TDA vs classic (1 vs 2), and for the CNN and the hybrid vs XGBoost (3, 4 vs 5).
+
+**Order of work:**
+1. Stage 1: final models and thresholds, training patients only (78 minutes).
+2. A dry run of the full test code on 5 training patients (it caught one bug in the statistics step, which was fixed).
+3. The held-out test, once (2 h 14 min, 01:23–03:37).
+
+**Nothing was changed after the held-out results were seen.**
+
+**A detail on the CNN thresholds.** The CNN's score is its logit (log-odds), not a probability, while the threshold grid runs from 0.01 to 0.99. The search therefore only covers logits in that range. Every threshold chosen (here and in B3–B5) lies inside the grid, and the lowest grid value was always over the false-alarm budget, so the best threshold was always reachable.
+
+### Results
+
+**Clean data** (152 seizures; 95% Wilson interval in brackets):
+
+| System | Caught | FA / h | AUROC | AUPR | Median delay |
+|---|---|---|---|---|---|
+| **1 Main (classic + TDA, A3)** | **76.3% (116) [69.0, 82.4]** | **8.1** | 0.888 | 0.508 | 8 s |
+| 2 Classic (A3) | 75.0% (114) [67.6, 81.2] | 8.4 | 0.886 | 0.472 | 9 s |
+| 3 Spectrogram CNN (fault-trained) | **77.6% (118) [70.4, 83.5]** | **6.5** | 0.882 | 0.497 | 7 s |
+| 4 Hybrid | 77.0% (117) [69.7, 83.0] | 8.0 | 0.884 | **0.523** | 7 s |
+| 5 XGBoost reference | 72.4% (110) [64.8, 78.9] | 7.9 | 0.881 | 0.487 | 7.5 s |
+
+**5 of 8 sensors dead** (12 sets with an EEG alive; threshold for the dead set or count):
+
+| System | Caught | Mean drop | Worst drop | Sets within 15 | FA / h |
+|---|---|---|---|---|---|
+| 1 Main | 69.2% | 7.1 | 15.8 | 11 of 12 | 8.0 |
+| 2 Classic | 64.6% | 10.4 | 25.7 | 8 of 12 | 7.6 |
+| 3 CNN | **75.1%** | **2.5** | 9.2 | **12 of 12** | 7.2 |
+| 4 Hybrid | 69.8% | 7.1 | 22.4 | 11 of 12 | 7.3 |
+| 5 XGBoost | 68.2% | 4.2 | 22.4 | 11 of 12 | 9.6 |
+
+With one fixed threshold the dead-sensor sets give 77–83% caught, but at 12–16 false alarms per hour: over budget, as in v1 (27 per hour there).
+
+**Injected faults on 5 of 8 sensors** (mean over the six sets per condition; with the health check unless stated):
+
+| Fault | Severity | 1 Main | 1 Main, no health check | 2 Classic | 3 CNN | 4 Hybrid | 5 XGBoost |
+|---|---|---|---|---|---|---|---|
+| Pops | 25 / 50 / 75 / 100% | 77.6 / 77.1 / 73.0 / 72.1 | 75.3 / 74.4 / 65.7 / 65.8 | 75.9 / 76.8 / 74.1 / 71.5 | 80.4 / 79.1 / 79.4 / 76.9 | 74.3 / 74.5 / 74.0 / 73.5 | 71.0 / 71.2 / 68.8 / 69.0 |
+| Decline | 25 / 50 / 75 / 100% | 75.4 / 73.2 / 73.5 / 70.8 | 72.3 / 67.3 / 66.8 / 60.9 | 73.2 / 70.1 / 72.9 / 70.4 | 81.5 / 80.0 / 79.8 / 79.9 | 69.3 / 68.5 / 70.0 / 66.0 | 65.4 / 64.6 / 65.4 / 63.9 |
+| Dropout | 25 / 50 / 75 / 100% | 72.0 / 71.6 / 71.1 / 69.6 | 64.4 / 57.6 / 45.5 / **27.2** | 70.9 / 71.6 / 70.2 / 68.4 | 77.9 / 78.6 / 77.8 / 76.9 | 69.8 / 75.3 / 74.1 / 73.1 | 65.7 / 71.8 / 70.5 / 69.5 |
+| **All** | | **73.1% at 7.9 FA/h** | 61.9% at 5.8 | 72.2% at 8.3 | **79.0% at 8.3** | 71.9% at 7.4 | 68.1% at 8.0 |
+
+- **Main system, with the health check:** all 12 fault conditions and **all 72 five-of-eight sensor sets stay within 15 points** of its clean result (mean drop 3.2). No scenario is above 11 false alarms per hour (worst 10.4). A fault on a single sensor leaves it at 71.7–79.0%.
+- **CNN:**
+  - every one of its 72 scenarios is within 15 points; the worst drop is 3.3, and on average it does not drop at all;
+  - its fault-test average (79.0%) is above its clean score, and with 5 sensors dead its false alarms fall from 9.6 to 7.2 per hour. That is possible because a different threshold applies once sensors are switched off;
+  - no scenario is over 11 false alarms per hour.
+- **Hybrid and XGBoost:** 69 and 68 of 72 scenarios within 15 points; 2 and 3 scenarios are just over 11 false alarms per hour (worst 11.1 and 11.6).
+
+**Patient bootstrap** (26 patients; difference in points of seizures caught, 95% interval, one-sided p):
+
+| Comparison | Clean | 5 of 8 dead | Faults on 5 of 8 |
+|---|---|---|---|
+| TDA: main vs classic | +1.3 [−4.4, 11.4], p = 0.44 | **+4.6 [1.3, 9.2], p < 0.001** | +0.9 [−2.3, 7.1], p = 0.39 |
+| CNN vs XGBoost | +5.3 [−0.9, 11.5], p = 0.06 | **+7.0 [0.4, 17.1], p = 0.017** | **+11.0 [5.7, 16.8], p < 0.001** |
+| Hybrid vs XGBoost | +4.6 [−2.4, 12.1], p = 0.13 | +1.7 [−2.7, 6.7], p = 0.22 | +3.8 [−1.5, 8.6], p = 0.10 |
+
+### v1, v2 and cross-validation
+
+| Claim | Cross-validation (90 patients) | Held-out v1 (pilot-trained) | Held-out v2 (final) | Holds on new patients? |
+|---|---|---|---|---|
+| Clean ≥ 60% at ≤ 11 FA/h (T1) | 67.5% at 7.3 | 81.6% at **13.8** | **76.3% at 8.1** | **yes** (v1: no) |
+| False-alarm budget holds (Phase A2) | every fold | no (12.6–13.8) | **yes: 6.5–8.4 for every system** | **yes** |
+| 5 of 8 dead: drop ≤ 15 points | 6–10 | 9.1 | 7.1 (main), 2.5 (CNN) | yes |
+| Faults with health check: within 15 points | 12 of 12 | 12 of 12 | 12 of 12, 72 of 72 sets | yes |
+| Health check essential | yes | yes (dropout 30% → 76%) | yes (dropout 27% → 70%) | yes |
+| TDA helps on clean data | no (0.0) | no | no (+1.3, n.s.) | consistently no |
+| TDA helps with sensor loss | +2.4 under faults (p = 0.019) | smaller drops | **+4.6 with dead sensors (p < 0.001)**; +0.9 under faults (n.s.) | yes for dead sensors; not significant for faults |
+| Spectrogram CNN most robust | +5.0 faults, +5.6 dead | (not tested) | **+11.0 faults, +7.0 dead** | **yes, more strongly** |
+| Hybrid best balanced | +2.4 faults, +4.2 dead | (not tested) | best AUPR (0.523); gains not significant | partly |
+
+### What Phase E shows
+
+1. **The false-alarm problem is fixed on new patients.** With thresholds chosen at ≤ 8 per hour on the training patients (Phase A2), every system stays within the 11 budget: 6.5–8.4 per hour on clean data, and at most 10.4 under faults for the main system. v1 reached 13.8. The cost is sensitivity: 76.3% for the main system against v1's 81.6%. This is the trade made in Phase A2 (about 5 points), now confirmed on unseen patients.
+2. **The main system meets every robustness target on new patients:**
+   - 5 of 8 sensors failed or degraded: within 15 points in 12 of 12 fault conditions and 72 of 72 sensor sets;
+   - 5 of 8 dead: 11 of 12 sets;
+   - the health check is again essential (full dropout: 27% without it, 70% with it).
+3. **TDA's role is robustness, not clean accuracy.** No clean gain in cross-validation, v1 or v2, but significantly better with dead sensors on new patients (+4.6 points). Under injected faults with the health check the gain (+0.9) is not significant here; in cross-validation it was (+2.4, p = 0.019).
+4. **The fault-trained spectrogram CNN is the strongest system on new patients:**
+   - clean: the most seizures caught (77.6%) at the fewest false alarms (6.5 per hour);
+   - dead sensors: +7.0 points over XGBoost;
+   - injected faults: +11.0 points, every scenario within target.
+
+   This is stronger than its cross-validation advantage. One reason may be that the final CNN is trained on all 90 patients (each cross-validation network saw 72). **The caveat stands:** its faults are injected into the cached signals, a close but not identical copy of the feature build's faults.
+5. **The hybrid has the best clean ranking** (AUPR 0.523) but no significant gain over XGBoost on these 26 patients.
+
+**Limits:**
+- 26 patients and 152 seizures: wide intervals (±7 points for clean sensitivity).
+- This held-out group has now been used twice. v2's choices were all made on training patients, and v1 is reported alongside, but the group is no longer untouched.
+- Seizure-centred recordings, not full 24-hour monitoring, so not directly comparable to the SeizeIT2 benchmark.
+- CHB-MIT has cross-validation only (Phase D).
+
+**Figure 33** shows the five systems on the held-out patients.
+
+---
+
 ## Timeline (model in 1 week)
 
 | Day | Work |

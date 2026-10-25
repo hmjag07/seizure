@@ -44,13 +44,13 @@ from seizure.models.train import ALARM, FA_BUDGET, N_FOLDS, SELECT_BUDGET
 ACC_POP_FLOOR = 0.05  # g: as build_faulty for motion; cached accelerometers are calibrated to g
 
 
-def chunk_layout(W):
+def chunk_layout(W, dirs=None):
     """[(subject, run, t0, t1, fetch_t0, sensor, offset, length)] of every chunk's signal in the buffers of
     cnn.Windows (the same loop, so the offsets match)."""
     rows = W.rows
     size = {s: 0 for s in SIGNALS}
     out = []
-    for d in SIGNAL_DIRS:
+    for d in (dirs or SIGNAL_DIRS):
         for path in sorted(d.glob("sub-*.npz")):
             sub = path.stem
             if not (rows.subject == sub).any():
