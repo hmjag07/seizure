@@ -89,7 +89,7 @@ results/
 
 ## Reproducing
 
-Requires Python 3.10 or later. The first feature build streams about 85 hours of signal and takes several hours. The fault build takes about a day of CPU time on 6 cores. The CNNs need a CUDA GPU.
+Requires Python 3.10 or later; the results were produced with Python 3.14.3. The first feature build streams about 85 hours of signal and takes several hours. The fault build takes about a day of CPU time on 6 cores. The CNNs need a CUDA GPU.
 
 ```
 python -m venv .venv

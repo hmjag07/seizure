@@ -1,4 +1,4 @@
-# Exact versions used for the results in this repository (October 2026).
+# Exact versions used for the results in this repository (October 2026, Python 3.14.3).
 # Install with:  pip install -r requirements.txt  then  pip install -e .
 numpy==2.5.4
 scipy==1.18.1
