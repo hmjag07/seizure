@@ -111,3 +111,7 @@ python -m seizure.evaluation.plots_phases      # figures from the saved tables
 ```
 
 The full order of runs, and the environment variables that select a patient set (`SEIZURE_SET=pilot|extra|heldout`), are given step by step in [docs/research-log.md](docs/research-log.md). Derived data goes to `cache/`, which is git-ignored and can be rebuilt from the online sources.
+
+## Licence
+
+The code is released under the [MIT Licence](LICENSE). The datasets are not part of this repository and remain under their own licences: SeizeIT2 on OpenNeuro and CHB-MIT on PhysioNet.
