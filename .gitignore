@@ -13,3 +13,6 @@ venv/
 # Experiment outputs (figures/tables for the paper are committed explicitly)
 results/runs/
 *.egg-info/
+
+# Session notes kept locally
+/docs/sessions/
