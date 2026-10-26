@@ -94,8 +94,9 @@ Requires Python 3.10 or later. The first feature build streams about 85 hours of
 ```
 python -m venv .venv
 .venv\Scripts\activate                 # Windows;  source .venv/bin/activate on Linux/macOS
-pip install -e .                       # core pipeline
-pip install -e ".[cnn]"                # adds PyTorch for the CNN models
+pip install -r requirements.txt        # exact versions used for the results
+pip install -e .                       # the seizure package itself
+pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cu128   # CNN models only
 ```
 
 Every step is a module run with `python -m`. For example:

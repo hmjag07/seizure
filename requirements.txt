@@ -1,0 +1,13 @@
+# Exact versions used for the results in this repository (October 2026).
+# Install with:  pip install -r requirements.txt  then  pip install -e .
+numpy==2.5.4
+scipy==1.18.1
+pandas==3.0.6
+pyarrow==26.0.0
+scikit-learn==1.9.1
+xgboost==3.4.1
+ripser==0.6.15
+matplotlib==3.11.2
+
+# CNN models only (CUDA 12.8 build; GPU used: RTX 4050, 6 GB):
+#   pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cu128
