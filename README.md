@@ -6,6 +6,9 @@ Existing TDA-based seizure-detection studies generally assume that every channel
 
 Final-year B.Tech project, VJTI Mumbai, October 2026.
 
+**Authors:** Harsh Jagtap ([@hmjag07](https://github.com/hmjag07)) and Anya Agrawal ([@Anya-Agrawal-05](https://github.com/Anya-Agrawal-05))  
+**Supervisor:** Dr. Gyanesh Singh
+
 ## Main results
 
 Final systems, trained on 90 SeizeIT2 training patients and tested on 26 held-out patients (152 seizures). All thresholds were chosen on training patients only. "Mean drop" is clean sensitivity minus sensitivity under the condition, averaged over the sensor sets tested (dead-sensor sets with at least one EEG channel working; fault scenarios with the health check on).
