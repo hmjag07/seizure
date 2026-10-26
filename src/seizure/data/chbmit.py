@@ -1,4 +1,4 @@
-"""CHB-MIT: file list, montage check and seizure times (docs/lab-notebook.md, Phase D).
+"""CHB-MIT: file list, montage check and seizure times (docs/research-log.md, Phase D).
 
     python -m seizure.data.chbmit
 

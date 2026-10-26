@@ -1,4 +1,4 @@
-"""Sensor-aware thresholds: robustness at an equal false-alarm budget (docs/lab-notebook.md, Steps 6 and 8).
+"""Sensor-aware thresholds: robustness at an equal false-alarm budget (docs/research-log.md, Steps 6 and 8).
 
     python -m seizure.models.sensor_aware
 

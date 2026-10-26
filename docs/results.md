@@ -1,6 +1,6 @@
 # Results
 
-This document gives the final method and the final results. The complete record of how they were reached, including every intermediate experiment, is in [lab-notebook.md](lab-notebook.md). Data access and unit checks are in [data-access.md](data-access.md).
+This document gives the final method and the final results. The complete record of how they were reached, including every intermediate experiment, is in [research-log.md](research-log.md). Data access and unit checks are in [data-access.md](data-access.md).
 
 **Summary.** On 26 held-out SeizeIT2 patients, the final system (classic + TDA features, XGBoost, a sensor health check, training with missing and faulty sensors, and thresholds that adapt to the working sensors) caught 76.3% of seizures at 8.1 false alarms per hour. With 5 of its 8 sensors failing or degrading mid-recording, it stayed within 15 percentage points of that in every fault condition tested. TDA features did not improve clean-data detection. They did improve detection with dead sensors (+4.6 points, p < 0.001). A spectrogram CNN + GRU trained the same way was the most robust model overall.
 

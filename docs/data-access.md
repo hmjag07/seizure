@@ -366,7 +366,7 @@ A 1/1024 g step is a typical native resolution for this kind of sensor, so the h
 
 What is wrong: the values in the files are on **two different scales**. Gravity reads about **0.5** for some patients and about **0.167** for most others, exactly a factor of 3 apart, and neither is 1. The most likely cause is two device configurations that were not converted consistently when the dataset was prepared. The header cannot reveal this, so it has to be corrected using gravity itself.
 
-**Fix (applied in `preprocess.py`, lab notebook Step 1.4):** for each device in each recording, find rest periods, measure the median total acceleration there, and divide all three axes by it, so gravity reads exactly 1 g. This is the standard way to calibrate wearable accelerometers using gravity (van Hees et al., *J. Appl. Physiol.* 2014).
+**Fix (applied in `preprocess.py`, research log Step 1.4):** for each device in each recording, find rest periods, measure the median total acceleration there, and divide all three axes by it, so gravity reads exactly 1 g. This is the standard way to calibrate wearable accelerometers using gravity (van Hees et al., *J. Appl. Physiol.* 2014).
 
 ### 5.5 Gyroscope units
 
@@ -374,11 +374,11 @@ The gyroscope signals (`GYR A/B/C`) are labelled `g` in the header. That cannot 
 
 ### 5.6 A real sensor fault: sub-067
 
-In one hour of sub-067 run-01 (seconds 10,000–13,600), the neck accelerometer's Z axis (`EEG SD ACC Z`) is stuck at the largest possible stored value (32,767) **96% of the time**. It has only 67 distinct values in an hour, against 228–263 for the X and Y axes of the same device. This is a genuine sensor failure in the published data: the kind this project studies. Real failures of this kind are left out at cleaning (lab notebook Step 1.4), and Phase C4 tests whether the live system switches them off.
+In one hour of sub-067 run-01 (seconds 10,000–13,600), the neck accelerometer's Z axis (`EEG SD ACC Z`) is stuck at the largest possible stored value (32,767) **96% of the time**. It has only 67 distinct values in an hour, against 228–263 for the X and Y axes of the same device. This is a genuine sensor failure in the published data: the kind this project studies. Real failures of this kind are left out at cleaning (research log Step 1.4), and Phase C4 tests whether the live system switches them off.
 
-A survey of the motion data in all 304 planned chunks (2026-10-16) found that sub-067 is not alone: **33 chunks (11%) across 10 patients** have at least one dead, saturated or wrongly scaled accelerometer or gyroscope axis. The details, and how these sensors are detected and left out, are in [lab notebook, Step 1.4](lab-notebook.md#14-clean-the-signals-preprocesspy).
+A survey of the motion data in all 304 planned chunks (2026-10-16) found that sub-067 is not alone: **33 chunks (11%) across 10 patients** have at least one dead, saturated or wrongly scaled accelerometer or gyroscope axis. The details, and how these sensors are detected and left out, are in [research log, Step 1.4](research-log.md#14-clean-the-signals-preprocesspy).
 
-Phase C4 (2026-10-24) kept these sensors in and passed them through the live system across all 90 training patients. Stuck accelerometers in SeizeIT2 sit at the full-scale value (±32.767); dead devices read 0 on every axis. A past-only rule in front of the health check catches both, and wrongly scaled accelerometers are rejected at cleaning. Healthy gyroscopes at rest also read exactly 0 for minutes, so a frozen-at-0 gyroscope counts as broken only when its accelerometer is frozen too. See [lab notebook, Phase C4](lab-notebook.md#c4-real-broken-motion-sensors-real_faultspy).
+Phase C4 (2026-10-24) kept these sensors in and passed them through the live system across all 90 training patients. Stuck accelerometers in SeizeIT2 sit at the full-scale value (±32.767); dead devices read 0 on every axis. A past-only rule in front of the health check catches both, and wrongly scaled accelerometers are rejected at cleaning. Healthy gyroscopes at rest also read exactly 0 for minutes, so a frozen-at-0 gyroscope counts as broken only when its accelerometer is frozen too. See [research log, Phase C4](research-log.md#c4-real-broken-motion-sensors-real_faultspy).
 
 ### 5.7 Summary
 
@@ -391,7 +391,7 @@ Phase C4 (2026-10-24) kept these sensors in and passed them through the live sys
 | Accelerometer at rest | 1 g | 0.5 or 0.167 depending on patient | ✗ dataset problem; rescale using gravity |
 | Gyroscope unit | deg/s | labelled `g` | ✗ dataset problem; normalise per patient |
 | Duplicate channel names (CHB-MIT) | all kept | `T8-P8` kept twice | ✓ fixed |
-| Motion sensors working | all axes vary normally | 33 of 304 planned chunks have a dead, saturated or wrongly scaled axis | ✗ real sensor faults; detected and left out (lab notebook Step 1.4) |
+| Motion sensors working | all axes vary normally | 33 of 304 planned chunks have a dead, saturated or wrongly scaled axis | ✗ real sensor faults; detected and left out (research log Step 1.4) |
 
 ---
 
@@ -415,7 +415,7 @@ Phase C4 (2026-10-24) kept these sensors in and passed them through the live sys
 | | `scan_subject(sub)` | Finds a patient's runs, which modalities each has, and every seizure |
 | | `scan_seizeit2(subjects)` | Scans many patients in parallel |
 | | `seizure_group(event_type)` | Maps a seizure code to FA / FIA / FBTC / other |
-| [`pilot.py`](../src/seizure/data/pilot.py) | `main()` | Applies the pilot-selection rules (lab notebook, Step 1.2) and writes the result tables |
+| [`pilot.py`](../src/seizure/data/pilot.py) | `main()` | Applies the pilot-selection rules (research log, Step 1.2) and writes the result tables |
 
 Quick test of streaming and unit conversion on any EDF URL:
 

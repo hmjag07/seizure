@@ -1,4 +1,4 @@
-"""Fault-injected features for every pilot patient (docs/lab-notebook.md, Steps 2-3).
+"""Fault-injected features for every pilot patient (docs/research-log.md, Steps 2-3).
 
     python -m seizure.faults.build_faulty [sub ...]
 

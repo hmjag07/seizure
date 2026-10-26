@@ -1,4 +1,4 @@
-"""Phase C3: simulated live run and its timing (docs/lab-notebook.md, Step 7).
+"""Phase C3: simulated live run and its timing (docs/research-log.md, Step 7).
 
     python -m seizure.models.live
 

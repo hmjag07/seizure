@@ -1,4 +1,4 @@
-"""Window-level fault labels ("fix D"; docs/lab-notebook.md, Step 3).
+"""Window-level fault labels ("fix D"; docs/research-log.md, Step 3).
 
     python -m seizure.faults.window_labels
 

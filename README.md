@@ -68,7 +68,7 @@ flowchart LR
 ```
 docs/
   results.md          final method, results and limitations (start here)
-  lab-notebook.md     complete chronological record: every step, experiment, decision and number
+  research-log.md     complete chronological record: every step, experiment, decision and number
   data-access.md      how the data is streamed, decoded, converted to physical units and checked
 src/seizure/
   data/               streaming, labels, patient selection, fetch plans, cleaning, windows, dataset adapter
@@ -109,4 +109,4 @@ python -m seizure.models.train                 # first cross-validated models
 python -m seizure.evaluation.plots_phases      # figures from the saved tables
 ```
 
-The full order of runs, and the environment variables that select a patient set (`SEIZURE_SET=pilot|extra|heldout`), are given step by step in [docs/lab-notebook.md](docs/lab-notebook.md). Derived data goes to `cache/`, which is git-ignored and can be rebuilt from the online sources.
+The full order of runs, and the environment variables that select a patient set (`SEIZURE_SET=pilot|extra|heldout`), are given step by step in [docs/research-log.md](docs/research-log.md). Derived data goes to `cache/`, which is git-ignored and can be rebuilt from the online sources.

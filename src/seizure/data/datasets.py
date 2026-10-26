@@ -1,4 +1,4 @@
-"""Dataset adapter: one interface for SeizeIT2 and CHB-MIT (docs/lab-notebook.md, Phase D).
+"""Dataset adapter: one interface for SeizeIT2 and CHB-MIT (docs/research-log.md, Phase D).
 
 Everything after streaming (windows, features, faults, health check, models, scoring) only needs to know,
 per dataset:

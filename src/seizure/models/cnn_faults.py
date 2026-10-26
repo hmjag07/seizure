@@ -1,4 +1,4 @@
-"""Phase B4: the spectrogram CNN + GRU and the hybrid under injected faults (docs/lab-notebook.md).
+"""Phase B4: the spectrogram CNN + GRU and the hybrid under injected faults (docs/research-log.md).
 
     python -m seizure.models.cnn_faults
 

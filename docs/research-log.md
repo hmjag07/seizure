@@ -1,4 +1,4 @@
-# Lab notebook
+# Research log
 
 This is the complete, chronological record of the project (14–26 October 2026): every step, experiment, decision, problem and number, in the order they happened. Status lines and plans are kept as written at the time, with a dated note where later work changed or completed them. Earlier result tables are kept beside the later ones that replace them, so every change can be traced. For the final method and results only, read [results.md](results.md).
 

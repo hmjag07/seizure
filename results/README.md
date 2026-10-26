@@ -1,6 +1,6 @@
 # Results index
 
-Every table and figure in this folder, the stage that produced it, and its status. The final results are summarised in [docs/results.md](../docs/results.md). Each stage is described in full, with all its numbers, in [docs/lab-notebook.md](../docs/lab-notebook.md).
+Every table and figure in this folder, the stage that produced it, and its status. The final results are summarised in [docs/results.md](../docs/results.md). Each stage is described in full, with all its numbers, in [docs/research-log.md](../docs/research-log.md).
 
 **Status:**
 

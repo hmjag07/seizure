@@ -1,4 +1,4 @@
-"""Signal-quality features and the healthy/degraded/failed classifier (docs/lab-notebook.md, Step 3).
+"""Signal-quality features and the healthy/degraded/failed classifier (docs/research-log.md, Step 3).
 
 Quality features are computed per sensor per window and do not depend on the sensor's units:
 q_logstd   log10 of the spread of the normalised, cleaned window: falls for dropout and decline

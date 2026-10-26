@@ -1,4 +1,4 @@
-"""Seizure detection under injected faults (docs/lab-notebook.md, Step 8).
+"""Seizure detection under injected faults (docs/research-log.md, Step 8).
 
     python -m seizure.faults.evaluate
 

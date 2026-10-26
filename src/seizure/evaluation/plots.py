@@ -1,4 +1,4 @@
-"""Figures for the clean-data models (docs/lab-notebook.md, Step 5.8).
+"""Figures for the clean-data models (docs/research-log.md, Step 5.8).
 
     python -m seizure.evaluation.plots
 

@@ -1,4 +1,4 @@
-"""Held-out test patients: label scan and fetch plan (docs/lab-notebook.md, Step 1.2 and the final test).
+"""Held-out test patients: label scan and fetch plan (docs/research-log.md, Step 1.2 and the final test).
 
     python -m seizure.data.heldout
 

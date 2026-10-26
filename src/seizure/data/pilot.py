@@ -1,4 +1,4 @@
-"""Pick SeizeIT2 pilot patients (docs/lab-notebook.md, Step 1.2).
+"""Pick SeizeIT2 pilot patients (docs/research-log.md, Step 1.2).
 
 Rules, fixed before the scan:
 1. Training range only: sub-001 to sub-096. Held-out patients are never scanned.
