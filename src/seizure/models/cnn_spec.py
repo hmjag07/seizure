@@ -1,4 +1,4 @@
-"""Spectrogram CNN + GRU, trained end to end, and a hybrid XGBoost (docs/pipeline.md, Phase B3).
+"""Spectrogram CNN + GRU, trained end to end, and a hybrid XGBoost (docs/lab-notebook.md, Phase B3).
 
     python -m seizure.models.cnn_spec cv       # 5-fold CV on the 90 training patients, clean + dead sensors
     python -m seizure.models.cnn_spec hybrid   # XGBoost classic + TDA + the CNN's score, vs without

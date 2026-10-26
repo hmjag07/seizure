@@ -11,17 +11,14 @@ dependencies = [
     "scipy",
     "pandas",
     "pyarrow",
-    "pyyaml",
     "scikit-learn",
     "xgboost",
     "ripser",
-    "persim",
     "matplotlib",
 ]
 
 [project.optional-dependencies]
 cnn = ["torch"]
-dev = ["pytest", "jupyter"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -1,4 +1,4 @@
-"""Small 1D CNN baseline on the raw (cleaned, downsampled) signals (docs/pipeline.md, Step 5.6 and Phase B2).
+"""Small 1D CNN baseline on the raw (cleaned, downsampled) signals (docs/lab-notebook.md, Step 5.6 and Phase B2).
 
     python -m seizure.models.cnn cv      # 5-fold CV on the 90 training patients, clean + dead sensors
 

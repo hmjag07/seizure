@@ -1,4 +1,4 @@
-"""Gradient-boosted classifier with patient-grouped CV (docs/pipeline.md, Step 5).
+"""Gradient-boosted classifier with patient-grouped CV (docs/lab-notebook.md, Step 5).
 
     python -m seizure.models.train
 

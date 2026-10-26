@@ -1,4 +1,4 @@
-"""Dead-sensor robustness test (docs/pipeline.md, Steps 5.3 and 8).
+"""Dead-sensor robustness test (docs/lab-notebook.md, Steps 5.3 and 8).
 
     python -m seizure.models.robustness            # models trained on clean data
     python -m seizure.models.robustness dropout    # models trained with sensor dropout

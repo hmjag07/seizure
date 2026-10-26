@@ -1,4 +1,6 @@
-# Pipeline
+# Lab notebook
+
+This is the complete, chronological record of the project (14–26 October 2026): every step, experiment, decision, problem and number, in the order they happened. Status lines and plans are kept as written at the time, with a dated note where later work changed or completed them. Earlier result tables are kept beside the later ones that replace them, so every change can be traced. For the final method and results only, read [results.md](results.md).
 
 Research question: how robust are persistent-homology features to mid-recording sensor faults (electrode pops/motion artefacts, gradual signal decline, intermittent dropout) in multimodal wearable seizure detection, compared with standard feature-based and deep-learning detectors?
 
@@ -100,7 +102,7 @@ PhysioNet `chbmit/1.0.0`. Scalp EEG recorded at Boston Children's Hospital.
 
 | Property | Value |
 |---|---|
-| Patients | 22 (23 cases; chb21 is a later recording of chb01) |
+| Patients | 23 people, 24 recordings (chb21 is a later recording of chb01; counts from the full scan in Phase D) |
 | Channels | About 23 bipolar scalp channels. The project uses the 18 shared across nearly all recordings. `T8-P8` appears twice in many files (identical copies). |
 | Sampling rate | 256 Hz |
 | Files | One EDF per hour |
@@ -112,7 +114,7 @@ CHB-MIT has many EEG channels but no ECG or motion, so it complements SeizeIT2: 
 
 #### Why a pilot subset
 
-Processing all 96 training patients would not fit the one-week model deadline, especially because persistent homology is slow. A subset of 30 patients is large enough for 5-fold cross-validation grouped by patient (6 test patients per fold) and small enough to process quickly. More patients can be added in weeks 2–3.
+Processing all 96 training patients would not fit the one-week model deadline, especially because persistent homology is slow. A subset of 30 patients is large enough for 5-fold cross-validation grouped by patient (6 test patients per fold) and small enough to process quickly. More patients can be added in weeks 2–3. (They were: Phase A1 trains on all 90 usable training patients.)
 
 #### How they were chosen
 
@@ -184,7 +186,7 @@ The 50 eligible patients: sub-001, 002, 004, 011, 012, 015, 021, 022, 025, 026, 
 | 30 | sub-094 | 3 | 3 | 0 | FIA:3 | 43.8 |
 | | **Total** | **357** | **189** | **169** | | **2,589** |
 
-The list is also in [`configs/default.yaml`](../configs/default.yaml) (`pilot_patients`), and every seizure with its `used` flag is in [`seizeit2_seizures.csv`](../results/tables/seizeit2_seizures.csv).
+Every seizure with its `used` flag is in [`seizeit2_seizures.csv`](../results/tables/seizeit2_seizures.csv).
 
 #### Balance check (rule 5)
 
@@ -733,14 +735,14 @@ Persistent homology is computed on per-patient normalised signals, not per-windo
 
 The **size** features (total and longest bars) are largely a topological measure of amplitude, which is why they rank so high: seizures are larger. The **shape** features (entropy, loop count) are much less related to the classic features, so they are where TDA can add information the classic model does not have. ECG is a good example: `TDA_ECG_H1_max` has correlation −0.04 with heart rate.
 
-This matters for the paper's claim. Step 5 must show that TDA adds something beyond amplitude, through ablations (classic only vs classic + TDA shape features vs classic + all TDA). A possible addition, **not yet done**, is a second TDA-A variant computed on each window scaled to unit variance, which removes amplitude entirely and keeps pure shape.
+This matters for the paper's claim. Step 5 must show that TDA adds something beyond amplitude, through ablations (classic only vs classic + TDA shape features vs classic + all TDA). A possible addition, **not done in this project**, is a second TDA-A variant computed on each window scaled to unit variance, which removes amplitude entirely and keeps pure shape.
 
 
 ### 4B. TDA-B: network of sensors
 Captures how sensors move together. During a seizure, regions synchronise and sensors across modalities change together.
 
 1. **Nodes:**
-   - SeizeIT2: 2 EEG + ECG + EMG + 2 motion devices × (3 accelerometer + 3 gyroscope axes) = 16 nodes. The 12 motion axes are strongly correlated within each device, so using per-device acceleration and rotation magnitudes instead (2 EEG + ECG + EMG + 4 magnitudes = 8 nodes) is an option to compare.
+   - SeizeIT2: 2 EEG + ECG + EMG + 2 motion devices × (3 accelerometer + 3 gyroscope axes) = 16 nodes. The 12 motion axes are strongly correlated within each device, so using per-device acceleration and rotation magnitudes instead (2 EEG + ECG + EMG + 4 magnitudes = 8 nodes) is an option to compare. *As built (Phase B1): the 8 cleaned signals are the nodes, and the similarity is the correlation of their activity (log RMS) over the last 10 s.*
    - CHB-MIT: 18 EEG channels.
 2. **Distance** between each pair of healthy nodes = 1 − similarity (correlation or a frequency-based similarity).
 3. **Persistent homology** on the distance matrix.
@@ -780,7 +782,7 @@ That is **8 × 2 EEG + 2 ECG + 3 EMG + 4 × 4 motion = 37 classic features** per
 
 The local, past-only threshold in step 3 matters. The first version used one threshold for the whole chunk (30% of its 99th percentile). On sub-004, a single minute of large artefact (signal 10× normal) raised that threshold so much that normal beats in the rest of the chunk fell below it, and heart rate was missing in **41%** of windows (95% in the worst chunk). With the 10-second local threshold, an artefact only affects the following 10 seconds, and missing heart rate fell to **0–1.8% per chunk**. It also removed a small look-ahead (the chunk-wide percentile used future samples), so the detector is now fully causal.
 
-**Raw windows** are the input to the CNN baseline (Step 5.6) and are not stored; they are re-streamed when the CNN is trained.
+**Raw windows** are the input to the CNN baseline (Step 5.6). The plan was to re-stream them; from Phase B on, a cleaned, downsampled local copy of the signals is used instead (Phase B0, [data-access.md](data-access.md#8-caching)).
 
 Features are cached for each version of the data (clean, and each fault type and severity), because persistent homology is the slowest step.
 
@@ -796,7 +798,7 @@ Features are cached for each version of the data (clean, and each fault type and
 | 5.3 Sensor-dropout augmentation | ✓ Done (dead sensors); faults of other types come with Step 2 |
 | 5.4 Class imbalance | ✓ Class weights |
 | 5.5 Patient-grouped 5-fold CV | ✓ Done |
-| 5.6 Classic baseline | ✓ Done. CNN baseline: to do |
+| 5.6 Classic baseline | ✓ Done. CNN baseline: done later (Phases B2 and B3) |
 | Clean-data target T1 (≥ 60% sensitivity at ≤ 11 FA/h) | ✓ **Met: 76.9% at 9.9 FA/h** |
 | Robustness target (≤ 15-point drop with 5 of 8 sensors dead) | ✓ **Met on average with dropout training + sensor-aware threshold** (6.8 points); see Step 8 |
 
@@ -891,7 +893,7 @@ A patient's data never appears in both training and testing. The 30 pilot patien
 
 ### 5.6 Baselines
 1. **Classic features + XGBoost:** ✓ done (`classic` above). Same data, folds, normalisation and context features as the TDA model, so the only difference is the TDA features.
-2. **Small 1D CNN on raw windows**, with failed sensors filled with zeros: to do.
+2. **Small 1D CNN on raw windows**, with failed sensors filled with zeros: done later (Phase B2), then replaced by a spectrogram CNN + GRU (Phase B3).
 
 All models use the same data, splits and (later) fault augmentation.
 
@@ -985,20 +987,20 @@ With context features, 5-of-10 and 8-of-10 detect almost the same number of seiz
 #### Caveats
 1. **Normalisation uses each patient's whole recording** (5.1). A deployed monitor needs a calibration period or running estimate.
 2. **False alarms per hour are measured on the fetched data,** which is concentrated around seizures (20 minutes of context per seizure). That is harder than an average hour of recording, so the real-world rate is probably lower, but it is not directly comparable with the SeizeIT2 benchmark (71.1% at 11.0 FA/h on full recordings).
-3. **Clean data only.** Robustness to sensor faults is the next experiment.
+3. **Clean data only.** Robustness to sensor faults was tested next (Step 8: dead sensors, then injected faults).
 4. **The model settings are untuned defaults;** tuning (Step 6) may improve results further.
 
 ---
 
 ## Step 6: Tuning
 
-1. **TDA settings:** window length, τ, m, number of points, which diagram summaries to use.
-2. **Classifier:** depth, learning rate, number of trees (grid search or Optuna inside the grouped cross-validation).
+1. **TDA settings:** window length, τ, m, number of points, which diagram summaries to use. *Not done: τ and m stayed as chosen in Step 4A, with 150 points and the seven summaries.*
+2. **Classifier:** depth, learning rate, number of trees (grid search or Optuna inside the grouped cross-validation). *Not done: XGBoost kept the default settings of Step 5.2.*
 3. **Alarm rule.**
    - ✓ **Probability threshold:** chosen per fold on the other folds' patients at ≤ 11 FA/h (5.7).
    - ✓ **X-of-Y rule: changed from 8 of 10 (the SeizeIT2 benchmark) to 5 of 10** (2026-10-19). With 8 of 10, a seizure shorter than about 8 seconds cannot trigger an alarm; in the first model only 1 of 20 seizures of ≤ 10 s was detected. With context features both rules detect about the same number of seizures, and 5 of 10 alarms about 2.5 s sooner.
    - ✓ **Sensor-aware threshold** (2026-10-20): one threshold per combination of working sensors, each chosen in advance on other patients at ≤ 11 FA/h. It turns dead-sensor robustness from a 51.8-point drop into 6.8 points (with dropout training); details in Step 8.
-   - To do: weighting each second by its health scores.
+   - Not done: weighting each second by its health scores.
 
    This sets the trade-off between sensitivity and false alarms.
 4. **CHB-MIT:** same pipeline and code, but a **separate model**. Its sensors differ (18 scalp EEG channels, no ECG or motion), so the SeizeIT2 model can't be fine-tuned on it directly.
@@ -1021,6 +1023,8 @@ for each second t in the recording:
 - Faults start partway through, following the injected schedules.
 - Processing time per second is measured. If it is well under 1 s, the method is suitable for real-time monitoring.
 
+*Done in Phase C3 ([`live.py`](../src/seizure/models/live.py)), with the health check, the stuck rule and TDA-A. TDA-B is not part of the final system, since it added nothing on SeizeIT2 (Phase B1). Result: 86 ms per second of data.*
+
 ---
 
 ## Step 8: Evaluate
@@ -1042,6 +1046,8 @@ For each model (TDA, classic, CNN), each fault type (3), each severity (0–100%
 4. **Ablations:** without the health check, without dropout augmentation, without TDA-B, without TDA-A.
 5. **Clean-data comparison** with the SeizeIT2 benchmarks (SVM: 71.1% sensitivity at 11.0 false alarms/hour; ChronoNet: 84.2% at 100.5 false alarms/hour).
 6. **CHB-MIT results.**
+
+*Where these were done: 1–3 in "Robustness to dead sensors" and "Robustness to injected faults" below; 4 in Phase C (ablations, with the health check, dropout training and TDA-A; TDA-B in Phase B1); 5 in the final tests; 6 in Phase D.*
 
 ### Success target (set 2026-10-15, before any results)
 **When 60% of channels fail, sensitivity drops by at most 15 percentage points compared with clean data** (e.g. 70% → at least 55%).
@@ -1151,7 +1157,7 @@ The two failing combinations for the best model both lose **EEG2** (EEG2 + ECG +
 4. **EEG2 is the critical sensor.** It is the only sensor whose loss can push the best model past the 15-point limit.
 
 #### Assumptions and limits
-- Test 3 assumes the monitor knows **exactly** which sensors are dead. A real health check will sometimes be wrong, so real performance will be somewhat lower; this is tested once the health check exists (Step 3).
+- Test 3 assumes the monitor knows **exactly** which sensors are dead. A real health check will sometimes be wrong, so real performance will be somewhat lower; this was tested with the real health check in "Robustness to injected faults" below.
 - One threshold per combination of working sensors works for 8 sensors (256 combinations) but not for many channels (CHB-MIT's 18 give 262,144). A threshold keyed on how many sensors of each type are working, or "sensor working" flags as model inputs, would scale.
 - Results are cross-validation on the 30 pilot patients; the success target is finally judged on the 29 held-out patients.
 
@@ -1385,7 +1391,7 @@ It catches 77–94% of failed windows on unseen patients. Many "healthy" windows
 
 ## Phase A: after the held-out test (2026-10-24)
 
-The held-out test showed two weaknesses: false alarms above the 11 per hour budget on new patients (13.8), and no clean-data advantage for TDA. Phase A addresses the first, and adds fault-augmented training. **The held-out set is not used in Phase A**: every choice is made by cross-validation on training patients; a second held-out run (v2) will be reported alongside v1 at the end.
+The held-out test showed two weaknesses: false alarms above the 11 per hour budget on new patients (13.8), and no clean-data advantage for TDA. Phase A addresses the first, and adds fault-augmented training. **The held-out set is not used in Phase A**: every choice is made by cross-validation on training patients; a second held-out run (v2) will be reported alongside v1 at the end (done: Phase E).
 
 ### A1: train on all 90 usable training patients ([`fullset.py`](../src/seizure/data/fullset.py), [`phase_a.py`](../src/seizure/models/phase_a.py))
 
@@ -1470,7 +1476,7 @@ False alarms with the health check: 5.2–9.2 per hour in every scenario; none a
 2. Choosing the threshold at 8 per hour on training patients keeps the 11 budget on every unseen fold, in clean data and in all fault scenarios, at a cost of about 5 points of sensitivity (71.9% → 67.5% on clean data).
 3. Fault-augmented training costs nothing on clean data and fixes the weakest fault: gradual decline drops 3–6.5 points instead of 7–11, and every individual sensor set passes.
 4. TDA keeps its pattern: about the same clean sensitivity as classic (better AUPR, 0.445 vs 0.382), and more robust under faults.
-5. Limits: still cross-validation (held-out v2 pending); gyroscopes over-flagged; the margin trades sensitivity for false-alarm reliability, and both operating points should be reported.
+5. Limits: still cross-validation (held-out v2 followed in Phase E); gyroscopes over-flagged; the margin trades sensitivity for false-alarm reliability, and both operating points should be reported.
 
 ---
 
@@ -1504,7 +1510,7 @@ Wilcoxon signed-rank test: p = 0.54
 ```
 For scale, the same classic + TDA model caught 67.3% in A1 and 68.8% here, differing only in the random dead-sensor pattern of the dropout copy: about ±1.5 points of run-to-run variation.
 
-**Result: on SeizeIT2, TDA-B adds nothing measurable**, on clean data or with dead sensors. Likely reasons: at most 8 nodes, half of them motion magnitudes that move together, give little shape (H1 barely exists; H0 is close to the average correlation); per-sensor features with 10 s and 60 s context already capture "everything changes at seizure onset"; and cross-modality coupling changes only slightly in focal seizures. This is the limitation anticipated in Step 4B. The injected-fault round for TDA-B on SeizeIT2 was skipped for that reason; TDA-B will be tested on CHB-MIT (18 EEG channels), where the network hypothesis is natural.
+**Result: on SeizeIT2, TDA-B adds nothing measurable**, on clean data or with dead sensors. Likely reasons: at most 8 nodes, half of them motion magnitudes that move together, give little shape (H1 barely exists; H0 is close to the average correlation); per-sensor features with 10 s and 60 s context already capture "everything changes at seizure onset"; and cross-modality coupling changes only slightly in focal seizures. This is the limitation anticipated in Step 4B. The injected-fault round for TDA-B on SeizeIT2 was skipped for that reason; TDA-B was then tested on CHB-MIT (18 EEG channels, Phase D), where the network hypothesis is natural.
 
 ### B2: CNN baseline ([`cnn.py`](../src/seizure/models/cnn.py))
 
@@ -1518,7 +1524,7 @@ Trained on the GPU (RTX 4050, 6 GB; about 10× faster than the CPU). Install: `p
 | CNN v1 | 40.9% | 7.5 | 0.691 | 0.183 | −3.3 |
 | CNN v2 (+ GRU, 60 s) | 39.9% | 7.9 | 0.689 | 0.156 | −6.2 |
 
-Context did not help because the bottleneck is the frozen v1 encoder: memory cannot add information the per-second encoding lacks. Losing the ECG raises the CNN (to 47–50%), so its ECG branch adds noise. The CNN's flat or rising curve under sensor loss reflects its low starting point, not robustness. **Hand-made features (classic + TDA) clearly beat a deep model learned from raw signals across 90 patients**, in line with deep wearable seizure benchmarks such as SeizeIT2's ChronoNet (100.5 false alarms per hour). An end-to-end CNN + GRU with balanced sampling is on hold.
+Context did not help because the bottleneck is the frozen v1 encoder: memory cannot add information the per-second encoding lacks. Losing the ECG raises the CNN (to 47–50%), so its ECG branch adds noise. The CNN's flat or rising curve under sensor loss reflects its low starting point, not robustness. **Hand-made features (classic + TDA) clearly beat a deep model learned from raw signals across 90 patients**, in line with deep wearable seizure benchmarks such as SeizeIT2's ChronoNet (100.5 false alarms per hour). An end-to-end CNN + GRU with balanced sampling was put on hold here and done in Phase B3.
 
 ---
 
@@ -1853,7 +1859,7 @@ In the hybrid, the CNN score is the single most useful of the 264 features (larg
 2. **With dead sensors the spectrogram CNN is the most robust model so far:** 63% with 5 of 8 dead against 58% for XGBoost, significant across patients. With both EEG channels dead it still catches 51%, against 38%. Training on whole 90-second sequences with a sensor missing throughout seems to teach it to use what remains better than per-second dropout teaches XGBoost.
 3. **The hybrid gives the best clean ranking** (AUPR 0.489 against 0.443) **and a significant gain with dead sensors** (+3.7 points), so the CNN and the hand-made features carry partly different information.
 4. **Limits.**
-   - Tested on dead sensors only. The injected-fault scenarios (health check, faults that start partway) and the held-out patients are not yet run for these models.
+   - Tested on dead sensors only. The injected-fault scenarios (health check, faults that start partway) and the held-out patients were not run at this stage (injected faults followed in B4 and B5, held-out patients in Phase E).
    - The clean-data differences are not significant.
    - TDA's own role is unchanged: the comparison here is against classic + TDA.
 
@@ -2090,7 +2096,9 @@ With one fixed threshold the dead-sensor sets give 77–83% caught, but at 12–
 
 ---
 
-## Timeline (model in 1 week)
+## Original one-week plan (14 October 2026)
+
+Kept for the record. The work actually ran from 14 to 26 October, as described in the steps and phases above.
 
 | Day | Work |
 |---|---|

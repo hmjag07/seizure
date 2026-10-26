@@ -1,4 +1,4 @@
-"""Figures 17-25: the health check, Phase A, Phase B and Phase C (docs/pipeline.md).
+"""Figures 17-25: the health check, Phase A, Phase B and Phase C (docs/lab-notebook.md).
 
     python -m seizure.evaluation.plots_phases
 
@@ -68,7 +68,7 @@ def fig_health():
 
 
 def fig_a1():
-    """18: 30 vs 90 training patients (numbers from docs/pipeline.md, Phase A1)."""
+    """18: 30 vs 90 training patients (numbers from docs/lab-notebook.md, Phase A1)."""
     rows = {"Seizures caught": ((0.739, 0.779), (0.708, 0.719)), "AUROC": ((0.813, 0.824), (0.841, 0.851)),
             "AUPR": ((0.253, 0.331), (0.385, 0.440))}
     fig, axes = plt.subplots(1, 3, figsize=(12, 3.9))

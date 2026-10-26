@@ -1,4 +1,4 @@
-"""Stream, clean, window and featurise the pilot patients (docs/pipeline.md, Steps 1.3-1.5, 4A, 4C).
+"""Stream, clean, window and featurise the pilot patients (docs/lab-notebook.md, Steps 1.3-1.5, 4A, 4C).
 
     python -m seizure.features.build params          # choose TDA delay/dimension on background data
     python -m seizure.features.build features [sub]  # all pilot patients, or one

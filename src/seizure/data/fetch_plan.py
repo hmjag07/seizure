@@ -1,4 +1,4 @@
-"""Plan which time ranges to stream for the pilot patients (docs/pipeline.md, Step 1.3).
+"""Plan which time ranges to stream for the pilot patients (docs/lab-notebook.md, Step 1.3).
 
 Seizure chunks: each used seizure plus CONTEXT_S before and after, merged when they overlap.
 Background chunks: CHUNK_S long, at least GAP_S from any seizure and IMPD_MARGIN_S from any

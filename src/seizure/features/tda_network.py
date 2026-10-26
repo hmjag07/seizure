@@ -1,4 +1,4 @@
-"""TDA-B: persistent homology on the network of sensors (docs/pipeline.md, Step 4B and Phase B).
+"""TDA-B: persistent homology on the network of sensors (docs/lab-notebook.md, Step 4B and Phase B).
 
 Per second t, from the cleaned, downsampled signals (data/signals.py):
 1. Activity: each working sensor's log RMS in 0.25 s steps over the last WINDOW_S seconds, after the

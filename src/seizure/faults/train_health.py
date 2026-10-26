@@ -1,4 +1,4 @@
-"""Health check: healthy / degraded / failed per sensor per second (docs/pipeline.md, Step 3).
+"""Health check: healthy / degraded / failed per sensor per second (docs/lab-notebook.md, Step 3).
 
     python -m seizure.faults.train_health
 

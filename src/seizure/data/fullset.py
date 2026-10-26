@@ -1,4 +1,4 @@
-"""The other 66 training-range patients ("extra"), to train on all 96 (docs/pipeline.md, Phase A1).
+"""The other 66 training-range patients ("extra"), to train on all 96 (docs/lab-notebook.md, Phase A1).
 
     python -m seizure.data.fullset
 

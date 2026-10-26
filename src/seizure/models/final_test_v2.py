@@ -1,4 +1,4 @@
-"""Phase E: the second and final held-out test (v2) (docs/pipeline.md, Phase E).
+"""Phase E: the second and final held-out test (v2) (docs/lab-notebook.md, Phase E).
 
     python -m seizure.models.final_test_v2 train   # final models and thresholds, training patients only
     python -m seizure.models.final_test_v2 dry     # the test code on 5 training patients (code check only)

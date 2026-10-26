@@ -1,4 +1,4 @@
-"""Final test on the held-out patients (docs/pipeline.md, Step 8).
+"""Final test on the held-out patients (docs/lab-notebook.md, Step 8).
 
     python -m seizure.models.final_test [quick]
 

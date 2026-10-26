@@ -1,4 +1,4 @@
-"""Pick SeizeIT2 pilot patients (docs/pipeline.md, Step 1.2).
+"""Pick SeizeIT2 pilot patients (docs/lab-notebook.md, Step 1.2).
 
 Rules, fixed before the scan:
 1. Training range only: sub-001 to sub-096. Held-out patients are never scanned.
@@ -23,7 +23,7 @@ MIN_SEIZURES = 3
 N_PILOT = 30
 MAX_SEIZURES = 10
 BALANCE_TOL = 0.15
-SEED = 42  # matches seed in configs/default.yaml
+SEED = 42
 OUT = Path(__file__).resolve().parents[3] / "results" / "tables"
 
 
